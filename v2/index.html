@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dentiste Affiliate+</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== Dentiste Affiliate+ v2 — เรียบ อ่านง่าย 1 หน้า = 1 งานหลัก; แคมเปญ 11.11 = Gen Z sticker style ===== */
+  :root {
+    color-scheme: light;
+    --font: 'Noto Sans Thai', -apple-system, system-ui, sans-serif;
+    --lime: #D9FF4A; --ink2: #0D2823; --coral: #FF6A3D; --sun: #FFC93C;
+    --green: #007864; --green-dark: #005A4B; --green-deep: #00443A; --green-tint: #E8F2EF; --green-soft: #F2F8F6;
+    --bg: #F5F7F6; --card: #FFFFFF; --line: #E6ECE9; --line-strong: #D3DCD8;
+    --ink: #12211E; --muted: #6B7874; --faint: #9AA6A2;
+    --warn: #9A5B00; --warn-tint: #FFF4DE; --bad: #B42318; --bad-tint: #FDECEA; --info: #1F5FBF; --info-tint: #EAF1FD;
+    --r: 20px; --shadow: 0 1px 2px rgba(18, 33, 30, .04), 0 6px 18px rgba(18, 33, 30, .05);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+  body.nonav { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+  button { font-family: inherit; }
+  .num { font-variant-numeric: tabular-nums; }
+  [hidden] { display: none !important; }
+  a { color: var(--green); }
+
+  /* ===== แถบบน ===== */
+  .topbar { position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) 16px 10px; background: rgba(255, 255, 255, .92); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(18, 33, 30, .06); }
+  .tb-logo { height: 15px; width: auto; display: block; }
+  .tb-logo + .tb-txt { display: none; }
+  .tb-txt { font-weight: 700; color: var(--green); }
+  .tb-sep { width: 1px; height: 13px; background: var(--line-strong); }
+  .tb-name { font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--green-dark); }
+  .tb-pts { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--green-dark); background: var(--green-tint); padding: 4px 11px 4px 8px; border-radius: 999px; border: 0; cursor: pointer; }
+  .tb-pts svg { width: 15px; height: 15px; fill: var(--green); }
+
+  /* ===== หัวข้อหน้า ===== */
+  header.ph { padding: 18px 18px 2px; }
+  .back { display: inline-flex; align-items: center; gap: 2px; border: 0; background: none; color: var(--green); font-weight: 600; font-size: 14px; padding: 4px 0; margin: 0 0 4px; cursor: pointer; }
+  header h1 { margin: 0; font-size: 23px; line-height: 1.3; font-weight: 800; letter-spacing: -.01em; }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+  main { padding: 12px 16px 0; }
+
+  /* ===== Card & type ===== */
+  .card { background: var(--card); border-radius: var(--r); padding: 18px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .card h2 { margin: 0 0 8px; font-size: 16px; font-weight: 700; }
+  .sec { display: flex; align-items: baseline; justify-content: space-between; margin: 20px 4px 8px; }
+  .sec b { font-size: 15px; font-weight: 700; }
+  .sec button { border: 0; background: none; color: var(--green); font-weight: 600; font-size: 13.5px; cursor: pointer; padding: 0; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .tiny { font-size: 12px; color: var(--faint); }
+
+  /* ===== ปุ่ม ===== */
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; border: 0; border-radius: 16px; padding: 12px 16px; font: inherit; font-size: 16px; font-weight: 700; background: var(--green); color: #fff; cursor: pointer; text-align: center; text-decoration: none; transition: background .15s, transform .1s; }
+  .btn:active { background: var(--green-dark); transform: scale(.985); }
+  .btn[disabled] { background: #E6EBE9; color: #9AA6A2; cursor: not-allowed; transform: none; }
+  .btn.ghost { background: var(--green-tint); color: var(--green-dark); }
+  .btn.ghost:active { background: #D8EAE4; }
+  .btn.line { background: #fff; color: var(--green-dark); border: 1.5px solid var(--line-strong); }
+  .btn.sm { min-height: 40px; padding: 8px 14px; font-size: 14px; border-radius: 12px; width: auto; display: inline-flex; }
+  .btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .link { border: 0; background: none; color: var(--green); font: inherit; font-weight: 600; font-size: 14px; padding: 0; cursor: pointer; }
+
+  /* ===== Badge / chip ===== */
+  .badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; background: #EEF2F0; color: var(--muted); white-space: nowrap; }
+  .badge.good { background: var(--green-tint); color: var(--green-dark); }
+  .badge.warn { background: var(--warn-tint); color: var(--warn); }
+  .badge.bad { background: var(--bad-tint); color: var(--bad); }
+  .badge.info { background: var(--info-tint); color: var(--info); }
+
+  /* ===== ฟอร์ม ===== */
+  label.f { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
+  input, textarea { width: 100%; padding: 13px 14px; border: 1.5px solid var(--line-strong); border-radius: 14px; font: inherit; font-size: 16px; background: #fff; color: var(--ink); -webkit-appearance: none; appearance: none; transition: border-color .15s, box-shadow .15s; }
+  input:focus, textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(0, 120, 100, .14); }
+  textarea { min-height: 72px; resize: vertical; }
+  .row2 { display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px; }
+  .at { display: flex; align-items: center; background: #fff; border: 1.5px solid var(--line-strong); border-radius: 14px; padding-left: 14px; transition: border-color .15s, box-shadow .15s; }
+  .at span { color: var(--muted); font-weight: 700; font-size: 16px; }
+  .at input { border: 0; padding-left: 4px; }
+  .at input:focus { box-shadow: none; }
+  .at:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0, 120, 100, .14); }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--muted); margin-top: 14px; cursor: pointer; }
+  .check input { width: 22px; height: 22px; margin-top: 1px; flex: none; padding: 0; border-radius: 7px; display: grid; place-items: center; }
+  .check input:checked { background: var(--green); border-color: var(--green); }
+  .check input:checked::after { content: ''; width: 6px; height: 11px; border: solid #fff; border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg); }
+  .hint { font-size: 12.5px; color: var(--muted); margin: 6px 2px 0; }
+
+  /* ===== สมัคร ===== */
+  .welcome { background: var(--green); color: #fff; border-radius: 24px; padding: 22px 20px 20px; margin-bottom: 14px; position: relative; overflow: hidden; }
+  .welcome::after { content: ''; position: absolute; width: 220px; height: 220px; border-radius: 50%; background: var(--green-dark); right: -80px; top: -90px; }
+  .welcome > * { position: relative; z-index: 1; }
+  .welcome h2 { margin: 0; font-size: 24px; line-height: 1.3; font-weight: 800; }
+  .welcome p { margin: 6px 0 0; opacity: .9; font-size: 14px; }
+  .perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
+  .perk { background: rgba(255, 255, 255, .12); border-radius: 14px; padding: 10px 8px; text-align: center; font-size: 12.5px; font-weight: 600; line-height: 1.35; }
+  .perk svg { display: block; width: 24px; height: 24px; margin: 0 auto 4px; fill: none; stroke: var(--lime); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .timeline { display: grid; gap: 0; margin-top: 4px; }
+  .tl { display: flex; gap: 12px; align-items: flex-start; position: relative; padding-bottom: 16px; }
+  .tl:last-child { padding-bottom: 0; }
+  .tl::before { content: ''; position: absolute; left: 13px; top: 28px; bottom: 0; width: 2px; background: var(--line); }
+  .tl:last-child::before { display: none; }
+  .tl .dot { width: 28px; height: 28px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800; background: #EEF2F0; color: var(--faint); }
+  .tl.done .dot { background: var(--green); color: #fff; }
+  .tl.now .dot { background: var(--warn-tint); color: var(--warn); box-shadow: 0 0 0 4px rgba(154, 91, 0, .1); }
+  .tl b { display: block; font-size: 15px; }
+  .tl span { font-size: 13px; color: var(--muted); }
+
+  /* ===== หน้าหลัก ===== */
+  .hello { background: var(--green); color: #fff; margin: -12px -16px 0; padding: 18px 20px 52px; position: relative; overflow: hidden; }
+  .hello::after { content: ''; position: absolute; width: 240px; height: 240px; border-radius: 50%; background: var(--green-dark); right: -90px; top: -110px; }
+  .hello > * { position: relative; z-index: 1; }
+  .hello .hi { font-size: 15px; opacity: .9; }
+  .hello .pts { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
+  .hello .pts b { font-size: 40px; line-height: 1.1; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .hello .pts span { font-size: 14px; opacity: .9; }
+  .hello .pts button { margin-left: auto; border: 0; background: #fff; color: var(--green-dark); font: inherit; font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+  .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: -38px 0 12px; position: relative; z-index: 2; }
+  .kpi { background: #fff; border-radius: 18px; padding: 12px 14px; box-shadow: var(--shadow); cursor: pointer; min-width: 0; }
+  .kpi .k { font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; }
+  .kpi .v { font-size: 22px; font-weight: 800; margin-top: 1px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kpi .s { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .next { background: #fff; border-radius: var(--r); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); border: 2px solid var(--green); }
+  .next .lbl { display: inline-block; font-size: 11.5px; font-weight: 800; letter-spacing: .06em; color: var(--green); background: var(--green-tint); padding: 2px 10px; border-radius: 999px; }
+  .next .lbl.warn { color: var(--warn); background: var(--warn-tint); }
+  .next h3 { margin: 8px 0 2px; font-size: 18px; line-height: 1.35; font-weight: 800; }
+  .next p { margin: 0 0 12px; color: var(--muted); font-size: 13.5px; }
+  .more { padding: 2px 16px; }
+  .more .row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .more .row:last-child { border-bottom: 0; }
+
+  /* แถวรายการ (ใช้ร่วมกัน) */
+  .ic { width: 40px; height: 40px; flex: none; border-radius: 12px; background: var(--green-tint); display: grid; place-items: center; }
+  .ic svg { width: 21px; height: 21px; fill: none; stroke: var(--green); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .ic.warn { background: var(--warn-tint); } .ic.warn svg { stroke: var(--warn); }
+  .tx { flex: 1; min-width: 0; }
+  .tx b { display: block; font-weight: 600; font-size: 14.5px; line-height: 1.4; }
+  .tx span { display: block; font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chev { color: #B5BFBB; font-size: 22px; line-height: 1; }
+  .menu { padding: 2px 16px; }
+  .menu .row { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .menu .row:last-child { border-bottom: 0; }
+
+  /* Bonus */
+  .bar { height: 10px; border-radius: 999px; background: #E6EDEA; overflow: hidden; margin: 10px 0 8px; }
+  .bar > div { height: 100%; border-radius: 999px; background: var(--green); transition: width .5s cubic-bezier(.2, .8, .2, 1); }
+  .bsteps { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 12px; }
+  .bstep { border-radius: 14px; padding: 8px 10px; background: var(--bg); text-align: center; }
+  .bstep .t { font-size: 11.5px; color: var(--muted); }
+  .bstep b { display: block; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .bstep.hit { background: var(--green); color: #fff; } .bstep.hit .t { color: rgba(255, 255, 255, .85); }
+  .bstep.go { background: var(--green-tint); outline: 1.5px dashed var(--green); }
+
+  /* แบนเนอร์แคมเปญหน้าหลัก (Gen Z sticker) */
+  .banner { position: relative; overflow: hidden; display: block; background: var(--green); color: #fff; border: 2.5px solid var(--ink2); box-shadow: 4px 4px 0 var(--ink2); border-radius: 22px; padding: 16px 92px 16px 16px; margin: 0 4px 14px 0; cursor: pointer; }
+  .banner::after { content: ''; position: absolute; right: -50px; top: -60px; width: 170px; height: 170px; border-radius: 50%; background: var(--green-dark); }
+  .banner > * { position: relative; z-index: 1; }
+  .bn-k { display: inline-block; font-size: 12px; font-weight: 800; background: var(--lime); color: var(--ink2); border: 2px solid var(--ink2); border-radius: 999px; padding: 0 10px; transform: rotate(-3deg); }
+  .bn-t { font-size: 24px; font-weight: 900; margin-top: 6px; line-height: 1.15; -webkit-text-stroke: 1.5px var(--ink2); paint-order: stroke fill; text-shadow: 3px 3px 0 var(--ink2); }
+  .bn-s { font-size: 13.5px; opacity: .92; margin-top: 2px; }
+  .bn-rocket { position: absolute; right: 14px; top: 50%; margin-top: -42px; width: 64px; height: auto; transform: rotate(38deg); animation: hover 2.6s ease-in-out infinite; }
+  .banner .bar { background: #fff; border: 2px solid var(--ink2); height: 10px; }
+  .banner .bar > div { background: var(--lime); border-radius: 0; }
+
+  /* ===== สินค้า ===== */
+  .quota { display: flex; align-items: center; gap: 12px; }
+  .quota .n { font-size: 26px; font-weight: 800; color: var(--green); line-height: 1; font-variant-numeric: tabular-nums; }
+  .plist { display: grid; gap: 10px; }
+  .pitem { display: flex; gap: 12px; background: #fff; border-radius: var(--r); padding: 12px; box-shadow: var(--shadow); }
+  .pimg { width: 92px; height: 92px; flex: none; border-radius: 14px; background: var(--green-tint); overflow: hidden; display: grid; place-items: center; cursor: pointer; }
+  .pimg img { width: 100%; height: 100%; object-fit: cover; }
+  .pimg svg { width: 40%; height: 40%; fill: none; stroke: var(--green); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+  .pinfo { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .pinfo .nm { font-weight: 700; font-size: 15px; line-height: 1.35; cursor: pointer; }
+  .pinfo .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .pinfo .acts { display: flex; gap: 8px; margin-top: auto; padding-top: 10px; }
+  .pinfo .acts .btn { flex: 1; min-height: 40px; font-size: 14px; border-radius: 12px; padding: 8px 10px; }
+
+  /* ===== แคมเปญ (Gen Z sticker — คงดีไซน์เดิม) ===== */
+  .boost-hero { position: relative; overflow: hidden; background: var(--green); color: #fff; border: 2.5px solid var(--ink2); border-radius: 24px; box-shadow: 5px 5px 0 var(--ink2); padding: 18px 18px 0; margin: 4px 5px 18px 0; }
+  .boost-hero::after { content: ''; position: absolute; width: 230px; height: 230px; border-radius: 50%; background: var(--green-dark); right: -70px; bottom: -40px; }
+  .boost-hero > * { position: relative; z-index: 1; }
+  .bh-top { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .bh-top img { height: 16px; width: auto; display: block; }
+  .bh-top span { padding-left: 10px; border-left: 1.5px solid rgba(255, 255, 255, .7); }
+  .bh-tag { display: inline-block; margin-top: 14px; background: var(--lime); color: var(--ink2); font-weight: 900; font-size: 15px; letter-spacing: .04em; padding: 3px 14px; border: 2px solid var(--ink2); border-radius: 999px; box-shadow: 3px 3px 0 var(--ink2); transform: rotate(-4deg); }
+  .big11 { font-size: 84px; line-height: .95; font-weight: 900; letter-spacing: -.03em; margin: 8px 0 4px; color: #fff; -webkit-text-stroke: 2.5px var(--ink2); paint-order: stroke fill; text-shadow: 5px 5px 0 var(--ink2); }
+  .boost-hero .ttl { font-size: 18px; font-weight: 800; }
+  .boost-hero .chips2 { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; padding-right: 108px; }
+  .boost-hero .pill { background: #fff; color: var(--ink2); border: 2px solid var(--ink2); border-radius: 999px; padding: 2px 11px; font-size: 12.5px; font-weight: 700; }
+  .boost-hero .pill.o { background: var(--ink2); color: var(--lime); }
+  .bh-comm { position: absolute; right: 12px; top: 14px; z-index: 2; width: 112px; height: 112px; filter: drop-shadow(3px 3px 0 var(--ink2)); transform: rotate(8deg); }
+  .bh-comm > div { width: 100%; height: 100%; background: var(--lime); clip-path: polygon(100.0% 50.0%, 90.9% 59.3%, 95.0% 71.7%, 82.8% 76.2%, 81.2% 89.1%, 68.2% 87.8%, 61.1% 98.7%, 50.0% 92.0%, 38.9% 98.7%, 31.8% 87.8%, 18.8% 89.1%, 17.2% 76.2%, 5.0% 71.7%, 9.1% 59.3%, 0.0% 50.0%, 9.1% 40.7%, 5.0% 28.3%, 17.2% 23.8%, 18.8% 10.9%, 31.8% 12.2%, 38.9% 1.3%, 50.0% 8.0%, 61.1% 1.3%, 68.2% 12.2%, 81.2% 10.9%, 82.8% 23.8%, 95.0% 28.3%, 90.9% 40.7%); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ink2); text-align: center; }
+  .bh-comm span { font-size: 11px; font-weight: 700; line-height: 1.1; }
+  .bh-comm b { font-size: 30px; font-weight: 900; line-height: 1; }
+  .bh-rocket { position: absolute; right: 18px; top: 50%; margin-top: -30px; z-index: 1; width: 84px; height: auto; transform: rotate(38deg); animation: hover 2.6s ease-in-out infinite; }
+  .bh-spark { position: absolute; z-index: 1; width: 22px; height: 22px; }
+  @keyframes hover { 50% { transform: rotate(38deg) translate(4px, -8px); } }
+  .ticker { position: relative; z-index: 2; margin: 0 -18px; background: var(--ink2); color: var(--lime); overflow: hidden; white-space: nowrap; font-weight: 800; font-size: 13px; padding: 7px 0; }
+  .ticker > div { display: inline-block; animation: marquee 16s linear infinite; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* ขั้นตอนแคมเปญ */
+  .steps3 { padding: 6px 16px; }
+  .st { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .st:last-child { border-bottom: 0; }
+  .st .n { width: 30px; height: 30px; flex: none; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: #EEF2F0; color: var(--muted); }
+  .st.done .n { background: var(--green); color: #fff; }
+  .st .body { flex: 1; min-width: 0; }
+  .st .body b { display: block; font-size: 15px; }
+  .st .body .muted { margin-top: 1px; }
+  .st.lock { opacity: .5; }
+  .tagchip { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; border: 1.5px dashed var(--green); color: var(--green-dark); background: var(--green-soft); border-radius: 10px; padding: 3px 10px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+  details.more-info summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; }
+  details.more-info summary::-webkit-details-marker { display: none; }
+  details.more-info summary::after { content: '+'; color: var(--green); font-size: 20px; line-height: 1; }
+  details.more-info[open] summary::after { content: '–'; }
+  .details { white-space: pre-line; font-size: 14px; line-height: 1.7; margin-top: 10px; }
+
+  /* ===== ฉัน ===== */
+  .me-head { display: flex; align-items: center; gap: 14px; }
+  .avatar { width: 56px; height: 56px; flex: none; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 22px; font-weight: 800; }
+  .ptscard { display: flex; align-items: center; gap: 12px; background: var(--green); color: #fff; border-radius: var(--r); padding: 16px 18px; margin-bottom: 12px; }
+  .ptscard b { font-size: 30px; line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .ptscard .t { flex: 1; font-size: 13px; opacity: .9; }
+  .ptscard .btn { width: auto; background: #fff; color: var(--green-dark); min-height: 40px; font-size: 14px; padding: 8px 16px; border-radius: 12px; }
+  .cnt { min-width: 22px; height: 22px; border-radius: 999px; background: var(--coral); color: #fff; font-size: 12px; font-weight: 800; display: grid; place-items: center; padding: 0 6px; }
+
+  /* ===== รายการพัสดุ / ประวัติ ===== */
+  .list .item { padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .list .item:last-child { border-bottom: 0; padding-bottom: 2px; }
+  .list .item:first-child { padding-top: 2px; }
+  .item .top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+  .item .title { font-weight: 700; }
+  .item .btn { margin-top: 10px; }
+  .code { font-size: 32px; font-weight: 800; letter-spacing: 8px; text-align: center; padding: 16px; border-radius: 16px; color: var(--green-dark); background: var(--green-tint); }
+
+  /* ===== อันดับ ===== */
+  .seg { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 14px; margin-bottom: 12px; background: #E6EBE9; }
+  .seg button { border: 0; background: transparent; font-size: 14px; font-weight: 700; color: var(--muted); padding: 9px; border-radius: 11px; cursor: pointer; }
+  .seg button.on { background: #fff; color: var(--green-dark); box-shadow: 0 1px 2px rgba(18, 33, 30, .08); }
+  .lb .row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .lb .row:last-child { border-bottom: 0; }
+  .lb .rk { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 13px; background: #EEF2F0; color: var(--muted); }
+  .lb .rk.g1 { background: #FFC93C; color: var(--ink2); } .lb .rk.g2 { background: #DCE3E1; color: var(--ink); } .lb .rk.g3 { background: #F2C5A5; color: #5B2E10; }
+  .lb .who { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb .val { font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .lb .row.me { background: var(--green-tint); margin: 0 -10px; padding: 11px 10px; border-radius: 14px; border-bottom-color: transparent; }
+  .lb .row.me .rk { background: var(--green); color: #fff; }
+  .myrank { display: flex; align-items: center; gap: 14px; background: var(--green); color: #fff; border-radius: 18px; padding: 14px 18px; margin-bottom: 12px; }
+  .myrank .no { font-size: 30px; font-weight: 800; line-height: 1; }
+  .myrank .t { flex: 1; font-size: 13px; opacity: .92; }
+  .myrank .v { font-size: 17px; font-weight: 800; text-align: right; }
+
+  /* ===== รางวัล ===== */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .rw { background: #fff; border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .rw .img { aspect-ratio: 1.3; background: var(--green-tint); display: grid; place-items: center; }
+  .rw .img img { width: 100%; height: 100%; object-fit: cover; }
+  .rw .img svg { width: 36%; height: 36%; fill: none; stroke: var(--green); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .rw .b { padding: 12px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .rw .b b { font-size: 14px; line-height: 1.35; }
+  .rw .btn { margin-top: auto; min-height: 40px; font-size: 14px; border-radius: 12px; }
+
+  /* ===== Bottom sheet ===== */
+  .sheet-bg { position: fixed; inset: 0; z-index: 20; background: rgba(13, 40, 35, .45); opacity: 0; transition: opacity .2s; }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; background: #fff; border-radius: 26px 26px 0 0; padding: 10px 18px calc(18px + env(safe-area-inset-bottom)); max-height: 88vh; overflow-y: auto; transform: translateY(100%); transition: transform .25s cubic-bezier(.2, .8, .2, 1); }
+  .sheet.open { transform: none; } .sheet-bg.open { opacity: 1; }
+  .sheet .grab { width: 40px; height: 5px; border-radius: 999px; background: #DCE3E1; margin: 0 auto 12px; }
+  .sheet h3 { margin: 0 0 4px; font-size: 19px; font-weight: 800; }
+  .sheet .x { position: absolute; right: 12px; top: 10px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: #F0F3F2; color: var(--muted); font-size: 20px; cursor: pointer; }
+  .sh-prod { display: flex; gap: 12px; align-items: center; background: var(--bg); border-radius: 16px; padding: 10px; margin: 12px 0; }
+  .sh-prod .pimg { width: 56px; height: 56px; border-radius: 12px; }
+  .addr { background: var(--bg); border-radius: 16px; padding: 12px 14px; font-size: 14px; margin: 10px 0 4px; }
+  .addr b { display: block; }
+  .brief { white-space: pre-line; background: var(--green-soft); border-radius: 14px; padding: 12px 14px; font-size: 14px; margin: 10px 0 14px; }
+  .sheet .btn + .btn { margin-top: 8px; }
+  .paste { display: flex; gap: 8px; margin-top: 12px; }
+  .paste input { flex: 1; }
+  .paste .btn { width: auto; min-height: 50px; }
+
+  /* ===== เมนูล่าง ===== */
+  nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 10px calc(6px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, .96); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-top: 1px solid rgba(18, 33, 30, .07); }
+  nav a { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; font-size: 11.5px; font-weight: 600; color: var(--faint); text-decoration: none; cursor: pointer; position: relative; }
+  nav a .i { width: 52px; height: 30px; border-radius: 999px; display: grid; place-items: center; transition: background .2s; }
+  nav a svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  nav a.on { color: var(--green-dark); }
+  nav a.on .i { background: var(--green-tint); }
+  nav a .dotn { position: absolute; top: 4px; left: 50%; margin-left: 12px; width: 9px; height: 9px; border-radius: 50%; background: var(--coral); border: 2px solid #fff; }
+
+  /* ===== Misc ===== */
+  .toast { position: fixed; left: 16px; right: 16px; bottom: calc(90px + env(safe-area-inset-bottom)); background: var(--ink); color: #fff; padding: 13px 16px; border-radius: 14px; font-size: 14px; z-index: 30; opacity: 0; transform: translateY(10px); transition: .25s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: none; }
+  .toast.err { background: var(--bad); }
+  .mockbar { background: var(--warn-tint); color: var(--warn); font-size: 12px; padding: 6px 16px; text-align: center; }
+  .center { text-align: center; padding: 36px 18px; }
+  .spinner { width: 30px; height: 30px; border: 3px solid var(--green-tint); border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty { text-align: center; color: var(--muted); padding: 22px 8px; }
+  .empty .btn { margin-top: 12px; }
+  .ok-ic { width: 64px; height: 64px; border-radius: 50%; background: var(--green-tint); display: grid; place-items: center; margin: 0 auto 10px; }
+  .ok-ic svg { width: 32px; height: 32px; fill: none; stroke: var(--green); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .skel { background: linear-gradient(90deg, #ECF0EE 25%, #F5F7F6 50%, #ECF0EE 75%); background-size: 200% 100%; animation: sk 1.2s infinite; border-radius: 14px; }
+  @keyframes sk { to { background-position: -200% 0; } }
+
+  /* ===================================================================
+     iOS 27 look — Liquid Glass เฉพาะชั้นควบคุม (แถบบน, เมนูล่าง, ชีต, ปุ่มลอย)
+     เนื้อหา (การ์ด/รายการ) เป็นพื้นทึบ — กระจกต้องมีพื้นหลังให้หักเห จึงใส่ mesh สีอ่อนที่ body
+     =================================================================== */
+  :root {
+    --glass: rgba(255, 255, 255, .58); --glass-strong: rgba(250, 252, 251, .80);
+    --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 -1px 0 rgba(255, 255, 255, .30), inset 0 0 0 1px rgba(255, 255, 255, .50);
+    --glass-shadow: 0 10px 34px rgba(0, 60, 50, .16), 0 1px 3px rgba(0, 60, 50, .08);
+    --r: 26px; --shadow: 0 1px 2px rgba(18, 33, 30, .04), 0 4px 14px rgba(18, 33, 30, .05);
+  }
+  html { background: #EDF3F0; }
+  body { background: #EDF3F0; background-image: radial-gradient(70% 45% at 0% 0%, rgba(0, 120, 100, .20), transparent 70%), radial-gradient(55% 40% at 100% 18%, rgba(217, 255, 74, .26), transparent 70%), radial-gradient(70% 50% at 50% 100%, rgba(0, 120, 100, .14), transparent 70%); background-attachment: fixed; }
+  .lg { background: var(--glass); -webkit-backdrop-filter: blur(26px) saturate(185%); backdrop-filter: blur(26px) saturate(185%); box-shadow: var(--glass-edge), var(--glass-shadow); }
+
+  /* แถบบน: ใสตอนอยู่บนสุด → กลายเป็นกระจกเมื่อเลื่อน */
+  .topbar { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 0; transition: background .25s, box-shadow .25s; }
+  .topbar.sc { background: var(--glass-strong); -webkit-backdrop-filter: blur(26px) saturate(185%); backdrop-filter: blur(26px) saturate(185%); box-shadow: 0 1px 0 rgba(18, 33, 30, .06); }
+  .tb-pts { background: var(--glass); -webkit-backdrop-filter: blur(20px) saturate(185%); backdrop-filter: blur(20px) saturate(185%); box-shadow: var(--glass-edge), 0 2px 10px rgba(0, 60, 50, .10); padding: 6px 12px 6px 9px; }
+
+  /* Large title แบบ iOS */
+  header.ph { padding: 8px 20px 4px; }
+  header h1 { font-size: 32px; line-height: 1.2; font-weight: 800; letter-spacing: -.02em; }
+  header p { font-size: 15px; }
+
+  /* เนื้อหา: การ์ดพื้นทึบ มุมโค้งต่อเนื่อง */
+  .card, .pitem, .rw, .kpi { border-radius: var(--r); }
+  .menu, .more, .steps3 { padding: 0 0 0 16px; overflow: hidden; }
+  .menu .row, .more .row, .steps3 .st { padding-right: 16px; }
+  .sec b { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+
+  /* ปุ่มทรงแคปซูล */
+  .btn { border-radius: 999px; min-height: 52px; }
+  .btn.sm, .pinfo .acts .btn, .rw .btn { border-radius: 999px; }
+  .btn.ghost { background: rgba(0, 120, 100, .11); }
+  .btn.line { border-radius: 999px; }
+  .ptscard .btn, .hello .pts button { border-radius: 999px; }
+
+  /* ช่องกรอกแบบ iOS (พื้นเทาอ่อน ไม่มีเส้น) */
+  input, textarea, .at { background: rgba(118, 128, 124, .10); border-color: transparent; border-radius: 14px; }
+  input:focus, textarea:focus { background: #fff; }
+  .at:focus-within { background: #fff; }
+  .at input, .at input:focus { background: transparent; }
+  .check input { background: #fff; border: 1.5px solid var(--line-strong); }
+
+  /* Segmented control */
+  .seg { border-radius: 999px; background: rgba(118, 128, 124, .14); }
+  .seg button { border-radius: 999px; }
+  .seg button.on { box-shadow: 0 2px 8px rgba(18, 33, 30, .12), 0 0 0 .5px rgba(18, 33, 30, .04); }
+
+  /* หัวหน้าหลัก: โค้งล่าง ให้การ์ดลอยทับ */
+  .hello { border-radius: 0 0 34px 34px; margin-top: -76px; padding-top: 84px; }
+  .ptscard, .myrank { border-radius: var(--r); }
+
+  /* เมนูล่าง: แคปซูลกระจกลอย ย่อเมื่อเลื่อนลง */
+  nav { left: 18px; right: 18px; bottom: calc(14px + env(safe-area-inset-bottom)); padding: 5px; border-radius: 999px; border-top: 0;
+    background: var(--glass); -webkit-backdrop-filter: blur(26px) saturate(185%); backdrop-filter: blur(26px) saturate(185%); box-shadow: var(--glass-edge), var(--glass-shadow);
+    transition: left .3s cubic-bezier(.2, .8, .2, 1), right .3s cubic-bezier(.2, .8, .2, 1), padding .3s; }
+  nav a { border-radius: 999px; padding: 6px 2px 5px; color: #55625E; transition: background .2s, color .2s, padding .3s; }
+  nav a .i { width: auto; height: 26px; background: none !important; }
+  nav a.on { color: var(--green); background: rgba(0, 120, 100, .12); }
+  nav a .lb { transition: opacity .2s, max-height .3s; max-height: 20px; overflow: hidden; }
+  nav.min { left: 22%; right: 22%; }
+  nav.min a { padding: 9px 2px; }
+  nav.min a .lb { opacity: 0; max-height: 0; }
+  body { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
+
+  /* ชีตกระจก ลอยจากขอบจอ */
+  .sheet-bg { background: rgba(10, 30, 26, .28); }
+  .sheet { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); border-radius: 36px; padding: 10px 20px 20px;
+    background: var(--glass-strong); -webkit-backdrop-filter: blur(34px) saturate(190%); backdrop-filter: blur(34px) saturate(190%); box-shadow: var(--glass-edge), 0 20px 60px rgba(0, 40, 34, .28); }
+  .sheet .x { background: rgba(118, 128, 124, .16); }
+  .sh-prod, .addr { background: rgba(255, 255, 255, .75); }
+  .brief { background: rgba(232, 242, 239, .85); }
+
+  /* Toast แคปซูลกระจกเข้ม */
+  .toast { left: 50%; right: auto; transform: translate(-50%, 10px); max-width: calc(100% - 40px); width: max-content; border-radius: 999px; padding: 12px 20px; bottom: calc(96px + env(safe-area-inset-bottom));
+    background: rgba(18, 33, 30, .82); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: 0 8px 28px rgba(0, 0, 0, .22); text-align: center; }
+  .toast.show { transform: translate(-50%, 0); }
+  .toast.err { background: rgba(180, 35, 24, .9); }
+
+  /* ไม่รองรับ/ปิดความโปร่งใส → ทึบ อ่านชัด */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    nav, .sheet, .topbar.sc, .tb-pts { background: rgba(255, 255, 255, .97); }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    nav, .sheet, .topbar.sc, .tb-pts, .toast { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .toast { background: var(--ink); }
+  }
+  @media (prefers-contrast: more) { nav, .sheet { box-shadow: 0 0 0 1.5px var(--ink); } }
+
+  /* หน้าหลัก: แถบบนอยู่บนพื้นเขียว → ตัวอักษร/โลโก้ขาว จนกว่าจะเลื่อน */
+  .tb-w { display: none; }
+  .tb-w + .tb-g { margin-left: 0; }
+  body.home .topbar:not(.sc) .tb-w { display: block; }
+  body.home .topbar:not(.sc) .tb-g { display: none; }
+  body.home .topbar:not(.sc) .tb-txt, body.home .topbar:not(.sc) .tb-name { color: #fff; }
+  body.home .topbar:not(.sc) .tb-sep { background: rgba(255, 255, 255, .6); }
+  .tb-g + .tb-txt, .tb-w ~ .tb-txt { display: none; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .bh-rocket, .ticker > div, .bn-rocket, .skel { animation: none !important; } }
+</style>
+</head>
+<body>
+<div id="mockbar" class="mockbar" hidden>โหมดตัวอย่าง (Prototype) — ข้อมูลจำลอง ไม่ได้เชื่อมระบบจริง</div>
+<div class="topbar">
+  <img class="tb-logo tb-w" src="/logo-white.png" alt="" aria-hidden="true" onerror="this.remove()"><img class="tb-logo tb-g" src="/logo-green.png" alt="Dentiste'" onerror="this.remove()"><b class="tb-txt">Dentiste'</b>
+  <span class="tb-sep"></span><span class="tb-name">Affiliate+</span>
+  <button class="tb-pts num" id="tbpts" hidden></button>
+</div>
+<header class="ph" id="ph">
+  <button class="back" id="back" hidden>‹ กลับ</button>
+  <h1 id="h-title">Dentiste Affiliate+</h1><p id="h-sub"></p>
+</header>
+<main id="app"><div class="card center"><div class="spinner"></div><div class="muted">กำลังโหลด…</div></div></main>
+<nav id="nav" hidden>
+  <a data-p="me"><span class="i"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11h14V9"/><path d="M10 20v-6h4v6"/></svg></span><span class="lb">หน้าหลัก</span></a>
+  <a data-p="catalog"><span class="i"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span><span class="lb">สินค้า</span></a>
+  <a data-p="boost"><span class="i"><svg viewBox="0 0 24 24"><path d="M12 3c3 3.5 4.5 6.5 4.5 9.5a4.5 4.5 0 0 1-9 0c0-1.6.6-3 1.6-4.2.2 1.3.9 2.2 1.9 2.7C10.6 8.5 11 5.5 12 3z"/></svg></span><span class="lb">แคมเปญ</span></a>
+  <a data-p="account"><span class="i"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20.5c1-4 4.2-6 8-6s7 2 8 6"/></svg></span><span class="lb">ฉัน</span><span class="dotn" id="acc-dot" hidden></span></a>
+</nav>
+<div id="toast" class="toast"></div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+/* ===== ตั้งค่า ===== */
+const LIFF_ID = '2012132241-ifUH9yrd';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwZYpEBmFgLHa85fLGCe_m-_iq3DA_TMjVpmx_ERLBB_S2WpNef7toQzSBE3kNFVFfSIA/exec';
+/* ===================== */
+
+const isTikTok = u => /^https?:\/\/([a-z0-9-]+\.)*tiktok\.com\//i.test(String(u || '').trim());
+function openExternal(url) {
+  if (!MOCK && window.liff && liff.isInClient && liff.isInClient()) liff.openWindow({ url, external: true });
+  else window.open(url, '_blank', 'noopener');
+}
+const PAGES = { register: pageRegister, me: pageMe, catalog: pageCatalog, boost: pageBoost, account: pageAccount,
+  requests: pageRequests, history: pageHistory, rewards: pageRewards, invite: pageInvite, leaderboard: pageLeaderboard, profile: pageProfile };
+const TAB_OF = { requests: 'account', rewards: 'account', invite: 'account', history: 'account', profile: 'account', leaderboard: 'me' };
+const params = new URLSearchParams(location.search);
+const MOCK = params.get('mock') === '1' || LIFF_ID.startsWith('YOUR_');
+const state = { me: null, page: params.get('page') || 'register', ref: params.get('ref') || '', campaign: params.get('c') || '' };
+
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const fmt = n => Number(n || 0).toLocaleString('th-TH', { maximumFractionDigits: 0 });
+const first = n => String(n || '').trim().split(/\s+/)[0] || '';
+const aff = () => (state.me && state.me.affiliate) || {};
+
+function toast(msg, err) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(toast.t); toast.t = setTimeout(() => { t.className = 'toast'; }, 2800);
+}
+function loading() {
+  app.innerHTML = '<div class="skel" style="height:120px;margin-bottom:12px"></div><div class="skel" style="height:84px;margin-bottom:12px"></div><div class="skel" style="height:84px"></div>';
+}
+function header(title, sub, back) {
+  $('#ph').hidden = !title;
+  $('#h-title').textContent = title || ''; $('#h-sub').textContent = sub || ''; $('#h-sub').hidden = !sub;
+  const b = $('#back'); b.hidden = !back; b.onclick = back ? () => go(back) : null;
+}
+function setPts(n) {
+  const t = $('#tbpts');
+  t.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></svg>${fmt(n)}`;
+  t.hidden = false; t.onclick = () => go('rewards');
+}
+function failBox(e) { app.innerHTML = `<div class="card center"><p>${esc(e.message)}</p><button class="btn line" onclick="go(state.page)">ลองใหม่</button></div>`; }
+
+const ICON = {
+  truck: '<svg viewBox="0 0 24 24"><path d="M2 6h11v10H2zM13 9h4l4 4v3h-8z"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>',
+  clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  gift: '<svg viewBox="0 0 24 24"><path d="M4 11h16v10H4zM3 7h18v4H3zM12 7v14"/><path d="M12 7c-1.5-3-5-3.5-5-1.2C7 7 9 7 12 7c3 0 5 0 5-1.2C17 3.5 13.5 4 12 7z"/></svg>',
+  invite: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M18 8v6M15 11h6"/></svg>',
+  chat: '<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  video: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>',
+  box: '<svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
+  flame: '<svg viewBox="0 0 24 24"><path d="M12 3c3 3.5 4.5 6.5 4.5 9.5a4.5 4.5 0 0 1-9 0c0-1.6.6-3 1.6-4.2.2 1.3.9 2.2 1.9 2.7C10.6 8.5 11 5.5 12 3z"/></svg>',
+  up: '<svg viewBox="0 0 24 24"><path d="M4 17l6-6 4 4 6-7"/><path d="M15 8h5v5"/></svg>',
+  pin: '<svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  cart: '<svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h10.2L20 7H6.3"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg>',
+  coin: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.4-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.6 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8M9 17h6"/></svg>',
+  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  hourglass: '<svg viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9"/></svg>',
+};
+const ROW = (r, attr) => `<div class="row" ${attr || ''}><span class="ic ${r.warn ? 'warn' : ''}">${r.icon}</span><span class="tx"><b>${esc(r.t)}</b>${r.s ? `<span>${esc(r.s)}</span>` : ''}</span>${r.badge || '<span class="chev">›</span>'}</div>`;
+const PIMG = p => `<div class="pimg">${p.image_url ? `<img src="${esc(p.image_url)}" alt="" loading="lazy">` : ICON.box}</div>`;
+
+const ROCKET = cls => `<svg class="${cls}" viewBox="0 0 120 165" aria-hidden="true"><g stroke="#0D2823" stroke-width="3.5" stroke-linejoin="round"><path d="M44 112C40 132 52 147 60 160C68 147 80 132 76 112Z" fill="#FF6A3D"/><path d="M51 112C49 127 55 138 60 147C65 138 71 127 69 112Z" fill="#FFC93C"/><path d="M43 74L22 106L24 120L45 106Z" fill="#FF6A3D"/><path d="M77 74L98 106L96 120L75 106Z" fill="#FF6A3D"/><path d="M60 6C89 27 87 90 79 112L41 112C33 90 31 27 60 6Z" fill="#fff"/><path d="M60 6C70 13 77 24 81 36L39 36C43 24 50 13 60 6Z" fill="#D9FF4A"/><circle cx="60" cy="62" r="13" fill="#007864" stroke-width="4.5"/><rect x="56" y="96" width="8" height="28" rx="4" fill="#FF6A3D"/></g><circle cx="55" cy="57" r="3.5" fill="#fff"/></svg>`;
+
+/* ---------- API + แคช: เปิดหน้าครั้งเดียวยิง bundle เดียว, สลับแท็บใช้ข้อมูลที่โหลดไว้ ---------- */
+const READ_ACTIONS = ['me', 'catalog', 'requests', 'dashboard', 'rewards', 'leaderboard', 'program'];
+const PAGE_CALLS = {
+  me: [['dashboard'], ['program'], ['requests']], history: [['dashboard']], boost: [['program']], catalog: [['catalog']],
+  leaderboard: [['leaderboard', { by: 'sales' }]], rewards: [['rewards']], requests: [['requests']], account: [['requests']],
+};
+const PRE = new Map();            // key → { t, data } ผลที่โหลดไว้แล้ว
+const PEND = new Map();           // key → Promise ที่กำลังโหลด (bundle)
+const PRE_TTL = 120000;           // ใช้ข้อมูลที่โหลดไว้ได้ 2 นาที
+const pkey = (a, d) => a + '|' + JSON.stringify(d || {});
+const clone = v => (v == null ? v : JSON.parse(JSON.stringify(v)));
+const SNAP_KEY = 'daff_snap_v1';
+
+async function rawApi(action, data) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(Object.assign({ action, idToken: liff.getIDToken() }, data || {})),
+  });
+  const j = await res.json();
+  if (!j.ok) throw new Error(j.error || 'เกิดข้อผิดพลาด');
+  return j.data;
+}
+
+async function api(action, data) {
+  if (MOCK) return mockApi(action, data || {});
+  const isRead = READ_ACTIONS.indexOf(action) !== -1;
+  if (isRead) {
+    const k = pkey(action, data), h = PRE.get(k);
+    if (h && Date.now() - h.t < PRE_TTL) return clone(h.data);
+    if (PEND.has(k)) return clone(await PEND.get(k));
+    const out = await rawApi(action, data);
+    PRE.set(k, { t: Date.now(), data: out });
+    return clone(out);
+  }
+  const out = await rawApi(action, data);
+  PRE.clear(); // มีการเปลี่ยนข้อมูล → โหลดใหม่ครั้งถัดไป
+  return out;
+}
+
+/** รวมหลายคำสั่งอ่านใน request เดียว — คืน array ผลลัพธ์ { ok, data, error } */
+function bundle(calls) {
+  const p = rawApi('bundle', { calls: calls.map(([a, d]) => ({ action: a, data: d || {} })) });
+  calls.forEach(([a, d], i) => {
+    const k = pkey(a, d);
+    const one = p.then(r => {
+      PEND.delete(k);
+      const x = r[i] || { ok: false, error: 'ไม่มีข้อมูล' };
+      if (!x.ok) throw new Error(x.error);
+      PRE.set(k, { t: Date.now(), data: x.data });
+      return x.data;
+    }, e => { PEND.delete(k); throw e; });
+    one.catch(() => {});
+    PEND.set(k, one);
+  });
+  return p;
+}
+
+function snapLoad(uid) {
+  try {
+    const s = JSON.parse(localStorage.getItem(SNAP_KEY) || 'null');
+    if (!s || s.uid !== uid || Date.now() - s.t > 86400000 || !s.me) return null;
+    return s;
+  } catch (e) { return null; }
+}
+function snapSave(uid) {
+  try {
+    if (!uid || !state.me) return;
+    const pre = [];
+    PRE.forEach((v, k) => { if (!k.startsWith('me|')) pre.push([k, v.data]); });
+    localStorage.setItem(SNAP_KEY, JSON.stringify({ uid, t: Date.now(), me: state.me, pre }));
+  } catch (e) { /* ignore */ }
+}
+
+function routePage() {
+  const approved = state.me && state.me.affiliate && state.me.affiliate.status === 'approved';
+  if (!approved && state.page !== 'register' && state.page !== 'boost') state.page = 'register';
+  if (approved && state.page === 'register') state.page = 'me';
+  return approved;
+}
+
+async function boot() {
+  try {
+    if (MOCK) {
+      $('#mockbar').hidden = false;
+      state.me = await api('me', { ref: state.ref, campaign: state.campaign });
+      $('#h-title').textContent = state.me.brand || 'Dentiste Affiliate+';
+      routePage(); go(state.page);
+      return;
+    }
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
+    // หลัง init, query เดิมจาก liff.state จะกลับมาอยู่ใน location
+    const p = new URLSearchParams(location.search);
+    state.page = p.get('page') || state.page; state.ref = p.get('ref') || state.ref; state.campaign = p.get('c') || state.campaign;
+    const asked = state.page;
+    let uid = '';
+    try { uid = (liff.getDecodedIDToken() || {}).sub || ''; } catch (e) { /* ignore */ }
+
+    // เริ่มโหลดข้อมูลจริงทันที: me + ข้อมูลของหน้าแรก ใน request เดียว
+    const first = [['me', { ref: state.ref, campaign: state.campaign }]].concat(PAGE_CALLS[asked] || []);
+    const loadFirst = bundle(first);
+
+    // 1) เคยเปิดแล้ว → แสดงข้อมูลล่าสุดทันที (แล้วค่อยอัปเดตด้านล่าง)
+    const snap = snapLoad(uid);
+    let shownKey = '';
+    if (snap) {
+      state.me = snap.me;
+      snap.pre.forEach(([k, d]) => PRE.set(k, { t: Date.now(), data: d }));
+      $('#h-title').textContent = state.me.brand || 'Dentiste Affiliate+';
+      routePage(); go(state.page);
+      shownKey = JSON.stringify(snap.me) + '|' + JSON.stringify((PAGE_CALLS[state.page] || []).map(([a, d]) => (PRE.get(pkey(a, d)) || {}).data));
+    }
+
+    // 2) รอข้อมูลจริง
+    const shownPage = state.page;
+    const res = await loadFirst;
+    if (!res[0] || !res[0].ok) throw new Error((res[0] && res[0].error) || 'โหลดข้อมูลไม่สำเร็จ');
+    state.me = res[0].data;
+    $('#h-title').textContent = state.me.brand || 'Dentiste Affiliate+';
+    if (!snap) {
+      state.page = asked; routePage(); go(state.page);
+    } else if (state.page === shownPage && state.page !== 'register') {
+      // ข้อมูลเปลี่ยนจากที่แสดงไว้ → วาดหน้าใหม่ (เฉพาะถ้าผู้ใช้ยังอยู่หน้าเดิม)
+      const before = state.page; state.page = asked; routePage();
+      const nowKey = JSON.stringify(state.me) + '|' + JSON.stringify((PAGE_CALLS[state.page] || []).map(([a, d]) => (PRE.get(pkey(a, d)) || {}).data));
+      if (state.page !== before || nowKey !== shownKey) go(state.page); else state.page = before;
+    }
+
+    // 3) โหลดข้อมูลแท็บอื่นล่วงหน้า (สลับแท็บแล้วขึ้นทันที)
+    const approved = state.me.affiliate && state.me.affiliate.status === 'approved';
+    const seen = {}; first.forEach(([a, d]) => { seen[pkey(a, d)] = 1; });
+    const rest = [];
+    (approved ? Object.keys(PAGE_CALLS) : ['boost']).forEach(pg => PAGE_CALLS[pg].forEach(([a, d]) => {
+      const k = pkey(a, d); if (!seen[k]) { seen[k] = 1; rest.push([a, d]); }
+    }));
+    if (rest.length) await bundle(rest).catch(() => null);
+    snapSave(uid);
+  } catch (e) {
+    app.innerHTML = `<div class="card center"><h2>เปิดหน้าไม่สำเร็จ</h2><p class="muted">${esc(e.message)}</p><button class="btn" onclick="location.reload()">ลองใหม่</button></div>`;
+  }
+}
+
+function go(page) {
+  closeSheet();
+  state.page = PAGES[page] ? page : 'me';
+  const approved = aff().status === 'approved';
+  $('#nav').hidden = !approved; document.body.classList.toggle('nonav', !approved);
+  const tab = TAB_OF[state.page] || state.page;
+  document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.p === tab));
+  window.scrollTo(0, 0); $('#nav').classList.remove('min'); document.body.classList.toggle('home', state.page === 'me');
+  PAGES[state.page]();
+}
+document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => go(a.dataset.p)));
+
+/* iOS-style: แถบบนเป็นกระจกเมื่อเลื่อน, เมนูล่างย่อเมื่อเลื่อนลง ขยายเมื่อเลื่อนขึ้น */
+(() => {
+  let lastY = 0, ticking = false;
+  const tb = document.querySelector('.topbar'), nav = document.getElementById('nav');
+  addEventListener('scroll', () => {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(() => {
+      const y = scrollY;
+      tb.classList.toggle('sc', y > 6);
+      if (Math.abs(y - lastY) > 6) { nav.classList.toggle('min', y > lastY && y > 140); lastY = y; }
+      ticking = false;
+    });
+  }, { passive: true });
+})();
+
+
+async function act(btn, fn) {
+  const label = btn.innerHTML; btn.disabled = true; btn.textContent = 'กำลังดำเนินการ…';
+  try { await fn(); } catch (e) { toast(String(e.message).replace(/^PROFILE_REQUIRED:\s*/, ''), true); btn.disabled = false; btn.innerHTML = label; }
+}
+
+/* ---------- Bottom sheet ---------- */
+let SHEET = null;
+function openSheet(html) {
+  closeSheet(true);
+  const bg = document.createElement('div'); bg.className = 'sheet-bg';
+  const el = document.createElement('div'); el.className = 'sheet'; el.setAttribute('role', 'dialog');
+  el.innerHTML = `<div class="grab"></div><button class="x" aria-label="ปิด">×</button>${html}`;
+  document.body.append(bg, el);
+  requestAnimationFrame(() => { bg.classList.add('open'); el.classList.add('open'); });
+  bg.addEventListener('click', () => closeSheet()); el.querySelector('.x').addEventListener('click', () => closeSheet());
+  SHEET = { bg, el };
+  return el;
+}
+function closeSheet(now) {
+  if (!SHEET) return;
+  const { bg, el } = SHEET; SHEET = null;
+  if (now) { bg.remove(); el.remove(); return; }
+  bg.classList.remove('open'); el.classList.remove('open');
+  setTimeout(() => { bg.remove(); el.remove(); }, 250);
+}
+
+/* ---------- ข้อมูลจัดส่ง (เติมเมื่อจำเป็นเท่านั้น) ---------- */
+function profileFields(p) {
+  p = p || {};
+  return `<div class="pf">
+    <label class="f">ชื่อ-นามสกุลผู้รับ</label><input name="full_name" autocomplete="name" value="${esc(p.full_name || aff().full_name || '')}">
+    <label class="f">เบอร์โทร</label><input name="phone" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxx" value="${esc(p.phone || '')}">
+    <label class="f">ที่อยู่</label><textarea name="address" autocomplete="street-address" placeholder="บ้านเลขที่ ถนน แขวง/ตำบล เขต/อำเภอ">${esc(p.address || '')}</textarea>
+    <div class="row2"><div><label class="f">จังหวัด</label><input name="province" value="${esc(p.province || '')}"></div>
+    <div><label class="f">รหัสไปรษณีย์</label><input name="postcode" inputmode="numeric" maxlength="5" autocomplete="postal-code" value="${esc(p.postcode || '')}"></div></div></div>`;
+}
+function readProfile(el) {
+  const o = {}; el.querySelectorAll('.pf [name]').forEach(i => { o[i.name] = i.value.trim(); });
+  const miss = { full_name: 'ชื่อผู้รับ', phone: 'เบอร์โทร', address: 'ที่อยู่', province: 'จังหวัด', postcode: 'รหัสไปรษณีย์' };
+  for (const k in miss) if (!o[k]) throw new Error('กรุณากรอก' + miss[k]);
+  if (!/^\d{9,10}$/.test(o.phone.replace(/\D/g, ''))) throw new Error('เบอร์โทรไม่ถูกต้อง');
+  if (!/^\d{5}$/.test(o.postcode)) throw new Error('รหัสไปรษณีย์ต้องเป็นตัวเลข 5 หลัก');
+  return o;
+}
+function addrHtml(p) {
+  return `<div class="addr"><b>${esc(p.full_name)} · ${esc(p.phone)}</b>${esc(p.address)} ${esc(p.province)} ${esc(p.postcode)}</div>`;
+}
+/** ชีตยืนยันที่ต้องใช้ที่อยู่: ถ้ายังไม่มีให้กรอกในชีตเดียวกันเลย แล้วกดครั้งเดียวจบ */
+function shipSheet(opt) {
+  const a = aff(), need = !a.profile_complete;
+  const el = openSheet(`<h3>${esc(opt.title)}</h3>${opt.top || ''}
+    <div id="shipbox">${need ? '<p class="hint" style="margin-top:10px">กรอกที่อยู่จัดส่งครั้งเดียว ครั้งต่อไประบบจำให้</p>' + profileFields(a.profile) :
+      `<div class="sec" style="margin:14px 2px 0"><b>ส่งไปที่</b><button id="chg">เปลี่ยน</button></div>${addrHtml(a.profile)}`}</div>
+    <button class="btn" id="ok" style="margin-top:16px">${esc(opt.cta)}</button>${opt.note ? `<p class="hint" style="text-align:center">${esc(opt.note)}</p>` : ''}`);
+  const chg = el.querySelector('#chg');
+  if (chg) chg.addEventListener('click', () => { el.querySelector('#shipbox').innerHTML = profileFields(a.profile); });
+  el.querySelector('#ok').addEventListener('click', ev => {
+    const btn = ev.currentTarget, payload = {};
+    if (el.querySelector('.pf')) { try { payload.profile = readProfile(el); } catch (e) { return toast(e.message, true); } }
+    act(btn, async () => {
+      try { await opt.run(payload); }
+      catch (e) {
+        if (/^PROFILE_REQUIRED/.test(e.message)) { el.querySelector('#shipbox').innerHTML = profileFields(a.profile); throw new Error('กรุณากรอกที่อยู่จัดส่ง'); }
+        throw e;
+      }
+      if (payload.profile) { a.profile = Object.assign({}, payload.profile, { phone: payload.profile.phone.replace(/\D/g, '') }); a.profile_complete = true; }
+      closeSheet(); opt.done();
+    });
+  });
+}
+
+/* ---------- ส่งลิงก์คลิป (ใช้ทั้งพัสดุและภารกิจแคมเปญ) ---------- */
+function clipSheet(title, sub, send) {
+  const el = openSheet(`<h3>${esc(title)}</h3><p class="muted" style="margin:0">${esc(sub)}</p>
+    <div class="paste"><input id="clip" placeholder="วางลิงก์คลิป TikTok" inputmode="url" autocomplete="off"><button class="btn line" id="pst">วาง</button></div>
+    <p class="hint">ใน TikTok กด แชร์ → คัดลอกลิงก์ แล้วกลับมากด "วาง"</p>
+    <button class="btn" id="snd" style="margin-top:14px">ส่งลิงก์</button>`);
+  const inp = el.querySelector('#clip');
+  el.querySelector('#pst').addEventListener('click', async () => {
+    try { inp.value = (await navigator.clipboard.readText()).trim(); } catch (e) { inp.focus(); toast('กดค้างที่ช่อง แล้วเลือก "วาง"'); }
+  });
+  el.querySelector('#snd').addEventListener('click', ev => {
+    const url = inp.value.trim();
+    if (!isTikTok(url)) return toast('กรุณาวางลิงก์คลิปจาก TikTok', true);
+    act(ev.currentTarget, async () => { await send(url); closeSheet(); });
+  });
+}
+
+/* ---------- สมัคร: ใช้แค่ TikTok ---------- */
+function pageRegister() {
+  const a = state.me.affiliate;
+  if (a) return pageStatus(a);
+  header(null);
+  const ref = state.ref || state.me.lead_ref || '';
+  app.innerHTML = `
+    <div class="welcome">
+      <h2>เป็น Affiliate กับ Dentiste'</h2>
+      <p>สำหรับ TikTok Creator · สมัครฟรี ใช้เวลา 30 วินาที</p>
+      <div class="perks">
+        <div class="perk">${ICON.box}รับสินค้า<br>ตัวอย่างฟรี</div>
+        <div class="perk">${ICON.coin}ค่าคอม<br>+ Bonus</div>
+        <div class="perk">${ICON.gift}สะสมแต้ม<br>แลกรางวัล</div>
+      </div>
+    </div>
+    <form class="card" id="f" novalidate>
+      <label class="f" style="margin-top:0">TikTok username</label>
+      <div class="at"><span>@</span><input name="tiktok_username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="username" required></div>
+      <p class="hint">บัญชีที่ใช้ติดตะกร้า — ระบบใช้จับคู่ยอดขายให้อัตโนมัติ</p>
+      <label class="f">ผู้ติดตาม TikTok ประมาณ</label>
+      <input name="followers" inputmode="numeric" placeholder="เช่น 12000" required>
+      ${ref ? `<p class="hint">รหัสผู้แนะนำ: <b>${esc(ref)}</b></p>` : ''}
+      <label class="check"><input type="checkbox" name="consent"><span>ยินยอมให้เก็บและใช้ข้อมูลเพื่อดำเนินโปรแกรม Affiliate ตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล</span></label>
+      <button class="btn" style="margin-top:16px" id="submit">สมัครเลย</button>
+      <p class="hint" style="text-align:center">ชื่อ เบอร์ และที่อยู่ ค่อยกรอกตอนขอสินค้าตัวอย่าง</p>
+    </form>`;
+  $('#f').addEventListener('submit', ev => {
+    ev.preventDefault();
+    const fd = new FormData(ev.target);
+    const form = { tiktok_username: String(fd.get('tiktok_username') || '').trim().replace(/^@+/, ''), followers: String(fd.get('followers') || '').trim(),
+      consent: !!fd.get('consent'), ref, campaign: state.campaign || '' };
+    if (!form.tiktok_username) return toast('กรุณากรอก TikTok username', true);
+    if (!form.followers) return toast('กรุณากรอกจำนวนผู้ติดตาม', true);
+    if (!form.consent) return toast('กรุณากดยินยอมก่อนสมัคร', true);
+    act($('#submit'), async () => {
+      const r = await api('register', { form });
+      state.me.affiliate = r.affiliate;
+      if (r.affiliate.status === 'approved') { toast('อนุมัติแล้ว ยินดีต้อนรับ!'); go('me'); } else go('register');
+    });
+  });
+}
+
+function pageStatus(a) {
+  header(null);
+  const tl = (cls, n, t, s) => `<div class="tl ${cls}"><span class="dot">${cls === 'done' ? '✓' : n}</span><div><b>${t}</b><span>${s}</span></div></div>`;
+  if (a.status === 'pending') {
+    app.innerHTML = `<div class="card center" style="padding-bottom:22px"><div class="ok-ic">${ICON.hourglass}</div>
+        <h2 style="font-size:20px;margin:0">ได้รับใบสมัครแล้ว</h2><p class="muted" style="margin:4px 0 0">TikTok @${esc(a.tiktok_username)} · ทีมจะแจ้งผลทาง LINE นี้</p></div>
+      <div class="card"><div class="timeline">
+        ${tl('done', 1, 'สมัคร', 'เรียบร้อย')}
+        ${tl('now', 2, 'ทีมตรวจช่อง TikTok', 'ปกติภายใน 1–2 วันทำการ')}
+        ${tl('', 3, 'เริ่มขอสินค้าและรับค่าคอม', 'ระบบจะเปิดเมนูทั้งหมดให้อัตโนมัติ')}
+      </div></div>
+      <button class="btn ghost" onclick="go('boost')">ระหว่างรอ ดูแคมเปญ Boost up 11.11</button>`;
+    return;
+  }
+  const map = { rejected: ['ใบสมัครยังไม่ผ่าน', 'สอบถามเพิ่มเติมได้ที่แชท'], suspended: ['บัญชีถูกระงับชั่วคราว', 'ติดต่อแอดมินที่แชท'] };
+  const s = map[a.status] || [a.status, ''];
+  app.innerHTML = `<div class="card center"><h2 style="font-size:20px">${esc(s[0])}</h2><p class="muted">${esc(s[1])}</p>
+    ${!MOCK ? '<button class="btn line" onclick="liff.closeWindow()">กลับไปที่แชท</button>' : ''}</div>`;
+}
+
+/* ---------- หน้าหลัก ---------- */
+async function pageMe() {
+  header(null);
+  loading();
+  try {
+    const [d, pg, rq] = await Promise.all([api('dashboard'), api('program').catch(() => null), api('requests').catch(() => null)]);
+    setPts(d.affiliate.points);
+    const b = d.bonus, steps = b.steps || [];
+    const p = pg && pg.program && pg.program.state !== 'ended' ? pg.program : null;
+    const reqs = (rq && rq.requests) || [];
+    const m = (pg && pg.missions) || {};
+    setAccDot(reqs);
+
+    // งานที่ควรทำ เรียงตามความสำคัญ — งานแรกเป็นปุ่มใหญ่ ที่เหลือเป็นแถวเล็ก
+    const todos = [];
+    reqs.filter(r => r.can_submit).forEach(r => todos.push({ icon: ICON.video, warn: r.overdue, lbl: r.overdue ? 'เลยกำหนดส่ง' : 'ทำต่อเลย',
+      t: 'ส่งลิงก์คลิปรีวิว ' + r.product_name, s: r.overdue ? 'ส่งก่อนจึงจะขอสินค้าชิ้นใหม่ได้' : 'ส่งภายใน ' + r.content_due + ' รับแต้มทันทีที่ทีมตรวจ',
+      cta: 'ส่งลิงก์คลิป', run: () => clipSheet('ส่งลิงก์คลิปรีวิว', r.product_name, async url => { await api('submitContent', { request_id: r.request_id, url }); toast('ส่งแล้ว รอทีมตรวจเพื่อรับแต้ม'); pageMe(); }) }));
+    if (p && !pg.joined) todos.push({ join: true, icon: ICON.flame, lbl: 'แคมเปญ', t: 'เข้าร่วม ' + p.title, s: 'รับค่าคอมเพิ่ม ' + (p.extra_commission || '') + ' แค่กดเข้าร่วม', cta: 'เข้าร่วมเลย', run: () => go('boost') });
+    else if (p && p.state === 'open' && p.video_target && (m.videos || 0) < p.video_target) todos.push({ icon: ICON.flame, lbl: 'ภารกิจแคมเปญ',
+      t: `โพสต์คลิปแคมเปญ (${m.videos || 0}/${p.video_target})`, s: 'ใส่แฮชแท็ก ' + p.hashtag, cta: 'ส่งลิงก์คลิป',
+      run: () => clipSheet('ส่งคลิปภารกิจ', p.hashtag, async url => { await api('submitMission', { program_id: p.program_id, url }); toast('ส่งแล้ว รอทีมตรวจเพื่อรับแต้ม'); pageMe(); }) });
+    if (!reqs.length) todos.push({ icon: ICON.box, lbl: 'เริ่มต้น', t: 'ขอสินค้าตัวอย่างชิ้นแรก', s: 'ฟรี — รีวิวแล้วติดตะกร้า รับค่าคอม', cta: 'เลือกสินค้า', run: () => go('catalog') });
+    if (b.next) todos.push({ icon: ICON.up, lbl: 'Bonus', t: `ขายอีก ฿${fmt(b.remaining)} รับ Bonus ${fmt(b.next.bonus)} ${b.unit}`, s: 'ติดตะกร้าสินค้าเพิ่มใน Showcase', cta: 'ดูสินค้า', run: () => go('catalog') });
+    const top = todos[0], rest = todos.slice(1, 3);
+
+    const cur = b.current ? b.current.step : 0;
+    app.innerHTML = `
+      <div class="hello">
+        <div class="hi">สวัสดี คุณ${esc(first(d.affiliate.full_name))}</div>
+        <div class="pts"><b>${fmt(d.affiliate.points)}</b><span>แต้ม</span><button id="toRw">แลกรางวัล</button></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi" id="kSales"><div class="k">ยอดขายเดือนนี้</div><div class="v">฿${fmt(d.sales_this_month)}</div><div class="s">เดือนก่อน ฿${fmt(d.sales_last_month)}</div></div>
+        <div class="kpi" id="kRank"><div class="k">อันดับเดือนนี้<span class="chev" style="font-size:16px">›</span></div><div class="v">${d.rank && d.rank.rank ? '#' + d.rank.rank : '-'}</div><div class="s">${d.rank && d.rank.total ? 'จาก ' + fmt(d.rank.total) + ' คน' : 'ดูกระดานอันดับ'}</div></div>
+      </div>
+      ${top ? `<div class="next"><span class="lbl ${top.warn ? 'warn' : ''}">${esc(top.lbl)}</span><h3>${esc(top.t)}</h3><p>${esc(top.s)}</p><button class="btn" id="topgo">${esc(top.cta)}</button></div>` : ''}
+      ${rest.length ? `<div class="card more">${rest.map((r, i) => ROW(r, `data-todo="${i + 1}"`)).join('')}</div>` : ''}
+      ${p && !(top && top.join) ? `<div class="banner" id="bn">
+        <div class="bn-k">แคมเปญ · ${p.state === 'open' ? 'กำลังเปิด' : 'ลงทะเบียนล่วงหน้า'}</div>
+        <div class="bn-t">${esc(p.title)}</div>
+        <div class="bn-s">${pg.joined ? (p.gmv_target ? `ยอดช่วงแคมเปญ ฿${fmt(m.gmv || 0)} / ฿${fmt(p.gmv_target)}` : 'คุณเข้าร่วมแล้ว') : `รับค่าคอมเพิ่ม ${esc(p.extra_commission || '')} · แตะเพื่อเข้าร่วม`}</div>
+        ${pg.joined && p.gmv_target ? `<div class="bar"><div style="width:${Math.min(100, (m.gmv || 0) / p.gmv_target * 100)}%"></div></div>` : ''}
+        ${ROCKET('bn-rocket')}</div>` : ''}
+      ${steps.length ? `<div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><b>Bonus เดือนนี้</b><span class="muted">${b.next ? `อีก ฿${fmt(b.remaining)} ถึงขั้น ${b.next.step}` : (cur ? 'ถึงขั้นสูงสุดแล้ว' : '')}</span></div>
+        <div class="bar"><div style="width:${Math.min(100, d.sales_this_month / steps[steps.length - 1].min_sales * 100)}%"></div></div>
+        <div class="bsteps">${steps.map(s => `<div class="bstep ${s.step <= cur ? 'hit' : (b.next && s.step === b.next.step ? 'go' : '')}"><div class="t">ขาย ฿${fmt(s.min_sales)}</div><b>+${fmt(s.bonus)}</b></div>`).join('')}</div>
+        <p class="tiny" style="margin:10px 0 0">ยอดขายอัปเดตเมื่อทีมนำเข้ารายงานจาก TikTok Shop</p></div>` : ''}`;
+    $('#toRw').addEventListener('click', () => go('rewards'));
+    $('#kRank').addEventListener('click', () => go('leaderboard'));
+    $('#kSales').addEventListener('click', () => go('history'));
+    const tg = $('#topgo'); if (tg) tg.addEventListener('click', () => top.run());
+    app.querySelectorAll('[data-todo]').forEach(el => el.addEventListener('click', () => todos[+el.dataset.todo].run()));
+    const bn = $('#bn'); if (bn) bn.addEventListener('click', () => go('boost'));
+  } catch (e) { failBox(e); }
+}
+function setAccDot(reqs) { $('#acc-dot').hidden = !(reqs || []).some(r => r.can_submit); }
+
+/* ---------- สินค้า ---------- */
+async function pageCatalog() {
+  header('สินค้า', 'ขอตัวอย่างฟรี แล้วติดตะกร้าใน TikTok');
+  loading();
+  try {
+    const d = await api('catalog');
+    const q = d.quota, can = q.remaining > 0 && !d.blocked;
+    app.innerHTML = `
+      ${d.blocked ? `<div class="next" style="border-color:var(--warn)"><span class="lbl warn">ค้างส่งคลิป</span><h3>ส่งลิงก์คลิปรีวิวก่อน แล้วขอชิ้นใหม่ได้เลย</h3><p>${esc(d.overdue.join(', '))}</p><button class="btn" onclick="go('requests')">ไปส่งลิงก์คลิป</button></div>` :
+        `<div class="card quota"><span class="ic">${ICON.box}</span><div class="tx"><b>${q.remaining ? `ขอตัวอย่างได้อีก ${q.remaining} ชิ้น` : 'ใช้โควตาเดือนนี้ครบแล้ว'}</b><span>${q.remaining ? `เดือนนี้ (สิทธิ์ ${q.limit} ชิ้น/เดือน) · ฟรี ส่งถึงบ้าน` : 'เดือนหน้าขอใหม่ได้'}</span></div></div>`}
+      ${d.products.length ? `<div class="plist">${d.products.map((p, i) => `
+        <div class="pitem">
+          <div data-info="${i}">${PIMG(p)}</div>
+          <div class="pinfo">
+            <span class="nm" data-info="${i}">${esc(p.name)}</span>
+            <div class="meta">${p.commission_note ? `<span class="badge good">${esc(p.commission_note)}</span>` : ''}${p.stock > 0 ? '' : '<span class="badge">ตัวอย่างหมด</span>'}</div>
+            <div class="acts">
+              <button class="btn" data-req="${i}" ${can && p.stock > 0 ? '' : 'disabled'}>ขอตัวอย่าง</button>
+              ${p.tiktok_url ? `<button class="btn ghost" data-open="${i}">${ICON.cart}ติดตะกร้า</button>` : ''}
+            </div>
+          </div>
+        </div>`).join('')}</div>` : '<div class="card empty">ยังไม่มีสินค้าในตอนนี้</div>'}`;
+    const P = d.products;
+    app.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => openExternal(P[+b.dataset.open].tiktok_url)));
+    app.querySelectorAll('[data-info]').forEach(b => b.addEventListener('click', () => productSheet(P[+b.dataset.info], can)));
+    app.querySelectorAll('[data-req]').forEach(b => b.addEventListener('click', () => askSample(P[+b.dataset.req])));
+  } catch (e) { failBox(e); }
+}
+function productSheet(p, can) {
+  const el = openSheet(`<div class="sh-prod" style="margin-top:0">${PIMG(p)}<div class="tx"><b>${esc(p.name)}</b><span>${esc(p.commission_note || p.category || '')}</span></div></div>
+    ${p.brief ? `<b>ไอเดียคอนเทนต์</b><div class="brief">${esc(p.brief)}</div>` : ''}
+    <button class="btn" id="rq" ${can && p.stock > 0 ? '' : 'disabled'}>ขอตัวอย่างฟรี</button>
+    ${p.tiktok_url ? '<button class="btn ghost" id="sc">เปิดใน TikTok เพื่อติดตะกร้า</button>' : ''}`);
+  el.querySelector('#rq').addEventListener('click', () => askSample(p));
+  const sc = el.querySelector('#sc'); if (sc) sc.addEventListener('click', () => openExternal(p.tiktok_url));
+}
+function askSample(p) {
+  shipSheet({
+    title: 'ขอสินค้าตัวอย่าง',
+    top: `<div class="sh-prod">${PIMG(p)}<div class="tx"><b>${esc(p.name)}</b><span>ฟรี · ส่งถึงบ้าน</span></div></div>`,
+    cta: 'ยืนยันขอตัวอย่าง',
+    note: 'ได้รับของแล้ว โพสต์คลิปรีวิวและส่งลิงก์ในแอปเพื่อรับแต้ม',
+    run: payload => api('requestSample', Object.assign({ sku: p.sku }, payload)),
+    done: () => { toast('ส่งคำขอแล้ว จะแจ้งเลขพัสดุทาง LINE'); pageCatalog(); },
+  });
+}
+
+/* ---------- แคมเปญ ---------- */
+async function pageBoost() {
+  header(null);
+  loading();
+  try {
+    const d = await api('program');
+    const p = d.program;
+    if (!p) { header('แคมเปญ'); app.innerHTML = '<div class="card empty">ยังไม่มีแคมเปญที่เปิดอยู่ตอนนี้<br>เมื่อมีแคมเปญใหม่ จะแจ้งทาง LINE</div>'; return; }
+    const ST = { open: 'เปิดรับแล้ว', upcoming: 'ลงทะเบียนล่วงหน้า', ended: 'จบแคมเปญแล้ว' };
+    const mm = String(p.title).match(/\d+\.\d+/);
+    const tick = ['BOOST UP ' + (mm ? mm[0] : ''), p.extra_commission ? 'ค่าคอมพุ่ง ' + p.extra_commission : '', p.start ? p.start + ' – ' + p.end : '', 'ติดตะกร้า TikTok Shop', p.hashtag || ''].filter(Boolean).map(t => '★ ' + esc(t)).join('&nbsp;&nbsp;&nbsp;') + '&nbsp;&nbsp;&nbsp;';
+    const m = d.missions || { videos: 0, gmv: 0, gmv_done: false };
+    const member = d.member_status === 'approved', joined = !!d.joined;
+    let s1;
+    if (joined) s1 = `<div class="muted">เข้าร่วมแล้วเมื่อ ${esc(d.joined_at)}</div>`;
+    else if (p.state === 'ended') s1 = '<div class="muted">ปิดรับแล้ว</div>';
+    else if (member) s1 = `<div class="muted">กดครั้งเดียว รับค่าคอมเพิ่ม ${esc(p.extra_commission || '')}</div><button class="btn" id="join" style="margin-top:10px">เข้าร่วมเลย</button>`;
+    else if (d.member_status === 'pending') s1 = '<div class="muted">เข้าร่วมได้หลังทีมอนุมัติสมาชิก</div>';
+    else s1 = '<div class="muted">สมัครสมาชิกก่อน (ฟรี) แล้วกลับมากดเข้าร่วม</div><button class="btn" id="toreg" style="margin-top:10px">สมัครสมาชิก</button>';
+    const lock = !joined ? 'lock' : '';
+    const pct = (a, b) => b ? Math.min(100, a / b * 100) : 0;
+    const SUB = { pending: ['รอตรวจ', 'warn'], approved: ['ผ่าน', 'good'], rejected: ['ไม่ผ่าน', 'bad'] };
+    app.innerHTML = `
+      <div class="boost-hero">
+        <div class="bh-top"><img src="/logo-white.png" alt="Dentiste'" onerror="this.remove()"><span>Affiliate+</span></div>
+        <span class="bh-tag">BOOST UP</span>
+        <div class="big11">${esc(mm ? mm[0] : '')}</div>
+        <div class="ttl">${esc(p.title)}</div>
+        ${p.extra_commission ? `<div class="bh-comm"><div><span>ค่าคอม<br>เพิ่ม</span><b>${esc(p.extra_commission)}</b></div></div>` : ''}
+        <div class="chips2"><span class="pill">${esc(ST[p.state] || '')}</span>${p.start ? `<span class="pill o">${esc(p.start)} – ${esc(p.end)}</span>` : ''}</div>
+        ${ROCKET('bh-rocket')}<svg class="bh-spark" style="right:120px;top:150px" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z" fill="#D9FF4A" stroke="#0D2823" stroke-width="1.6" stroke-linejoin="round"/></svg><svg class="bh-spark" style="right:16px;top:140px;width:16px;height:16px" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z" fill="#fff" stroke="#0D2823" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <div class="ticker"><div>${(tick + tick)}</div></div>
+      </div>
+      <div class="sec" style="margin-top:4px"><b>ทำ 3 ขั้นนี้</b>${d.total_joined ? `<span class="muted">เข้าร่วมแล้ว ${fmt(d.total_joined)} คน</span>` : ''}</div>
+      <div class="card steps3">
+        <div class="st ${joined ? 'done' : ''}"><span class="n">${joined ? '✓' : 1}</span><div class="body"><b>เข้าร่วมแคมเปญ</b>${s1}</div></div>
+        ${p.video_target ? `<div class="st ${lock} ${m.videos >= p.video_target ? 'done' : ''}"><span class="n">${m.videos >= p.video_target ? '✓' : 2}</span><div class="body">
+          <b>โพสต์คลิปติดตะกร้า ${p.video_target} คลิป</b>
+          <div class="muted">${m.videos}/${p.video_target} คลิป${p.points_per_video ? ` · คลิปละ ${fmt(p.points_per_video)} แต้ม` : ''}</div>
+          ${p.hashtag ? `<span class="tagchip" id="tag">${esc(p.hashtag)} · แตะเพื่อคัดลอก</span>` : ''}
+          <div class="bar"><div style="width:${pct(m.videos, p.video_target)}%"></div></div>
+          ${joined && p.state === 'open' && m.videos < p.video_target ? '<button class="btn ghost" id="sendvid">ส่งลิงก์คลิป</button>' : ''}
+          ${joined && p.state === 'upcoming' ? '<div class="tiny">ส่งคลิปได้เมื่อแคมเปญเริ่ม</div>' : ''}
+          ${(d.submissions || []).length ? `<div style="margin-top:8px;display:grid;gap:4px">${d.submissions.map(x => `<div class="muted" style="display:flex;justify-content:space-between"><span>คลิป ${esc(x.date)}</span><span class="badge ${(SUB[x.status] || [])[1] || ''}">${(SUB[x.status] || [x.status])[0]}</span></div>`).join('')}</div>` : ''}
+        </div></div>` : ''}
+        ${p.gmv_target ? `<div class="st ${lock} ${m.gmv_done ? 'done' : ''}"><span class="n">${m.gmv_done ? '✓' : (p.video_target ? 3 : 2)}</span><div class="body">
+          <b>ทำยอดขาย ฿${fmt(p.gmv_target)}</b>
+          <div class="muted">ตอนนี้ ฿${fmt(m.gmv)}${p.gmv_reward_points ? ` · ถึงเป้ารับ ${fmt(p.gmv_reward_points)} แต้ม` : ''}${d.my_rank ? ` · อันดับ #${d.my_rank}` : ''}</div>
+          <div class="bar"><div style="width:${pct(m.gmv, p.gmv_target)}%"></div></div>
+        </div></div>` : ''}
+      </div>
+      ${d.leaderboard && d.leaderboard.length ? `<div class="sec"><b>อันดับยอดขายในแคมเปญ</b></div><div class="card lb">${d.leaderboard.map(x => `<div class="row ${x.me ? 'me' : ''}"><span class="rk ${x.rank <= 3 ? 'g' + x.rank : ''}">${x.rank}</span><div class="who">${esc(x.me ? 'คุณ' : x.name)}</div><span class="val">฿${fmt(x.value)}</span></div>`).join('')}</div>` : ''}
+      <details class="card more-info"><summary>${esc(p.headline || 'รายละเอียดแคมเปญ')}</summary><div class="details">${esc(p.details || '')}</div></details>`;
+    const j = $('#join'); if (j) j.addEventListener('click', () => act(j, async () => { await api('joinProgram', { program_id: p.program_id }); toast('เข้าร่วมแล้ว ไปโพสต์คลิปกันเลย'); pageBoost(); }));
+    const g = $('#toreg'); if (g) g.addEventListener('click', () => go('register'));
+    const t = $('#tag'); if (t) t.addEventListener('click', async () => { try { await navigator.clipboard.writeText(p.hashtag); toast('คัดลอกแฮชแท็กแล้ว'); } catch (e) { toast(p.hashtag); } });
+    const sv = $('#sendvid'); if (sv) sv.addEventListener('click', () => clipSheet('ส่งคลิปภารกิจ', 'ต้องมีแฮชแท็ก ' + p.hashtag + ' และติดตะกร้าสินค้า Dentiste\'', async url => {
+      await api('submitMission', { program_id: p.program_id, url }); toast('ส่งแล้ว รอทีมตรวจเพื่อรับแต้ม'); pageBoost();
+    }));
+  } catch (e) { failBox(e); }
+}
+
+/* ---------- ฉัน ---------- */
+async function pageAccount() {
+  header(null);
+  const a = aff();
+  let reqs = [];
+  try { reqs = (await api('requests')).requests || []; } catch (e) { /* แสดงหน้าได้แม้โหลดพัสดุไม่สำเร็จ */ }
+  setAccDot(reqs); setPts(a.points);
+  const todo = reqs.filter(r => r.can_submit).length;
+  const moving = reqs.filter(r => ['requested', 'approved', 'shipped'].indexOf(r.status) !== -1).length;
+  const items = [
+    { p: 'requests', icon: ICON.truck, t: 'พัสดุ & คลิปรีวิว', s: todo ? `รอส่งลิงก์คลิป ${todo} ชิ้น` : (moving ? `กำลังดำเนินการ ${moving} ชิ้น` : 'ติดตามสินค้าตัวอย่าง'), warn: todo > 0, badge: todo ? `<span class="cnt">${todo}</span>` : '' },
+    { p: 'history', icon: ICON.clock, t: 'ประวัติแต้ม & Bonus', s: 'รายการย้อนหลัง' },
+    { p: 'profile', icon: ICON.pin, t: 'ข้อมูลจัดส่ง', s: a.profile_complete ? 'ครบแล้ว' : 'ยังไม่กรอก — ต้องใช้ตอนขอสินค้า', warn: !a.profile_complete },
+    { p: 'invite', icon: ICON.invite, t: 'ชวนเพื่อน', s: 'รับแต้มเมื่อเพื่อนได้รับอนุมัติ' },
+  ];
+  app.innerHTML = `
+    <div class="card me-head"><div class="avatar">${esc(String(a.full_name || '?').trim().charAt(0))}</div>
+      <div style="min-width:0;flex:1"><div style="font-weight:800;font-size:17px">${esc(a.full_name)}</div>
+      <div class="muted">TikTok @${esc(a.tiktok_username || '-')}</div><div class="tiny">สมาชิกตั้งแต่ ${esc(a.registered_at)} · ${esc(a.affiliate_id)}</div></div></div>
+    <div class="ptscard"><b>${fmt(a.points)}</b><span class="t">แต้มสะสม</span><button class="btn" id="rw">แลกรางวัล</button></div>
+    <div class="card menu">${items.map((r, i) => ROW(r, `data-acc="${i}"`)).join('')}</div>
+    <div class="card menu">${ROW({ icon: ICON.chat, t: 'คุยกับแอดมิน', s: 'กลับไปพิมพ์ในแชท LINE' }, 'id="contact"')}</div>`;
+  $('#rw').addEventListener('click', () => go('rewards'));
+  app.querySelectorAll('[data-acc]').forEach(el => el.addEventListener('click', () => go(items[+el.dataset.acc].p)));
+  $('#contact').addEventListener('click', () => { if (!MOCK && liff.isInClient && liff.isInClient()) liff.closeWindow(); else toast('พิมพ์ข้อความหาแอดมินได้ในแชท LINE'); });
+}
+
+/* ---------- พัสดุ & คลิปรีวิว ---------- */
+const REQ_BADGE = { requested: 'warn', approved: 'info', shipped: 'info', delivered: 'info', content_submitted: 'good', done: 'good', rejected: 'bad' };
+async function pageRequests() {
+  header('พัสดุ & คลิปรีวิว', 'ได้รับของแล้ว ส่งลิงก์คลิปเพื่อรับแต้ม', 'account');
+  loading();
+  try {
+    const d = await api('requests');
+    setAccDot(d.requests);
+    if (!d.requests.length) { app.innerHTML = `<div class="card empty">ยังไม่มีคำขอ<button class="btn" onclick="go('catalog')">ขอสินค้าตัวอย่าง</button></div>`; return; }
+    app.innerHTML = `<div class="card list">${d.requests.map((r, i) => `
+      <div class="item">
+        <div class="top"><span class="title">${esc(r.product_name)}</span><span class="badge ${REQ_BADGE[r.status] || ''}">${esc(r.status_th)}</span></div>
+        <div class="muted">ขอเมื่อ ${esc(r.requested_at)}${r.tracking_no ? ` · ${esc(r.carrier)} <b>${esc(r.tracking_no)}</b>` : ''}</div>
+        ${r.content_due && !r.content_url ? `<div class="muted" style="color:${r.overdue ? 'var(--bad)' : ''}">ส่งคลิปภายใน ${esc(r.content_due)}${r.overdue ? ' (เลยกำหนด)' : ''}</div>` : ''}
+        ${r.content_url ? `<div class="muted">คลิป: <a href="${esc(r.content_url)}" target="_blank" rel="noopener">เปิดดู</a></div>` : ''}
+        ${r.can_submit ? `<button class="btn" data-i="${i}">ส่งลิงก์คลิปรีวิว</button>` : ''}
+      </div>`).join('')}</div>`;
+    app.querySelectorAll('[data-i]').forEach(b => b.addEventListener('click', () => {
+      const r = d.requests[+b.dataset.i];
+      clipSheet('ส่งลิงก์คลิปรีวิว', r.product_name, async url => { await api('submitContent', { request_id: r.request_id, url }); toast('ส่งแล้ว รอทีมตรวจเพื่อรับแต้ม'); pageRequests(); });
+    }));
+  } catch (e) { failBox(e); }
+}
+
+/* ---------- ข้อมูลจัดส่ง ---------- */
+function pageProfile() {
+  header('ข้อมูลจัดส่ง', 'ใช้ส่งสินค้าตัวอย่างและของรางวัล', 'account');
+  const a = aff();
+  app.innerHTML = `<div class="card">${profileFields(a.profile)}<button class="btn" id="sv" style="margin-top:18px">บันทึก</button></div>`;
+  $('#sv').addEventListener('click', ev => {
+    let prof; try { prof = readProfile(app); } catch (e) { return toast(e.message, true); }
+    act(ev.currentTarget, async () => {
+      const r = await api('updateProfile', { profile: prof });
+      state.me.affiliate = r.affiliate; toast('บันทึกแล้ว'); go('account');
+    });
+  });
+}
+
+/* ---------- ประวัติแต้ม & Bonus ---------- */
+async function pageHistory() {
+  header('ประวัติแต้ม & Bonus', null, 'account');
+  loading();
+  try {
+    const d = await api('dashboard');
+    setPts(d.affiliate.points);
+    const unit = d.bonus.unit;
+    const TYPE = { register: 'สมัครสำเร็จ', content: 'ส่งคลิปรีวิว', checkin: 'เช็กอิน', referral: 'ชวนเพื่อน', redeem: 'แลกรางวัล', refund: 'คืนแต้ม', mission_video: 'คลิปภารกิจแคมเปญ', mission_gmv: 'ทำยอดถึงเป้าแคมเปญ', manual: 'ปรับแต้ม' };
+    app.innerHTML = `
+      <div class="ptscard"><b>${fmt(d.affiliate.points)}</b><span class="t">แต้มคงเหลือ</span><button class="btn" onclick="go('rewards')">แลกรางวัล</button></div>
+      <div class="sec"><b>แต้ม</b></div>
+      <div class="card list">${d.activities.length ? d.activities.map(a => `<div class="item"><div class="top"><span>${esc(TYPE[a.type] || a.type)}${a.verified ? '' : ' <span class="badge warn">รอตรวจ</span>'}</span><b class="num" style="color:${a.points < 0 ? 'var(--bad)' : 'var(--green-dark)'}">${a.points > 0 ? '+' : ''}${fmt(a.points)}</b></div><div class="tiny">${esc(a.date)}</div></div>`).join('') : '<div class="empty">ยังไม่มีรายการ</div>'}</div>
+      <div class="sec"><b>Bonus รายเดือน</b></div>
+      <div class="card list">${d.bonuses.length ? d.bonuses.map(x => `<div class="item"><div class="top"><span>${esc(x.period)} · ขั้น ${esc(x.step)}</span><span class="badge ${x.status === 'paid' ? 'good' : 'warn'}">${esc(x.status_th)}</span></div><div class="muted">ยอดขาย ฿${fmt(x.total_sales)} · Bonus ${fmt(x.bonus)} ${esc(unit)}</div></div>`).join('') : '<div class="empty">ยังไม่มี Bonus</div>'}</div>`;
+  } catch (e) { failBox(e); }
+}
+
+/* ---------- แลกรางวัล ---------- */
+async function pageRewards() {
+  header('แลกรางวัล', null, 'account');
+  loading();
+  try {
+    const d = await api('rewards');
+    setPts(d.points);
+    app.innerHTML = `
+      <div class="ptscard"><b>${fmt(d.points)}</b><span class="t">แต้มที่ใช้ได้</span></div>
+      ${d.rewards.length ? `<div class="grid">${d.rewards.map((r, i) => `
+        <div class="rw"><div class="img">${r.image_url ? `<img src="${esc(r.image_url)}" alt="" loading="lazy">` : ICON.gift}</div>
+          <div class="b"><b>${esc(r.name)}</b><span class="muted">${fmt(r.points_cost)} แต้ม · เหลือ ${r.stock}</span>
+          <button class="btn ${d.points >= r.points_cost ? '' : 'ghost'}" data-rw="${i}" ${d.points >= r.points_cost && r.stock > 0 ? '' : 'disabled'}>${d.points >= r.points_cost ? 'แลก' : `ขาดอีก ${fmt(r.points_cost - d.points)}`}</button></div></div>`).join('')}</div>` : '<div class="card empty">ยังไม่มีรางวัล</div>'}
+      ${d.redemptions.length ? `<div class="sec"><b>ที่แลกแล้ว</b></div><div class="card list">${d.redemptions.map(x => `<div class="item"><div class="top"><span>${esc(x.reward_name)}</span><span class="badge ${x.status === 'shipped' ? 'good' : x.status === 'rejected' ? 'bad' : 'warn'}">${esc(x.status_th)}</span></div><div class="tiny">${esc(x.date)} · ${fmt(x.points_cost)} แต้ม</div></div>`).join('')}</div>` : ''}`;
+    app.querySelectorAll('[data-rw]').forEach(b => b.addEventListener('click', () => {
+      const r = d.rewards[+b.dataset.rw];
+      shipSheet({
+        title: 'แลก ' + r.name, top: `<p class="muted" style="margin:0">ใช้ ${fmt(r.points_cost)} แต้ม · เหลือ ${fmt(d.points - r.points_cost)} แต้ม</p>`,
+        cta: `ยืนยันใช้ ${fmt(r.points_cost)} แต้ม`,
+        run: payload => api('redeem', Object.assign({ reward_id: r.reward_id }, payload)),
+        done: () => { toast('แลกสำเร็จ ทีมจะจัดส่งให้'); pageRewards(); },
+      });
+    }));
+  } catch (e) { failBox(e); }
+}
+
+/* ---------- ชวนเพื่อน ---------- */
+function pageInvite() {
+  const a = aff();
+  header('ชวนเพื่อน', 'เพื่อนสมัครและได้รับอนุมัติ คุณรับแต้มเพิ่ม', 'account');
+  const link = `https://liff.line.me/${LIFF_ID}?page=register&ref=${encodeURIComponent(a.my_ref_code || '')}`;
+  app.innerHTML = `
+    <div class="card">
+      <div class="code">${esc(a.my_ref_code || '-')}</div>
+      <button class="btn" id="share" style="margin-top:14px">ส่งคำเชิญให้เพื่อนใน LINE</button>
+      <button class="btn ghost" id="copy" style="margin-top:8px">คัดลอกลิงก์</button>
+      <p class="hint" style="text-align:center">เพื่อนกดลิงก์แล้วสมัครได้ทันที รหัสของคุณติดไปให้อัตโนมัติ</p>
+    </div>`;
+  $('#copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(link); toast('คัดลอกลิงก์แล้ว'); } catch (e) { prompt('คัดลอกลิงก์นี้', link); }
+  });
+  $('#share').addEventListener('click', async () => {
+    const msg = { type: 'text', text: `มาเป็น Affiliate กับ Dentiste' ด้วยกัน! รับสินค้าตัวอย่างฟรี สะสมแต้ม และรับ Bonus ตามยอดขาย\nสมัครที่นี่ 👉 ${link}` };
+    if (!MOCK && liff.isApiAvailable && liff.isApiAvailable('shareTargetPicker')) {
+      try { const r = await liff.shareTargetPicker([msg]); if (r) toast('ส่งคำเชิญแล้ว'); } catch (e) { toast(e.message, true); }
+    } else { toast('ฟีเจอร์นี้ใช้ได้ในแอป LINE — ใช้ปุ่มคัดลอกลิงก์แทน'); }
+  });
+}
+
+/* ---------- อันดับ ---------- */
+async function pageLeaderboard(by) {
+  by = by === 'points' ? 'points' : 'sales';
+  header('อันดับ', by === 'sales' ? 'จากยอดขายเดือนนี้' : 'จากแต้มสะสม', 'me');
+  loading();
+  try {
+    const d = await api('leaderboard', { by });
+    const val = v => by === 'sales' ? '฿' + fmt(v) : fmt(v) + ' แต้ม';
+    const has = d.top.length && d.top.some(x => x.value > 0);
+    app.innerHTML = `
+      <div class="seg"><button data-by="sales" class="${by === 'sales' ? 'on' : ''}">ยอดขายเดือนนี้</button><button data-by="points" class="${by === 'points' ? 'on' : ''}">แต้มสะสม</button></div>
+      ${d.me ? `<div class="myrank"><div class="no">#${d.me.rank}</div><div class="t">อันดับของคุณ<br>จาก ${fmt(d.total)} คน</div><div class="v">${val(d.me.value)}</div></div>` : ''}
+      ${has ? `<div class="card lb">${d.top.map(x => `<div class="row ${x.me ? 'me' : ''}"><span class="rk ${x.rank <= 3 ? 'g' + x.rank : ''}">${x.rank}</span><div class="who">${esc(x.me ? 'คุณ' : x.name)}</div><span class="val">${val(x.value)}</span></div>`).join('')}</div>
+        <p class="tiny" style="text-align:center">${by === 'sales' ? 'ยอดขายเดือน ' + esc(d.period) + ' · อัปเดตเมื่อทีมนำเข้ารายงาน' : 'แต้มสะสมคงเหลือของสมาชิก'}</p>`
+      : `<div class="card empty">${by === 'sales' ? 'ยังไม่มียอดขายเดือนนี้ — มาเป็นคนแรกบนกระดานกัน!' : 'ยังไม่มีข้อมูลแต้ม'}</div>`}`;
+    app.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => { if (b.dataset.by !== by) pageLeaderboard(b.dataset.by); }));
+  } catch (e) { failBox(e); }
+}
+
+/* ---------- Mock API (โหมด Prototype) ---------- */
+const MOCKDB = {
+  aff: null, points: 0,
+  products: [
+    { sku: 'S1', name: 'ยาสีฟัน Dentiste\' Plus White 100g', category: 'Oral care', image_url: '', stock: 12, commission_note: 'คอมฯ 15%', tiktok_url: 'https://www.tiktok.com/', brief: 'จุดขาย: ลดกลิ่นปากตอนเช้า ฟันขาวสะอาด\nฮุก 3 วิแรก: ทดสอบลมหายใจตอนตื่นนอน' },
+    { sku: 'S2', name: 'สเปรย์ระงับกลิ่นปาก', category: 'Oral care', image_url: '', stock: 8, commission_note: 'คอมฯ 12%', tiktok_url: 'https://www.tiktok.com/', brief: 'ใช้ก่อนประชุม/เดท พกง่าย' },
+    { sku: 'S3', name: 'แปรงสีฟันขนนุ่มพิเศษ', category: 'Oral care', image_url: '', stock: 0, commission_note: 'คอมฯ 10%', tiktok_url: 'https://www.tiktok.com/', brief: '' },
+    { sku: 'S4', name: 'น้ำยาบ้วนปาก Night', category: 'Oral care', image_url: '', stock: 20, commission_note: 'คอมฯ 12%', tiktok_url: '', brief: '' },
+  ],
+  requests: [], acts: [], redemptions: [], subs: [],
+  rewards: [{ reward_id: 'R1', name: 'บัตรกำนัล 100 บาท', points_cost: 500, stock: 20 }, { reward_id: 'R2', name: 'เซ็ตสินค้าพรีเมียม', points_cost: 1500, stock: 5 }],
+  steps: [{ step: 1, min_sales: 10000, bonus: 300 }, { step: 2, min_sales: 30000, bonus: 1200 }, { step: 3, min_sales: 80000, bonus: 4000 }],
+};
+function mockApi(action, d) {
+  const db = MOCKDB, wait = v => new Promise(r => setTimeout(() => r(v), 250));
+  const fail = m => new Promise((_, j) => setTimeout(() => j(new Error(m)), 250));
+  const addPts = (type, p) => { db.points += p; db.acts.unshift({ type, points: p, verified: true, date: 'วันนี้' }); };
+  const pub = () => db.aff && JSON.parse(JSON.stringify(Object.assign({}, db.aff, { points: db.points })));
+  const setProf = p => { db.aff.profile = Object.assign({}, p, { phone: String(p.phone).replace(/\D/g, '') }); db.aff.full_name = p.full_name; db.aff.profile_complete = true; };
+  switch (action) {
+    case 'me': return wait({ name: 'ผู้ทดสอบ', lead_ref: d.ref || '', affiliate: pub(), brand: 'Dentiste Affiliate+' });
+    case 'register': {
+      const f = d.form;
+      if (!String(f.tiktok_username || '').trim() || !String(f.followers || '').trim()) return fail('กรุณากรอก TikTok และจำนวนผู้ติดตาม');
+      if (!f.consent) return fail('กรุณายินยอมให้เก็บข้อมูลส่วนบุคคล');
+      db.aff = { affiliate_id: 'AF-DEMO', full_name: 'ผู้ทดสอบ LINE', platform: 'TikTok', tiktok_username: f.tiktok_username.toLowerCase(), status: Number(String(f.followers).replace(/\D/g, '')) >= 1000 ? 'approved' : 'pending', my_ref_code: 'K7Q2MX', registered_at: 'วันนี้',
+        followers: Number(String(f.followers).replace(/\D/g, '')), profile: { full_name: 'ผู้ทดสอบ LINE', phone: '', address: '', province: '', postcode: '' }, profile_complete: false };
+      addPts('register', 50);
+      return wait({ affiliate: pub() });
+    }
+    case 'catalog': {
+      const used = db.requests.filter(r => r.status !== 'rejected').length;
+      return wait({ products: db.products, quota: { limit: 2, used, remaining: Math.max(0, 2 - used) }, blocked: false, overdue: [] });
+    }
+    case 'updateProfile': setProf(d.profile); return wait({ affiliate: pub() });
+    case 'requestSample': {
+      if (d.profile) setProf(d.profile); else if (!db.aff.profile_complete) return fail('PROFILE_REQUIRED: กรุณากรอกที่อยู่');
+      if (db.requests.length >= 2) return fail('ใช้โควตาเดือนนี้ครบแล้ว (2 ชิ้น)');
+      const p = db.products.find(x => x.sku === d.sku);
+      if (db.requests.some(r => r.sku === d.sku)) return fail('คุณขอสินค้านี้ไว้แล้ว รอดำเนินการอยู่');
+      const shipped = db.requests.length === 0;
+      db.requests.unshift({ request_id: 'RQ' + Date.now(), sku: p.sku, product_name: p.name, status: shipped ? 'shipped' : 'requested',
+        status_th: shipped ? 'จัดส่งแล้ว' : 'รออนุมัติ', carrier: shipped ? 'Kerry' : '', tracking_no: shipped ? 'KEX1234567890' : '',
+        requested_at: 'วันนี้', content_due: shipped ? 'อีก 7 วัน' : '', content_url: '', can_submit: shipped, overdue: false });
+      return wait({});
+    }
+    case 'requests': return wait({ requests: db.requests });
+    case 'submitContent': {
+      const r = db.requests.find(x => x.request_id === d.request_id);
+      Object.assign(r, { content_url: d.url, status: 'content_submitted', status_th: 'ส่งคอนเทนต์แล้ว', can_submit: false });
+      db.acts.unshift({ type: 'content', points: 100, verified: false, date: 'วันนี้' });
+      return wait({});
+    }
+    case 'dashboard': {
+      const sales = 18400, steps = db.steps;
+      const current = steps.filter(s => sales >= s.min_sales).pop() || null, next = steps.find(s => sales < s.min_sales) || null;
+      return wait({ affiliate: pub(), period: '2026-10', sales_this_month: sales, sales_last_month: 9200,
+        bonus: { steps, current, next, remaining: next ? next.min_sales - sales : 0, unit: 'บาท' },
+        bonuses: [{ period: '2026-09', total_sales: 32500, step: 2, bonus: 1200, status: 'paid', status_th: 'จ่ายแล้ว' }],
+        activities: db.acts, rank: { rank: 4, total: 128 } });
+    }
+    case 'leaderboard': {
+      const pts = d.by === 'points';
+      const names = [['ณัฐชา ส.', 'TikTok', 86500, 4200], ['ปิยะพงษ์ ก.', 'TikTok', 61200, 3650], ['มินตรา ว.', 'TikTok', 40800, 2980], ['คุณ', 'TikTok', 18400, db.points], ['ธนกร จ.', 'TikTok', 15300, 1720], ['อรอุมา ศ.', 'TikTok', 12950, 1400], ['สุภาวดี ม.', 'TikTok', 9800, 990], ['กิตติ ร.', 'TikTok', 7200, 860]];
+      const rows = names.map(n => ({ name: n[0], platform: n[1], value: pts ? n[3] : n[2], me: n[0] === 'คุณ' })).sort((a, b) => b.value - a.value).map((r, i) => Object.assign(r, { rank: i + 1 }));
+      return wait({ by: pts ? 'points' : 'sales', period: '2026-10', total: 128, top: rows, me: rows.find(r => r.me) });
+    }
+    case 'program': return wait({ program: { program_id: 'BOOST1111', title: 'Boost up 11.11', headline: 'เข้าร่วมโปรแกรม รับค่าคอมเพิ่มช่วงแคมเปญ 11.11', extra_commission: '+5%', start: '1 พ.ย. 2026', end: '15 พ.ย. 2026', state: 'open',
+      details: '• รับค่าคอมมิชชั่นเพิ่มจากปกติ สำหรับยอดขายสินค้า Dentiste\' บน TikTok Shop ช่วงแคมเปญ\n• ภารกิจ: โพสต์คลิปติดตะกร้าพร้อมแฮชแท็ก และทำยอดขายให้ถึงเป้า\n• ค่าคอมส่วนเพิ่มจ่ายพร้อมรอบ Bonus เดือนถัดไป',
+      hashtag: '#DentisteBoost1111', video_target: 3, points_per_video: 50, gmv_target: 10000, gmv_reward_points: 500, reward_note: '+ สิทธิ์ค่าคอมเพิ่มตามเงื่อนไขแคมเปญ' },
+      member_status: db.aff ? db.aff.status : 'none', joined: !!db.boost, joined_at: db.boost ? 'วันนี้' : '', total_joined: 37 + (db.boost ? 1 : 0),
+      missions: { videos: db.subs.length, videos_approved: 0, gmv: 6400, gmv_done: false }, submissions: db.subs.slice().reverse(), my_rank: db.boost ? 5 : null,
+      leaderboard: db.boost ? [{ rank: 1, name: 'ณัฐชา ส.', value: 24800 }, { rank: 2, name: 'มินตรา ว.', value: 15100 }, { rank: 3, name: 'ปิยะพงษ์ ก.', value: 9900 }, { rank: 4, name: 'ธนกร จ.', value: 7200 }, { rank: 5, name: 'คุณ', value: 6400, me: true }] : [] });
+    case 'submitMission': if (db.subs.some(x => x.url === d.url)) return fail('ลิงก์นี้ส่งไปแล้ว'); db.subs.push({ url: d.url, status: 'pending', date: 'วันนี้' }); return wait({ ok: true });
+    case 'joinProgram': if (db.boost) return fail('คุณเข้าร่วมโปรแกรมนี้แล้ว'); db.boost = true; return wait({ joined: true });
+    case 'rewards': return wait({ points: db.points, rewards: db.rewards, redemptions: db.redemptions });
+    case 'redeem': {
+      if (d.profile) setProf(d.profile); else if (!db.aff.profile_complete) return fail('PROFILE_REQUIRED: กรุณากรอกที่อยู่');
+      const r = db.rewards.find(x => x.reward_id === d.reward_id);
+      if (db.points < r.points_cost) return fail('แต้มไม่พอ');
+      addPts('redeem', -r.points_cost); r.stock--;
+      db.redemptions.unshift({ reward_name: r.name, points_cost: r.points_cost, status: 'pending', status_th: 'รอจัดส่ง', date: 'วันนี้' });
+      return wait({});
+    }
+  }
+  return fail('unknown action');
+}
+
+boot();
+</script>
+</body>
+</html>
