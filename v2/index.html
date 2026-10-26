@@ -405,6 +405,34 @@
   body.home .topbar:not(.sc) .tb-sep { background: rgba(255, 255, 255, .6); }
   .tb-g + .tb-txt, .tb-w ~ .tb-txt { display: none; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .bh-rocket, .ticker > div, .bn-rocket, .skel { animation: none !important; } }
+
+  /* ===== กราฟิกสินค้า (รูปจาก dentiste-oralcare.com) ===== */
+  .pstage { position: relative; height: 150px; margin: 12px -6px -6px; pointer-events: none; }
+  .pstage::before { content: ''; position: absolute; left: 14%; right: 14%; bottom: 2px; height: 24px; border-radius: 50%; background: rgba(0, 30, 25, .28); filter: blur(9px); }
+  .pstage img { position: absolute; bottom: 6px; width: auto; transform: translateX(-50%); transform-origin: 50% 100%; filter: drop-shadow(0 8px 10px rgba(0, 30, 25, .30)); animation: pfl 5s ease-in-out infinite; }
+  @keyframes pfl { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+  .pstage .spk { position: absolute; width: 18px; height: 18px; animation: twk 2.4s ease-in-out infinite; }
+  @keyframes twk { 0%, 100% { opacity: .35; scale: .7; } 50% { opacity: 1; scale: 1.1; } }
+  .pstage.mini { position: absolute; right: 2px; bottom: 30px; width: 136px; height: 116px; margin: 0; z-index: 1; }
+  .hello .pstage.mini { bottom: 50px; height: 100px; }
+  .pstage.mini::before { left: 8%; right: 8%; height: 16px; }
+  .hello .pts { max-width: calc(100% - 128px); flex-wrap: wrap; row-gap: 6px; }
+  .hello .hi { max-width: calc(100% - 128px); }
+  .boost-hero .pstage { height: 128px; margin: -4px -4px 4px; }
+  .boost-hero .pstage::before { background: rgba(13, 40, 35, .45); }
+  .quota.qh { position: relative; overflow: hidden; background: var(--green); color: #fff; border: 0; min-height: 104px; padding-right: 118px; }
+  .quota.qh .tx span { color: rgba(255, 255, 255, .85); }
+  .quota.qh .ic { background: rgba(255, 255, 255, .16); color: #fff; }
+  .quota.qh .ic svg { stroke: #fff; }
+  .quota.qh .pstage.mini { bottom: -4px; right: 4px; height: 104px; width: 132px; }
+  .quota.qh::after { content: ''; position: absolute; width: 170px; height: 170px; border-radius: 50%; background: var(--green-dark); right: -40px; top: -60px; }
+  .quota.qh > * { position: relative; z-index: 1; }
+  .quota.qh > .pstage.mini { position: absolute; z-index: 1; }
+  .pimg { background: #fff; border: 1px solid var(--line); }
+  .pimg img { object-fit: contain; }
+  .sh-img { margin: 0 0 12px; border-radius: 20px; background: #fff; border: 1px solid var(--line); height: 210px; display: grid; place-items: center; overflow: hidden; }
+  .sh-img img { height: 100%; width: auto; max-width: 100%; object-fit: contain; }
+  @media (prefers-reduced-motion: reduce) { .pstage img, .pstage .spk { animation: none !important; } }
 </style>
 </head>
 <body>
@@ -490,6 +518,10 @@ const ICON = {
   hourglass: '<svg viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9"/></svg>',
 };
 const ROW = (r, attr) => `<div class="row" ${attr || ''}><span class="ic ${r.warn ? 'warn' : ''}">${r.icon}</span><span class="tx"><b>${esc(r.t)}</b>${r.s ? `<span>${esc(r.s)}</span>` : ''}</span>${r.badge || '<span class="chev">›</span>'}</div>`;
+const CUT = k => `/img/c/${k}.webp`;
+const SPK = (x, y, c, d) => `<svg class="spk" style="left:${x}%;top:${y}px;animation-delay:${d || 0}s" viewBox="0 0 24 24"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z" fill="${c || '#D9FF4A'}"/></svg>`;
+/** แถวสินค้าจริงลอยตัว: items = [key, left%, height, rotate, delay] */
+const STAGE = (items, cls, extra) => `<div class="pstage ${cls || ''}" aria-hidden="true">${extra || ''}${items.map(([k, l, h, r, dl]) => `<img src="${CUT(k)}" alt="" decoding="async" style="left:${l}%;height:${h}px;rotate:${r}deg;animation-delay:${dl || 0}s">`).join('')}</div>`;
 const PIMG = p => `<div class="pimg">${p.image_url ? `<img src="${esc(p.image_url)}" alt="" loading="lazy">` : ICON.box}</div>`;
 
 const ROCKET = cls => `<svg class="${cls}" viewBox="0 0 120 165" aria-hidden="true"><g stroke="#0D2823" stroke-width="3.5" stroke-linejoin="round"><path d="M44 112C40 132 52 147 60 160C68 147 80 132 76 112Z" fill="#FF6A3D"/><path d="M51 112C49 127 55 138 60 147C65 138 71 127 69 112Z" fill="#FFC93C"/><path d="M43 74L22 106L24 120L45 106Z" fill="#FF6A3D"/><path d="M77 74L98 106L96 120L75 106Z" fill="#FF6A3D"/><path d="M60 6C89 27 87 90 79 112L41 112C33 90 31 27 60 6Z" fill="#fff"/><path d="M60 6C70 13 77 24 81 36L39 36C43 24 50 13 60 6Z" fill="#D9FF4A"/><circle cx="60" cy="62" r="13" fill="#007864" stroke-width="4.5"/><rect x="56" y="96" width="8" height="28" rx="4" fill="#FF6A3D"/></g><circle cx="55" cy="57" r="3.5" fill="#fff"/></svg>`;
@@ -768,6 +800,7 @@ function pageRegister() {
         <div class="perk">${ICON.coin}ค่าคอม<br>+ Bonus</div>
         <div class="perk">${ICON.gift}สะสมแต้ม<br>แลกรางวัล</div>
       </div>
+      ${STAGE([['spray', 9, 96, -14, .4], ['rinse', 91, 104, 13, 1.5], ['sens', 28, 124, -7, 1.1], ['purple', 72, 124, 7, .7], ['care', 50, 146, 0, 0]], '', SPK(20, 10, '#D9FF4A', .3) + SPK(82, 26, '#fff', 1) + SPK(62, 2, '#D9FF4A', 1.6))}
     </div>
     <form class="card" id="f" novalidate>
       <label class="f" style="margin-top:0">TikTok username</label>
@@ -847,6 +880,7 @@ async function pageMe() {
       <div class="hello">
         <div class="hi">สวัสดี คุณ${esc(first(d.affiliate.full_name))}</div>
         <div class="pts"><b>${fmt(d.affiliate.points)}</b><span>แต้ม</span><button id="toRw">แลกรางวัล</button></div>
+        ${STAGE([['mint', 22, 72, -12, .6], ['purple', 80, 72, 12, 1.2], ['care', 51, 92, 0, 0]], 'mini', SPK(4, 6, '#D9FF4A', .2) + SPK(92, 0, '#fff', 1.1))}
       </div>
       <div class="kpis">
         <div class="kpi" id="kSales"><div class="k">ยอดขายเดือนนี้</div><div class="v">฿${fmt(d.sales_this_month)}</div><div class="s">เดือนก่อน ฿${fmt(d.sales_last_month)}</div></div>
@@ -884,7 +918,7 @@ async function pageCatalog() {
     const q = d.quota, can = q.remaining > 0 && !d.blocked;
     app.innerHTML = `
       ${d.blocked ? `<div class="next" style="border-color:var(--warn)"><span class="lbl warn">ค้างส่งคลิป</span><h3>ส่งลิงก์คลิปรีวิวก่อน แล้วขอชิ้นใหม่ได้เลย</h3><p>${esc(d.overdue.join(', '))}</p><button class="btn" onclick="go('requests')">ไปส่งลิงก์คลิป</button></div>` :
-        `<div class="card quota"><span class="ic">${ICON.box}</span><div class="tx"><b>${q.remaining ? `ขอตัวอย่างได้อีก ${q.remaining} ชิ้น` : 'ใช้โควตาเดือนนี้ครบแล้ว'}</b><span>${q.remaining ? `เดือนนี้ (สิทธิ์ ${q.limit} ชิ้น/เดือน) · ฟรี ส่งถึงบ้าน` : 'เดือนหน้าขอใหม่ได้'}</span></div></div>`}
+        `<div class="card quota qh"><span class="ic">${ICON.box}</span><div class="tx"><b>${q.remaining ? `ขอตัวอย่างได้อีก ${q.remaining} ชิ้น` : 'ใช้โควตาเดือนนี้ครบแล้ว'}</b><span>${q.remaining ? `เดือนนี้ (สิทธิ์ ${q.limit} ชิ้น/เดือน) · ฟรี ส่งถึงบ้าน` : 'เดือนหน้าขอใหม่ได้'}</span></div>${STAGE([['sens', 24, 74, -10, .5], ['mint', 80, 74, 10, 1.1], ['care', 52, 92, 0, 0]], 'mini')}</div>`}
       ${d.products.length ? `<div class="plist">${d.products.map((p, i) => `
         <div class="pitem">
           <div data-info="${i}">${PIMG(p)}</div>
@@ -904,7 +938,7 @@ async function pageCatalog() {
   } catch (e) { failBox(e); }
 }
 function productSheet(p, can) {
-  const el = openSheet(`<div class="sh-prod" style="margin-top:0">${PIMG(p)}<div class="tx"><b>${esc(p.name)}</b><span>${esc(p.commission_note || p.category || '')}</span></div></div>
+  const el = openSheet(`${p.image_url ? `<div class="sh-img"><img src="${esc(p.image_url)}" alt="${esc(p.name)}"></div>` : ''}<div class="sh-prod" style="margin-top:0">${PIMG(p)}<div class="tx"><b>${esc(p.name)}</b><span>${esc(p.commission_note || p.category || '')}</span></div></div>
     ${p.brief ? `<b>ไอเดียคอนเทนต์</b><div class="brief">${esc(p.brief)}</div>` : ''}
     <button class="btn" id="rq" ${can && p.stock > 0 ? '' : 'disabled'}>ขอตัวอย่างฟรี</button>
     ${p.tiktok_url ? '<button class="btn ghost" id="sc">เปิดใน TikTok เพื่อติดตะกร้า</button>' : ''}`);
@@ -953,6 +987,7 @@ async function pageBoost() {
         ${p.extra_commission ? `<div class="bh-comm"><div><span>ค่าคอม<br>เพิ่ม</span><b>${esc(p.extra_commission)}</b></div></div>` : ''}
         <div class="chips2"><span class="pill">${esc(ST[p.state] || '')}</span>${p.start ? `<span class="pill o">${esc(p.start)} – ${esc(p.end)}</span>` : ''}</div>
         ${ROCKET('bh-rocket')}<svg class="bh-spark" style="right:120px;top:150px" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z" fill="#D9FF4A" stroke="#0D2823" stroke-width="1.6" stroke-linejoin="round"/></svg><svg class="bh-spark" style="right:16px;top:140px;width:16px;height:16px" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z" fill="#fff" stroke="#0D2823" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        ${STAGE([['spray', 10, 86, -10, .5], ['orig', 27, 104, -5, 1.2], ['care', 47, 118, 0, 0], ['purple', 67, 104, 5, .8], ['promax', 87, 96, 9, 1.6]])}
         <div class="ticker"><div>${(tick + tick)}</div></div>
       </div>
       <div class="sec" style="margin-top:4px"><b>ทำ 3 ขั้นนี้</b>${d.total_joined ? `<span class="muted">เข้าร่วมแล้ว ${fmt(d.total_joined)} คน</span>` : ''}</div>
@@ -1139,10 +1174,11 @@ async function pageLeaderboard(by) {
 const MOCKDB = {
   aff: null, points: 0,
   products: [
-    { sku: 'S1', name: 'ยาสีฟัน Dentiste\' Plus White 100g', category: 'Oral care', image_url: '', stock: 12, commission_note: 'คอมฯ 15%', tiktok_url: 'https://www.tiktok.com/', brief: 'จุดขาย: ลดกลิ่นปากตอนเช้า ฟันขาวสะอาด\nฮุก 3 วิแรก: ทดสอบลมหายใจตอนตื่นนอน' },
-    { sku: 'S2', name: 'สเปรย์ระงับกลิ่นปาก', category: 'Oral care', image_url: '', stock: 8, commission_note: 'คอมฯ 12%', tiktok_url: 'https://www.tiktok.com/', brief: 'ใช้ก่อนประชุม/เดท พกง่าย' },
-    { sku: 'S3', name: 'แปรงสีฟันขนนุ่มพิเศษ', category: 'Oral care', image_url: '', stock: 0, commission_note: 'คอมฯ 10%', tiktok_url: 'https://www.tiktok.com/', brief: '' },
-    { sku: 'S4', name: 'น้ำยาบ้วนปาก Night', category: 'Oral care', image_url: '', stock: 20, commission_note: 'คอมฯ 12%', tiktok_url: '', brief: '' },
+    { sku: 'DT-CARE', name: "Dentiste' Premium Care Toothpaste", category: 'ยาสีฟัน', image_url: '/img/p/care.jpg', stock: 12, commission_note: 'คอมฯ 15%', tiktok_url: 'https://www.tiktok.com/', brief: 'จุดขาย: ลดกลิ่นปากตอนเช้า ฟันขาวสะอาด\nฮุก 3 วิแรก: ทดสอบลมหายใจตอนตื่นนอน' },
+    { sku: 'DT-SPRAY', name: "Dentiste' Hygienic Breath Spray", category: 'สเปรย์ระงับกลิ่นปาก', image_url: '/img/p/spray.jpg', stock: 8, commission_note: 'คอมฯ 12%', tiktok_url: 'https://www.tiktok.com/', brief: 'ใช้ก่อนประชุม/เดท พกง่าย' },
+    { sku: 'DT-PURPLE', name: "Dentiste' Whitening Purple Toothpaste", category: 'ยาสีฟัน', image_url: '/img/p/purple.jpg', stock: 0, commission_note: 'คอมฯ 10%', tiktok_url: 'https://www.tiktok.com/', brief: '' },
+    { sku: 'DT-RINSE', name: "Dentiste' Oral Rinse", category: 'น้ำยาบ้วนปาก', image_url: '/img/p/rinse.jpg', stock: 20, commission_note: 'คอมฯ 12%', tiktok_url: '', brief: '' },
+    { sku: 'DT-SUKKIRI', name: "Sukkiri by Dentiste' Mastic Mint", category: 'ลูกอมระงับกลิ่นปาก', image_url: '/img/p/sukkiri.jpg', stock: 6, commission_note: '', tiktok_url: '', brief: '' },
   ],
   requests: [], acts: [], redemptions: [], subs: [],
   rewards: [{ reward_id: 'R1', name: 'บัตรกำนัล 100 บาท', points_cost: 500, stock: 20 }, { reward_id: 'R2', name: 'เซ็ตสินค้าพรีเมียม', points_cost: 1500, stock: 5 }],
