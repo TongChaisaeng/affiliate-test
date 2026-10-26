@@ -906,7 +906,7 @@ async function pageMe() {
     if (p && !pg.joined) todos.push({ join: true, icon: ICON.flame, lbl: 'แคมเปญ', t: 'เข้าร่วม ' + p.title, s: 'รับค่าคอมเพิ่ม ' + (p.extra_commission || '') + ' แค่กดเข้าร่วม', cta: 'เข้าร่วมเลย', run: () => go('boost') });
     else if (p && p.state === 'open' && p.video_target && (m.videos || 0) < p.video_target) todos.push({ icon: ICON.flame, lbl: 'ภารกิจแคมเปญ',
       t: `โพสต์คลิปแคมเปญ (${m.videos || 0}/${p.video_target})`, s: 'ใส่แฮชแท็ก ' + p.hashtag, cta: 'ส่งลิงก์คลิป',
-      run: () => clipSheet('ส่งคลิปภารกิจ', p.hashtag, async url => { await api('submitMission', { program_id: p.program_id, url }); toast('ส่งแล้ว รอทีมตรวจเพื่อรับแต้ม'); pageMe(); }) });
+      run: () => clipSheet('ส่งคลิปภารกิจ', p.hashtag, async url => { await api('submitMission', { program_id: p.program_id, url }); toast('ส่งแล้ว รอทีมตรวจนับคลิป'); pageMe(); }) });
     if (!reqs.length) todos.push({ icon: ICON.box, lbl: 'เริ่มต้น', t: 'ขอสินค้าตัวอย่างชิ้นแรก', s: 'ฟรี — รีวิวแล้วติดตะกร้า รับค่าคอม', cta: 'เลือกสินค้า', run: () => go('catalog') });
     if (b.next) todos.push({ icon: ICON.up, lbl: 'Bonus', t: `ขายอีก ฿${fmt(b.remaining)} รับ Bonus ${fmt(b.next.bonus)} ${b.unit}`, s: 'ติดตะกร้าสินค้าเพิ่มใน Showcase', cta: 'ดูสินค้า', run: () => go('catalog') });
     const top = todos[0], rest = todos.slice(1, 3);
@@ -1031,7 +1031,7 @@ async function pageBoost() {
         <div class="st ${joined ? 'done' : ''}"><span class="n">${joined ? '✓' : 1}</span><div class="body"><b>เข้าร่วมแคมเปญ</b>${s1}</div></div>
         ${p.video_target ? `<div class="st ${lock} ${m.videos >= p.video_target ? 'done' : ''}"><span class="n">${m.videos >= p.video_target ? '✓' : 2}</span><div class="body">
           <b>โพสต์คลิปติดตะกร้า ${p.video_target} คลิป</b>
-          <div class="muted">${m.videos}/${p.video_target} คลิป${p.points_per_video ? ` · คลิปละ ${fmt(p.points_per_video)} แต้ม` : ''}</div>
+          <div class="muted">${m.videos}/${p.video_target} คลิป${p.points_per_video ? ` · คลิปละ ${fmt(p.points_per_video)} แต้ม` : ' · ครบ 10 / 20 / 30 คลิป รับ Top Up ฿100 / ฿250 / ฿500'}</div>
           ${p.hashtag ? `<span class="tagchip" id="tag">${esc(p.hashtag)} · แตะเพื่อคัดลอก</span>` : ''}
           <div class="bar"><div style="width:${pct(m.videos, p.video_target)}%"></div></div>
           ${joined && p.state === 'open' && m.videos < p.video_target ? '<button class="btn ghost" id="sendvid">ส่งลิงก์คลิป</button>' : ''}
@@ -1040,7 +1040,7 @@ async function pageBoost() {
         </div></div>` : ''}
         ${p.gmv_target ? `<div class="st ${lock} ${m.gmv_done ? 'done' : ''}"><span class="n">${m.gmv_done ? '✓' : (p.video_target ? 3 : 2)}</span><div class="body">
           <b>ทำยอดขาย ฿${fmt(p.gmv_target)}</b>
-          <div class="muted">ตอนนี้ ฿${fmt(m.gmv)}${p.gmv_reward_points ? ` · ถึงเป้ารับ ${fmt(p.gmv_reward_points)} แต้ม` : ''}${d.my_rank ? ` · อันดับ #${d.my_rank}` : ''}</div>
+          <div class="muted">ตอนนี้ ฿${fmt(m.gmv)}${p.gmv_reward_points ? ` · ถึงเป้ารับ ${fmt(p.gmv_reward_points)} แต้ม` : ' · Top 3 ที่ถึงเกณฑ์ รับ Top Up สูงสุด ฿30,000'}${d.my_rank ? ` · อันดับ #${d.my_rank}` : ''}</div>
           <div class="bar"><div style="width:${pct(m.gmv, p.gmv_target)}%"></div></div>
         </div></div>` : ''}
       </div>
@@ -1050,7 +1050,7 @@ async function pageBoost() {
     const g = $('#toreg'); if (g) g.addEventListener('click', () => go('register'));
     const t = $('#tag'); if (t) t.addEventListener('click', async () => { try { await navigator.clipboard.writeText(p.hashtag); toast('คัดลอกแฮชแท็กแล้ว'); } catch (e) { toast(p.hashtag); } });
     const sv = $('#sendvid'); if (sv) sv.addEventListener('click', () => clipSheet('ส่งคลิปภารกิจ', 'ต้องมีแฮชแท็ก ' + p.hashtag + ' และติดตะกร้าสินค้า Dentiste\'', async url => {
-      await api('submitMission', { program_id: p.program_id, url }); toast('ส่งแล้ว รอทีมตรวจเพื่อรับแต้ม'); pageBoost();
+      await api('submitMission', { program_id: p.program_id, url }); toast('ส่งแล้ว รอทีมตรวจนับคลิป'); pageBoost();
     }));
   } catch (e) { failBox(e); }
 }
