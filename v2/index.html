@@ -417,6 +417,30 @@
   .bh-top img { height: 22px; }
   .bh-top span { font-size: 12px; }
 
+  /* ===== Member Card (หน้า ฉัน) ===== */
+  .mcard { position: relative; overflow: hidden; border-radius: 26px; background: var(--green); color: #fff; padding: 18px 20px 16px; margin: 2px 0 14px; min-height: 212px; display: flex; flex-direction: column; box-shadow: 0 16px 34px rgba(0, 90, 75, .28), inset 0 1px 0 rgba(255, 255, 255, .18); isolation: isolate; }
+  .mcard::before { content: ''; position: absolute; z-index: -1; width: 260px; height: 260px; border-radius: 50%; background: var(--green-dark); right: -90px; top: -120px; }
+  .mcard::after { content: ''; position: absolute; z-index: -1; width: 180px; height: 180px; border-radius: 50%; background: rgba(217, 255, 74, .10); left: -60px; bottom: -90px; }
+  .mcard .mc-x { position: absolute; z-index: -1; right: 14px; bottom: 10px; width: 92px; height: 92px; opacity: .10; }
+  .mc-top { display: flex; align-items: center; justify-content: space-between; }
+  .mc-brand { display: flex; align-items: center; gap: 8px; }
+  .mc-brand img { height: 20px; width: auto; display: block; }
+  .mc-brand i { width: 1px; height: 14px; background: rgba(255, 255, 255, .6); }
+  .mc-brand span { font-family: 'Montserrat', 'Noto Sans Thai', sans-serif; font-weight: 800; font-size: 8.5px; letter-spacing: .03em; }
+  .mc-tier { font-family: 'Montserrat', 'Noto Sans Thai', sans-serif; font-weight: 800; font-size: 10px; letter-spacing: .12em; background: var(--lime); color: var(--ink2); padding: 4px 10px; border-radius: 999px; }
+  .mc-id { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
+  .mc-av { width: 64px; height: 64px; flex: none; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: rgba(255, 255, 255, .18); box-shadow: 0 0 0 3px rgba(255, 255, 255, .85); font-size: 26px; font-weight: 800; }
+  .mc-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mc-name { font-weight: 800; font-size: 19px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mc-tt { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 13.5px; font-weight: 600; color: rgba(255, 255, 255, .92); background: rgba(0, 0, 0, .14); border: 0; padding: 3px 10px 3px 8px; border-radius: 999px; cursor: pointer; font-family: inherit; }
+  .mc-tt small { font-size: 10px; font-weight: 800; letter-spacing: .06em; opacity: .75; }
+  .mc-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .mc-stats div { background: rgba(255, 255, 255, .10); border-radius: 14px; padding: 8px 10px; }
+  .mc-stats b { display: block; font-size: 17px; font-weight: 800; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .mc-stats span { font-size: 11px; opacity: .8; }
+  .mc-foot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; font-size: 11px; opacity: .85; }
+  .mc-foot code { font-family: 'Montserrat', ui-monospace, monospace; font-weight: 800; font-size: 12px; letter-spacing: .1em; opacity: 1; }
+
   /* ===== กราฟิกสินค้า (รูปจาก dentiste-oralcare.com) ===== */
   .pstage { position: relative; height: 150px; margin: 12px -6px -6px; pointer-events: none; }
   .pstage::before { content: ''; position: absolute; left: 14%; right: 14%; bottom: 2px; height: 24px; border-radius: 50%; background: rgba(0, 30, 25, .28); filter: blur(9px); }
@@ -634,7 +658,8 @@ async function boot() {
     state.page = p.get('page') || state.page; state.ref = p.get('ref') || state.ref; state.campaign = p.get('c') || state.campaign;
     const asked = state.page;
     let uid = '';
-    try { uid = (liff.getDecodedIDToken() || {}).sub || ''; } catch (e) { /* ignore */ }
+    try { const tk = liff.getDecodedIDToken() || {}; uid = tk.sub || ''; state.pic = tk.picture || ''; state.lineName = tk.name || ''; } catch (e) { /* ignore */ }
+    if (!state.pic && liff.getProfile) liff.getProfile().then(p => { state.pic = p.pictureUrl || ''; const im = document.querySelector('.mc-av'); if (im && state.pic && !im.querySelector('img')) im.innerHTML = `<img src="${esc(state.pic)}" alt="">`; }).catch(() => {});
 
     // เริ่มโหลดข้อมูลจริงทันที: me + ข้อมูลของหน้าแรก ใน request เดียว
     const first = [['me', { ref: state.ref, campaign: state.campaign }]].concat(PAGE_CALLS[asked] || []);
@@ -1031,6 +1056,22 @@ async function pageBoost() {
 }
 
 /* ---------- ฉัน ---------- */
+/* ---------- Member Card: รูปโปรไฟล์ LINE + บัญชี TikTok ---------- */
+const kfmt = n => { n = Number(n || 0); return n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M' : n >= 1e3 ? (n / 1e3).toFixed(n >= 1e4 ? 0 : 1).replace(/\.0$/, '') + 'K' : fmt(n); };
+function memberCard(a, reqs) {
+  const name = a.full_name || state.lineName || '';
+  const clips = (reqs || []).filter(r => r.content_url).length;
+  const av = state.pic ? `<img src="${esc(state.pic)}" alt="" referrerpolicy="no-referrer" onerror="this.parentNode.textContent='${esc(String(name || '?').trim().charAt(0))}'">` : esc(String(name || '?').trim().charAt(0));
+  return `<div class="mcard">
+    <svg class="mc-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 1h8v7h7v8h-7v7H8v-7H1V8h7z" fill="#fff"/></svg>
+    <div class="mc-top"><div class="mc-brand"><img src="/logo-white.png" alt="Dentiste'" onerror="this.remove()"><i></i><span>AFFILIATE+</span></div><span class="mc-tier">MEMBER</span></div>
+    <div class="mc-id"><div class="mc-av">${av}</div>
+      <div style="min-width:0;flex:1"><div class="mc-name">${esc(name)}</div>
+      ${a.tiktok_username ? `<button class="mc-tt" id="mctt"><small>TikTok</small>@${esc(a.tiktok_username)} ›</button>` : ''}</div></div>
+    <div class="mc-stats"><div><b>${a.followers ? kfmt(a.followers) : '-'}</b><span>ผู้ติดตาม</span></div><div><b>${fmt(a.points)}</b><span>แต้ม</span></div><div><b>${fmt(clips)}</b><span>คลิปรีวิว</span></div></div>
+    <div class="mc-foot"><span>สมาชิกตั้งแต่ ${esc(a.registered_at || '-')}</span><code>${esc(a.affiliate_id || '')}</code></div>
+  </div>`;
+}
 async function pageAccount() {
   header(null);
   const a = aff();
@@ -1040,19 +1081,17 @@ async function pageAccount() {
   const todo = reqs.filter(r => r.can_submit).length;
   const moving = reqs.filter(r => ['requested', 'approved', 'shipped'].indexOf(r.status) !== -1).length;
   const items = [
+    { p: 'rewards', icon: ICON.gift, t: 'แลกรางวัล', s: `มี ${fmt(a.points)} แต้ม ใช้แลกของรางวัลได้` },
     { p: 'requests', icon: ICON.truck, t: 'พัสดุ & คลิปรีวิว', s: todo ? `รอส่งลิงก์คลิป ${todo} ชิ้น` : (moving ? `กำลังดำเนินการ ${moving} ชิ้น` : 'ติดตามสินค้าตัวอย่าง'), warn: todo > 0, badge: todo ? `<span class="cnt">${todo}</span>` : '' },
     { p: 'history', icon: ICON.clock, t: 'ประวัติแต้ม & Bonus', s: 'รายการย้อนหลัง' },
     { p: 'profile', icon: ICON.pin, t: 'ข้อมูลจัดส่ง', s: a.profile_complete ? 'ครบแล้ว' : 'ยังไม่กรอก — ต้องใช้ตอนขอสินค้า', warn: !a.profile_complete },
     { p: 'invite', icon: ICON.invite, t: 'ชวนเพื่อน', s: 'รับแต้มเมื่อเพื่อนได้รับอนุมัติ' },
   ];
   app.innerHTML = `
-    <div class="card me-head"><div class="avatar">${esc(String(a.full_name || '?').trim().charAt(0))}</div>
-      <div style="min-width:0;flex:1"><div style="font-weight:800;font-size:17px">${esc(a.full_name)}</div>
-      <div class="muted">TikTok @${esc(a.tiktok_username || '-')}</div><div class="tiny">สมาชิกตั้งแต่ ${esc(a.registered_at)} · ${esc(a.affiliate_id)}</div></div></div>
-    <div class="ptscard"><b>${fmt(a.points)}</b><span class="t">แต้มสะสม</span><button class="btn" id="rw">แลกรางวัล</button></div>
+    ${memberCard(a, reqs)}
     <div class="card menu">${items.map((r, i) => ROW(r, `data-acc="${i}"`)).join('')}</div>
     <div class="card menu">${ROW({ icon: ICON.chat, t: 'คุยกับแอดมิน', s: 'กลับไปพิมพ์ในแชท LINE' }, 'id="contact"')}</div>`;
-  $('#rw').addEventListener('click', () => go('rewards'));
+  const tt = $('#mctt'); if (tt) tt.addEventListener('click', () => openExternal('https://www.tiktok.com/@' + encodeURIComponent(a.tiktok_username)));
   app.querySelectorAll('[data-acc]').forEach(el => el.addEventListener('click', () => go(items[+el.dataset.acc].p)));
   $('#contact').addEventListener('click', () => { if (!MOCK && liff.isInClient && liff.isInClient()) liff.closeWindow(); else toast('พิมพ์ข้อความหาแอดมินได้ในแชท LINE'); });
 }
