@@ -198,6 +198,9 @@
   .bh-comm b { font-size: 30px; font-weight: 900; line-height: 1; }
   .bh-rocket { position: absolute; right: 18px; top: 50%; margin-top: -30px; z-index: 1; width: 84px; height: auto; transform: rotate(38deg); animation: hover 2.6s ease-in-out infinite; }
   .bh-spark { position: absolute; z-index: 1; width: 22px; height: 22px; }
+  .tm-hero { padding-bottom: 2px; }
+  .tm-logo { display: block; width: 58%; max-width: 230px; height: auto; margin: 14px 0 10px; border-radius: 18px; border: 2.5px solid var(--ink2); box-shadow: 4px 4px 0 var(--ink2); }
+  .tm-hero .ttl { font-size: 20px; }
   @keyframes hover { 50% { transform: rotate(38deg) translate(4px, -8px); } }
   .ticker { position: relative; z-index: 2; margin: 0 -18px; background: var(--ink2); color: var(--lime); overflow: hidden; white-space: nowrap; font-weight: 800; font-size: 13px; padding: 7px 0; }
   .ticker > div { display: inline-block; animation: marquee 16s linear infinite; }
@@ -507,7 +510,7 @@ const PAGES = { register: pageRegister, me: pageMe, catalog: pageCatalog, boost:
 const TAB_OF = { requests: 'account', rewards: 'account', invite: 'account', history: 'account', profile: 'account', leaderboard: 'me' };
 const params = new URLSearchParams(location.search);
 const MOCK = params.get('mock') === '1' || LIFF_ID.startsWith('YOUR_');
-const state = { me: null, page: params.get('page') || 'register', ref: params.get('ref') || '', campaign: params.get('c') || '' };
+const state = { me: null, page: params.get('page') || 'register', ref: params.get('ref') || '', campaign: params.get('c') || '', prog: params.get('program') || '' };
 
 const $ = s => document.querySelector(s);
 const app = $('#app');
@@ -564,7 +567,7 @@ const ROCKET = cls => `<svg class="${cls}" viewBox="0 0 120 165" aria-hidden="tr
 /* ---------- API + แคช: เปิดหน้าครั้งเดียวยิง bundle เดียว, สลับแท็บใช้ข้อมูลที่โหลดไว้ ---------- */
 const READ_ACTIONS = ['me', 'catalog', 'requests', 'dashboard', 'rewards', 'leaderboard', 'program'];
 const PAGE_CALLS = {
-  me: [['dashboard'], ['program'], ['requests']], history: [['dashboard']], boost: [['program']], catalog: [['catalog']],
+  me: [['dashboard'], ['program'], ['requests']], history: [['dashboard']], boost: [['program', state.prog ? { program_id: state.prog } : undefined]], catalog: [['catalog']],
   leaderboard: [['leaderboard', { by: 'sales' }]], rewards: [['rewards']], requests: [['requests']], account: [['requests']],
 };
 const PRE = new Map();            // key → { t, data } ผลที่โหลดไว้แล้ว
@@ -655,7 +658,7 @@ async function boot() {
     if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
     // หลัง init, query เดิมจาก liff.state จะกลับมาอยู่ใน location
     const p = new URLSearchParams(location.search);
-    state.page = p.get('page') || state.page; state.ref = p.get('ref') || state.ref; state.campaign = p.get('c') || state.campaign;
+    state.page = p.get('page') || state.page; state.ref = p.get('ref') || state.ref; state.campaign = p.get('c') || state.campaign; state.prog = p.get('program') || state.prog; if (state.prog) PAGE_CALLS.boost = [['program', { program_id: state.prog }]];
     const asked = state.page;
     let uid = '';
     try { const tk = liff.getDecodedIDToken() || {}; uid = tk.sub || ''; state.pic = tk.picture || ''; state.lineName = tk.name || ''; } catch (e) { /* ignore */ }
@@ -997,8 +1000,9 @@ async function pageBoost() {
   header(null);
   loading();
   try {
-    const d = await api('program');
+    const d = await api('program', state.prog ? { program_id: state.prog } : undefined);
     const p = d.program;
+    if (p && p.program_id === 'THAIMART') return pageThaimart(d, p);
     if (!p) { header('แคมเปญ'); app.innerHTML = '<div class="card empty">ยังไม่มีแคมเปญที่เปิดอยู่ตอนนี้<br>เมื่อมีแคมเปญใหม่ จะแจ้งทาง LINE</div>'; return; }
     const ST = { open: 'เปิดรับแล้ว', upcoming: 'ลงทะเบียนล่วงหน้า', ended: 'จบแคมเปญแล้ว' };
     const mm = String(p.title).match(/\d+\.\d+/);
@@ -1053,6 +1057,38 @@ async function pageBoost() {
       await api('submitMission', { program_id: p.program_id, url }); toast('ส่งแล้ว รอทีมตรวจนับคลิป'); pageBoost();
     }));
   } catch (e) { failBox(e); }
+}
+
+/* ---------- แคมเปญ Creator Thaimart (program_id THAIMART) ---------- */
+function pageThaimart(d, p) {
+  header(null);
+  const joined = !!d.joined, member = d.member_status === 'approved';
+  let s1;
+  if (joined) s1 = '<div class="muted">เข้าร่วมแล้วเมื่อ ' + esc(d.joined_at) + '</div>';
+  else if (p.state === 'ended') s1 = '<div class="muted">ปิดรับแล้ว</div>';
+  else if (member) s1 = '<div class="muted">ต้องกดเข้าร่วมก่อน จึงจะกดรับสินค้าที่หน้างานได้</div><button class="btn" id="join" style="margin-top:10px">เข้าร่วมแคมเปญ</button>';
+  else if (d.member_status === 'pending') s1 = '<div class="muted">เข้าร่วมได้หลังทีมอนุมัติสมาชิก</div>';
+  else s1 = '<div class="muted">สมัครสมาชิกก่อน (ฟรี) แล้วกลับมากดเข้าร่วม</div><button class="btn" id="toreg" style="margin-top:10px">สมัครสมาชิก</button>';
+  const lock = joined ? '' : 'lock';
+  app.innerHTML = '<div class="boost-hero tm-hero">'
+    + '<div class="bh-top"><img src="/logo-white.png" alt="Dentiste\'" onerror="this.remove()"><span>Affiliate+</span></div>'
+    + '<span class="bh-tag">CREATOR THAIMART</span>'
+    + '<img class="tm-logo" src="/club/campaigns/creator-thaimart/logo.webp" alt="Thaimart Creator Affiliate &amp; Commerce Fest">'
+    + '<div class="ttl">รับสินค้ารีวิวฟรีที่หน้างาน</div>'
+    + '<div class="bh-comm"><div><span>ค่าคอม</span><b>13%</b></div></div>'
+    + '<div class="chips2"><span class="pill">' + (joined ? 'เข้าร่วมแล้ว' : 'เปิดรับแล้ว') + '</span><span class="pill o">ค่าคอม Affiliate 13%</span></div>'
+    + '</div>'
+    + '<div class="sec" style="margin-top:4px"><b>ทำ 4 ขั้นนี้</b>' + (d.total_joined ? '<span class="muted">เข้าร่วมแล้ว ' + fmt(d.total_joined) + ' คน</span>' : '') + '</div>'
+    + '<div class="card steps3">'
+    + '<div class="st ' + (joined ? 'done' : '') + '"><span class="n">' + (joined ? '✓' : 1) + '</span><div class="body"><b>เข้าร่วมแคมเปญ</b>' + s1 + '</div></div>'
+    + '<div class="st ' + lock + '"><span class="n">2</span><div class="body"><b>กดรับสินค้า Highlight</b><div class="muted">เลือกสินค้าที่อยากรีวิว แล้วกดรับสินค้า</div>' + (joined ? '<button class="btn ghost" id="claim" style="margin-top:10px">กดรับสินค้า</button>' : '') + '</div></div>'
+    + '<div class="st ' + lock + '"><span class="n">3</span><div class="body"><b>รับของที่หน้างาน</b><div class="muted">แสดงหน้าจอ LINE ที่บูธ Dentiste\' ในงาน รับสินค้าไปรีวิวฟรี</div></div></div>'
+    + '<div class="st ' + lock + '"><span class="n">4</span><div class="body"><b>ทำคลิป รับค่าคอม 13%</b><div class="muted">โพสต์คลิป TikTok ติดตะกร้า Dentiste\' แล้วส่งลิงก์คลิปในแอป</div></div></div>'
+    + '</div>'
+    + '<details class="card more-info"><summary>' + esc(p.headline || 'รายละเอียดแคมเปญ') + '</summary><div class="details">' + esc(p.details || '') + '</div></details>';
+  const j = $('#join'); if (j) j.addEventListener('click', () => act(j, async () => { await api('joinProgram', { program_id: p.program_id }); toast('เข้าร่วมแล้ว กดรับสินค้า Highlight ได้เลย'); pageBoost(); }));
+  const g = $('#toreg'); if (g) g.addEventListener('click', () => go('register'));
+  const c = $('#claim'); if (c) c.addEventListener('click', () => go('catalog'));
 }
 
 /* ---------- ฉัน ---------- */
@@ -1288,14 +1324,15 @@ function mockApi(action, d) {
       const rows = names.map(n => ({ name: n[0], platform: n[1], value: pts ? n[3] : n[2], me: n[0] === 'คุณ' })).sort((a, b) => b.value - a.value).map((r, i) => Object.assign(r, { rank: i + 1 }));
       return wait({ by: pts ? 'points' : 'sales', period: '2026-10', total: 128, top: rows, me: rows.find(r => r.me) });
     }
-    case 'program': return wait({ program: { program_id: 'BOOST1111', title: 'Boost up 11.11', headline: 'เข้าร่วมโปรแกรม รับค่าคอมเพิ่มช่วงแคมเปญ 11.11', extra_commission: '+5%', start: '1 พ.ย. 2026', end: '15 พ.ย. 2026', state: 'open',
+    case 'program': if (d && d.program_id === 'THAIMART') return wait({ program: { program_id: 'THAIMART', title: 'Creator Thaimart', headline: 'Creator Thaimart — รับสินค้ารีวิวฟรีที่หน้างาน + ค่าคอม Affiliate 13%', extra_commission: '13%', start: '', end: '', state: 'open', details: '• กดเข้าร่วมแคมเปญก่อน แล้วกดรับสินค้า Highlight ในแอป\n• แสดงหน้าจอ LINE ที่บูธ Dentiste\' ในงาน\n• โพสต์คลิปติดตะกร้า รับค่าคอม 13%' }, member_status: db.aff ? db.aff.status : 'none', joined: !!db.tm, joined_at: db.tm ? 'วันนี้' : '', total_joined: 12 + (db.tm ? 1 : 0) });
+      return wait({ program: { program_id: 'BOOST1111', title: 'Boost up 11.11', headline: 'เข้าร่วมโปรแกรม รับค่าคอมเพิ่มช่วงแคมเปญ 11.11', extra_commission: '+5%', start: '1 พ.ย. 2026', end: '15 พ.ย. 2026', state: 'open',
       details: '• รับค่าคอมมิชชั่นเพิ่มจากปกติ สำหรับยอดขายสินค้า Dentiste\' บน TikTok Shop ช่วงแคมเปญ\n• ภารกิจ: โพสต์คลิปติดตะกร้าพร้อมแฮชแท็ก และทำยอดขายให้ถึงเป้า\n• ค่าคอมส่วนเพิ่มจ่ายพร้อมรอบ Bonus เดือนถัดไป',
       hashtag: '#DentisteBoost1111', video_target: 3, points_per_video: 50, gmv_target: 10000, gmv_reward_points: 500, reward_note: '+ สิทธิ์ค่าคอมเพิ่มตามเงื่อนไขแคมเปญ' },
       member_status: db.aff ? db.aff.status : 'none', joined: !!db.boost, joined_at: db.boost ? 'วันนี้' : '', total_joined: 37 + (db.boost ? 1 : 0),
       missions: { videos: db.subs.length, videos_approved: 0, gmv: 6400, gmv_done: false }, submissions: db.subs.slice().reverse(), my_rank: db.boost ? 5 : null,
       leaderboard: db.boost ? [{ rank: 1, name: 'ณัฐชา ส.', value: 24800 }, { rank: 2, name: 'มินตรา ว.', value: 15100 }, { rank: 3, name: 'ปิยะพงษ์ ก.', value: 9900 }, { rank: 4, name: 'ธนกร จ.', value: 7200 }, { rank: 5, name: 'คุณ', value: 6400, me: true }] : [] });
     case 'submitMission': if (db.subs.some(x => x.url === d.url)) return fail('ลิงก์นี้ส่งไปแล้ว'); db.subs.push({ url: d.url, status: 'pending', date: 'วันนี้' }); return wait({ ok: true });
-    case 'joinProgram': if (db.boost) return fail('คุณเข้าร่วมโปรแกรมนี้แล้ว'); db.boost = true; return wait({ joined: true });
+    case 'joinProgram': if (d && d.program_id === 'THAIMART') { if (db.tm) return fail('คุณเข้าร่วมโปรแกรมนี้แล้ว'); db.tm = true; return wait({ joined: true }); } if (db.boost) return fail('คุณเข้าร่วมโปรแกรมนี้แล้ว'); db.boost = true; return wait({ joined: true });
     case 'rewards': return wait({ points: db.points, rewards: db.rewards, redemptions: db.redemptions });
     case 'redeem': {
       if (d.profile) setProf(d.profile); else if (!db.aff.profile_complete) return fail('PROFILE_REQUIRED: กรุณากรอกที่อยู่');
