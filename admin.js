@@ -16,7 +16,27 @@ const REQ_TH = { requested: 'รออนุมัติ', approved: 'รอจ�
 const REQ_CLS = { requested: 'warn', approved: 'info', shipped: 'info', delivered: 'info', content_submitted: 'good', done: 'good', rejected: 'bad' };
 const AV_COLORS = ['#007864', '#005A4B', '#2E6F95', '#8A5A00', '#6B4E9B', '#A23E48', '#3D7A3A', '#45606B'];
 const avColor = s => { let h = 0; String(s).split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) % 997; }); return AV_COLORS[h % AV_COLORS.length]; };
-const av = (name, size) => `<span class="av" style="background:${avColor(name)}${size ? `;width:${size}px;height:${size}px;font-size:${Math.round(size / 2.6)}px` : ''}">${esc(String(name || '?').trim().replace(/^[เแโใไ@]+/, '').charAt(0).toUpperCase() || '?')}</span>`;
+const av = (name, size, url) => `<span class="av" style="background:${avColor(name)}${size ? `;width:${size}px;height:${size}px;font-size:${Math.round(size / 2.6)}px` : ''}">${esc(String(name || '?').trim().replace(/^[เแโใไ@]+/, '').charAt(0).toUpperCase() || '?')}${/^https:\/\//.test(url || '') ? `<img src="${esc(url)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}</span>`;
+// รูปโปรไฟล์ TikTok: โหลดไม่ได้ (URL หมดอายุ/ถูกบล็อก) → ซ่อนรูป เหลือตัวอักษรย่อ
+(function () {
+  const st = document.createElement('style');
+  st.textContent = '.av{position:relative;overflow:hidden}.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;background:#fff}';
+  document.head.appendChild(st);
+  document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.parentNode && t.parentNode.classList && t.parentNode.classList.contains('av')) t.remove(); }, true);
+})();
+/** ดึงรูป TikTok ให้ Creator ที่ยังไม่มีรูป (ทำเบื้องหลัง แล้ววาดหน้าใหม่) */
+const AVQ = { busy: false, rounds: 0 };
+function autoAvatars(rows) {
+  if (MOCK || AVQ.busy || AVQ.rounds >= 6) return;
+  if (!rows.some(r => r.tiktok && !r.avatar)) return;
+  AVQ.busy = true; AVQ.rounds++;
+  call('ttAvatars', { limit: 25 }).then(d => {
+    AVQ.busy = false;
+    if (!d || !d.checked) { AVQ.rounds = 99; return; }
+    if (d.updated) { ['creators', 'samples', 'videos', 'home'].forEach(k => invalidate(k)); load('creators', true).then(() => { if (S.page === 'creators' && !$('#drawer.show')) pageCreators(); }, () => {}); }
+    if (!d.left) AVQ.rounds = 99;
+  }, () => { AVQ.busy = false; AVQ.rounds = 99; });
+}
 const ICON = {
   msg: '<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>',
   tag: '<svg viewBox="0 0 24 24"><path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/></svg>',
@@ -228,9 +248,9 @@ async function pageHome(force) {
       <div class="grid2">
         <div class="card"><h2>Funnel ของ Creator</h2><div class="funnel">${h.funnel.map(f => `<div class="fr" data-stage="${f.key}"><span>${esc(STAGE_TH[f.key] || f.label)}</span><div class="bar"><div style="width:${f.value / maxF * 100}%"></div></div><b class="num r" style="text-align:right">${fmt(f.value)}</b></div>`).join('')}</div></div>
         <div class="card"><h2>Top creators เดือนนี้<span class="sp"></span><button class="link" data-go2="creators">ดูทั้งหมด</button></h2>
-          <div class="list">${h.top.length ? h.top.map((x, i) => `<div class="li"><span class="rk ${i ? '' : 'r1'}">${i + 1}</span>${av(x.name, 32)}<div class="sp"><b>${esc(x.name)}</b><div class="muted" style="font-size:12.5px">${x.tiktok ? '@' + esc(x.tiktok) : ''}</div></div><b class="num">${baht(x.gmv)}</b></div>`).join('') : '<div class="empty">ยังไม่มียอดขายเดือนนี้ — นำเข้ารายงานจาก TikTok Shop</div>'}</div>
+          <div class="list">${h.top.length ? h.top.map((x, i) => `<div class="li"><span class="rk ${i ? '' : 'r1'}">${i + 1}</span>${av(x.name, 32, x.avatar)}<div class="sp"><b>${esc(x.name)}</b><div class="muted" style="font-size:12.5px">${x.tiktok ? '@' + esc(x.tiktok) : ''}</div></div><b class="num">${baht(x.gmv)}</b></div>`).join('') : '<div class="empty">ยังไม่มียอดขายเดือนนี้ — นำเข้ารายงานจาก TikTok Shop</div>'}</div>
           <h2 style="margin-top:18px">สมัครล่าสุด</h2>
-          <div class="list">${h.recent.map(x => `<div class="li" data-open="${esc(x.id)}" style="cursor:pointer">${av(x.name, 32)}<div class="sp"><b>${esc(x.name)}</b><div class="muted" style="font-size:12.5px">${x.tiktok ? '@' + esc(x.tiktok) + ' · ' : ''}${esc(x.registered_at)}</div></div>${stageBadge(x.status)}</div>`).join('') || '<div class="empty">ยังไม่มีผู้สมัคร</div>'}</div>
+          <div class="list">${h.recent.map(x => `<div class="li" data-open="${esc(x.id)}" style="cursor:pointer">${av(x.name, 32, x.avatar)}<div class="sp"><b>${esc(x.name)}</b><div class="muted" style="font-size:12.5px">${x.tiktok ? '@' + esc(x.tiktok) + ' · ' : ''}${esc(x.registered_at)}</div></div>${stageBadge(x.status)}</div>`).join('') || '<div class="empty">ยังไม่มีผู้สมัคร</div>'}</div>
         </div>
       </div>`;
     app.querySelectorAll('[data-todo]').forEach(b => b.addEventListener('click', () => todos[+b.dataset.todo].go()));
@@ -255,6 +275,7 @@ async function pageCreators(force) {
   try {
     const d = await load('creators', force);
     const rows = d.rows;
+    setTimeout(() => autoAvatars(rows), 300);
     const tagsAll = [...new Set(rows.flatMap(r => r.tags))].sort();
     const cats = [...new Set(rows.flatMap(r => String(r.categories).split(/[,|]/).map(s => s.trim()).filter(Boolean)))].sort();
     const srcs = [...new Set(rows.map(r => r.source).filter(Boolean))].sort();
@@ -305,7 +326,7 @@ async function pageCreators(force) {
           ${th('name', 'Creator name')}<th>Tags</th>${th('stage', 'Stage')}${th('followers', 'Followers', 1)}${th('samples', 'Samples', 1)}${th('videos', 'Videos', 1)}${th('gmv_month', 'GMV เดือนนี้', 1)}${th('gmv', 'GMV รวม', 1)}${th('items', 'Items sold', 1)}${th('points', 'แต้ม', 1)}${th('registered_at', 'สมัครเมื่อ')}<th class="act">Action</th>
         </tr></thead><tbody>${view.map(r => `<tr>
           <td class="ck"><input type="checkbox" data-ck="${esc(r.id)}" ${S.sel.has(r.id) ? 'checked' : ''}></td>
-          <td><div class="who" data-open="${esc(r.id)}">${av(r.name || r.tiktok)}<div><b>${esc(r.tiktok ? r.tiktok : r.name)}</b><span>${esc(r.name)}${r.programs.length ? ' · 🔥' + r.programs.length : ''}</span></div></div></td>
+          <td><div class="who" data-open="${esc(r.id)}">${av(r.name || r.tiktok, 0, r.avatar)}<div><b>${esc(r.tiktok ? r.tiktok : r.name)}</b><span>${esc(r.name)}${r.programs.length ? ' · 🔥' + r.programs.length : ''}</span></div></div></td>
           <td>${r.tags.length ? r.tags.map(x => `<span class="tag">${esc(x)}</span>`).join('') : '<span class="faint">-</span>'}</td>
           <td>${stageBadge(r.status === 'approved' ? r.stage : r.status)}</td>
           <td class="r num">${fmt(r.followers)}</td>
@@ -400,7 +421,7 @@ async function openCreator(id) {
     const c = await call('creator', { id });
     const p = c.profile;
     const st = s => `<span class="badge ${REQ_CLS[s] || (s === 'approved' ? 'good' : s === 'rejected' ? 'bad' : 'warn')}">${esc(REQ_TH[s] || s)}</span>`;
-    d.innerHTML = `<div class="dh">${av(p.name || p.tiktok, 48)}<div class="sp"><b style="font-size:17px">${esc(p.name)}</b><div class="muted">${p.tiktok ? `<a href="https://www.tiktok.com/@${esc(p.tiktok)}" target="_blank">@${esc(p.tiktok)}</a> · ` : ''}${esc(p.id)}</div></div>${stageBadge(p.status === 'approved' ? p.stage : p.status)}<button class="x" data-dclose>×</button></div>
+    d.innerHTML = `<div class="dh">${av(p.name || p.tiktok, 48, p.avatar)}<div class="sp"><b style="font-size:17px">${esc(p.name)}</b><div class="muted">${p.tiktok ? `<a href="https://www.tiktok.com/@${esc(p.tiktok)}" target="_blank">@${esc(p.tiktok)}</a> · ` : ''}${esc(p.id)}</div></div>${stageBadge(p.status === 'approved' ? p.stage : p.status)}<button class="x" data-dclose>×</button></div>
       <div class="db">
         <div class="tools">${p.status !== 'approved' ? '<button class="btn sm" data-st="approved">อนุมัติ</button>' : ''}${p.status === 'pending' ? '<button class="btn danger sm" data-st="rejected">ไม่อนุมัติ</button>' : ''}${p.status === 'approved' ? '<button class="btn danger sm" data-st="suspended">ระงับ</button>' : ''}<button class="btn line sm" id="dmsg">${ICON.msg} ส่งข้อความ</button><button class="btn line sm" id="dtag">${ICON.tag} Tag</button></div>
         <div class="kv">
@@ -444,7 +465,7 @@ async function pageSamples(force) {
         ${tab === 'requested' ? `<button class="btn sec" id="sall">${ICON.ok} อนุมัติที่เลือก</button>` : ''}<span class="sel" id="selc"></span></div>
       ${view.length ? `<div class="twrap"><table class="t"><thead><tr>${tab === 'requested' ? '<th class="ck"><input type="checkbox" id="ckall"></th>' : ''}<th>Creator</th><th>สินค้า</th><th>ขอเมื่อ</th><th>สถานะ</th><th>พัสดุ</th><th>ส่งคลิปภายใน</th><th class="act">Action</th></tr></thead><tbody>
         ${view.map(r => `<tr>${tab === 'requested' ? `<td class="ck"><input type="checkbox" data-ck="${esc(r.request_id)}" ${S.sel.has(r.request_id) ? 'checked' : ''}></td>` : ''}
-          <td><div class="who" data-open="${esc(r.id)}">${av(r.name || r.tiktok)}<div><b>${esc(r.tiktok || r.name)}</b><span>${esc(r.name)}</span></div></div></td>
+          <td><div class="who" data-open="${esc(r.id)}">${av(r.name || r.tiktok, 0, r.avatar)}<div><b>${esc(r.tiktok || r.name)}</b><span>${esc(r.name)}</span></div></div></td>
           <td>${esc(r.product)}<div class="faint" style="font-size:12px">${esc(r.sku)} · ${esc(r.request_id)}</div></td>
           <td class="muted num">${esc(r.requested_at)}</td>
           <td><span class="badge ${REQ_CLS[r.status] || ''}">${esc(REQ_TH[r.status] || r.status)}</span>${r.note ? `<div class="faint" style="font-size:12px">${esc(r.note)}</div>` : ''}</td>
@@ -505,7 +526,7 @@ async function pageVideos(force) {
     const view = rows.filter(r => tab === 'all' || r.status === tab);
     app.innerHTML = ph('Creator videos') + tabs('videos', T.map(([k, t]) => ({ k, t, c: rows.filter(r => k === 'all' || r.status === k).length }))) +
       (view.length ? `<div class="vgrid">${view.map(v => `<div class="vc">
-        <div class="who" data-open="${esc(v.id)}">${av(v.name || v.tiktok, 36)}<div><b>${esc(v.tiktok || v.name)}</b><span>${esc(v.date)}</span></div></div>
+        <div class="who" data-open="${esc(v.id)}">${av(v.name || v.tiktok, 36, v.avatar)}<div><b>${esc(v.tiktok || v.name)}</b><span>${esc(v.date)}</span></div></div>
         <div><span class="badge ${v.kind === 'mission' ? 'dark' : 'info'}">${v.kind === 'mission' ? 'แคมเปญ' : 'รีวิวสินค้า'}</span> ${esc(v.title)}</div>
         <a class="url" href="${esc(v.url)}" target="_blank">${ICON.ext.replace('<svg', '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"')} ${esc(v.url)}</a>
         <div class="row"><span class="badge ${v.status === 'approved' ? 'good' : v.status === 'rejected' ? 'bad' : 'warn'}">${v.status === 'approved' ? 'ผ่าน' : v.status === 'rejected' ? 'ไม่ผ่าน' : 'รอตรวจ'}</span>${v.points ? `<span class="muted">${fmt(v.points)} แต้ม</span>` : ''}<span class="sp"></span>
