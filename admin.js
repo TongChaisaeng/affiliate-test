@@ -1,6 +1,9 @@
 /* ===================== core ===================== */
 const RUN = window.google && google.script && google.script.run;
-const MOCK = !RUN;
+const MOCK = !RUN && /[?&]mock=1\b/.test(location.search); // ?mock=1 = ข้อมูลจำลอง
+const WEB = !RUN && !MOCK; // เปิดบนโดเมนของเรา → ล็อกอินด้วย Gmail แล้วเรียก API ผ่าน fetch
+const API_URL = 'https://script.google.com/macros/s/AKfycbwZYpEBmFgLHa85fLGCe_m-_iq3DA_TMjVpmx_ERLBB_S2WpNef7toQzSBE3kNFVFfSIA/exec';
+const GOOGLE_CLIENT_ID = '49875087354-0j3nlq0q3ljk391a6u046kj37b3td70e.apps.googleusercontent.com'; // OAuth Web client "Dentiste Affiliate Center" (ต้องตรงกับ ADMIN_GOOGLE_CLIENT_ID ใน Apps Script)
 const $ = s => document.querySelector(s);
 const app = $('#app');
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -28,11 +31,102 @@ const ICON = {
 function call(action, body) {
   return new Promise((res, rej) => {
     if (MOCK) return setTimeout(() => { try { res(mockApi(action, body || {})); } catch (e) { rej(e); } }, 180);
+    if (WEB) return webCall(action, body).then(res, rej);
     google.script.run
       .withSuccessHandler(s => { let r; try { r = JSON.parse(s); } catch (e) { return rej(new Error('ตอบกลับไม่ถูกต้อง')); } r.ok ? res(r.data) : rej(new Error(r.error)); })
       .withFailureHandler(e => rej(e instanceof Error ? e : new Error(String(e && e.message || e))))
       .adminApi(action, body ? JSON.stringify(body) : '');
   });
+}
+
+/* ===================== Login ด้วย Gmail (Google Sign-In) ===================== */
+const AUTH = { key: 'dac_google_idt', token: null, pending: null, gis: null };
+function jwtPayload(t) {
+  try { const b = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'); return JSON.parse(decodeURIComponent(escape(atob(b + '==='.slice((b.length + 3) % 4))))); } catch (e) { return {}; }
+}
+function tokenOk(t) { return !!t && (jwtPayload(t).exp || 0) * 1000 - Date.now() > 60000; }
+function saveToken(t) { AUTH.token = t; try { t ? localStorage.setItem(AUTH.key, t) : localStorage.removeItem(AUTH.key); } catch (e) {} }
+try { AUTH.token = localStorage.getItem(AUTH.key); } catch (e) {}
+function loadGis() {
+  if (AUTH.gis) return AUTH.gis;
+  return AUTH.gis = new Promise((res, rej) => {
+    if (window.google && google.accounts && google.accounts.id) return res();
+    const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
+    s.onload = () => res(); s.onerror = () => { AUTH.gis = null; rej(new Error('โหลดปุ่ม Google ไม่ได้ — ตรวจอินเทอร์เน็ตแล้วรีเฟรช')); };
+    document.head.appendChild(s);
+  });
+}
+function loginCss() {
+  if ($('#login-css')) return;
+  const st = document.createElement('style'); st.id = 'login-css';
+  st.textContent = `.login{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:16px;background:#0E1F1B}
+.login .lc{width:100%;max-width:380px;background:#fff;border-radius:16px;padding:32px 28px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.login img{height:30px;display:block;margin:0 auto 18px}
+.login h1{font-size:20px;margin:0 0 6px;color:#14211E;font-weight:700}
+.login p{margin:0;color:#66736F;font-size:14px;line-height:1.6}
+.login .gbtn{display:flex;justify-content:center;min-height:44px;margin:24px 0 8px}
+.login .lerr{display:none;margin-top:14px;background:#FDECEA;color:#B42318;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.55;text-align:left}
+.login .lerr.show{display:block}
+.login .lfoot{margin-top:18px;padding-top:14px;border-top:1px solid #E4E9E7;font-size:12px;color:#98A39F}
+.top .logout{background:none;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:6px;padding:5px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.top .logout:hover{background:rgba(255,255,255,.12)}
+.top .me i.pic{background-size:cover;background-position:center;color:transparent}`;
+  document.head.appendChild(st);
+}
+/** แสดงหน้าเข้าสู่ระบบ แล้วคืน ID token เมื่อผู้ใช้ล็อกอินสำเร็จ */
+function showLogin(err) {
+  loginCss();
+  let box = $('#login');
+  if (!box) {
+    box = document.createElement('div'); box.id = 'login'; box.className = 'login';
+    box.innerHTML = `<div class="lc"><img src="https://tongchaisaeng.github.io/affiliate-liff/logo-green.png" alt="Dentiste'">
+      <h1>Dentiste Affiliate Center</h1><p>เข้าสู่ระบบด้วยบัญชี Gmail ที่ได้รับสิทธิ์</p>
+      <div class="gbtn" id="gbtn"><span class="muted" style="font-size:13px;align-self:center">กำลังโหลดปุ่ม Google…</span></div>
+      <div class="lerr" id="lerr"></div>
+      <div class="lfoot">เฉพาะทีมงาน · ขอสิทธิ์ได้จากผู้ดูแลระบบ</div></div>`;
+    document.body.appendChild(box);
+  }
+  box.hidden = false;
+  const e = $('#lerr'); e.textContent = err || ''; e.classList.toggle('show', !!err);
+  if (AUTH.pending) return AUTH.pending;
+  return AUTH.pending = new Promise((resolve, reject) => {
+    if (!GOOGLE_CLIENT_ID) { $('#gbtn').innerHTML = ''; e.textContent = 'ยังไม่ได้ตั้งค่า Google Client ID ใน admin.js'; e.classList.add('show'); return; }
+    loadGis().then(() => {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID, auto_select: true, cancel_on_tap_outside: false, itp_support: true, use_fedcm_for_prompt: true,
+        callback: r => {
+          if (!r || !r.credential) return;
+          saveToken(r.credential); box.hidden = true; AUTH.pending = null; resolve(r.credential);
+        },
+      });
+      $('#gbtn').innerHTML = '';
+      google.accounts.id.renderButton($('#gbtn'), { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', logo_alignment: 'left', locale: 'th', width: 280 });
+      if (!err) google.accounts.id.prompt(); // One Tap — เข้าต่อได้ทันทีถ้าเคยล็อกอินไว้
+    }).catch(x => { e.textContent = x.message; e.classList.add('show'); AUTH.pending = null; reject(x); });
+  });
+}
+function getToken(err) { return !err && tokenOk(AUTH.token) ? Promise.resolve(AUTH.token) : showLogin(err); }
+async function webCall(action, body, tries) {
+  tries = tries || 0;
+  const tok = await getToken(tries ? AUTH.lastErr : '');
+  let r;
+  try {
+    const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'admin', cmd: action, googleToken: tok, payload: body ? JSON.stringify(body) : '' }) });
+    r = await res.json();
+  } catch (e) { throw new Error('เชื่อมต่อระบบไม่ได้ — ลองใหม่อีกครั้ง'); }
+  if (r.ok) return r.data;
+  const m = String(r.error || 'เกิดข้อผิดพลาด');
+  if (/^(LOGIN_REQUIRED|NO_ACCESS):/.test(m) && tries < 3) {
+    saveToken(null); AUTH.lastErr = m.replace(/^\w+:\s*/, '');
+    if (/^NO_ACCESS/.test(m) && window.google && google.accounts) google.accounts.id.disableAutoSelect();
+    return webCall(action, body, tries + 1);
+  }
+  throw new Error(m.replace(/^\w+:\s*/, ''));
+}
+function logout() {
+  saveToken(null);
+  if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+  location.reload();
 }
 const PEND = {};
 function load(key, force) {
@@ -150,7 +244,7 @@ async function pageHome(force) {
 function stageBadge(s) { return `<span class="badge ${STAGE_CLS[s] || ''}">${esc(STAGE_TH[s] || s || '-')}</span>`; }
 function fail(e) {
   app.innerHTML = /สิทธิ์|บัญชี Google/.test(e.message)
-    ? `<div class="deny card"><h2 style="justify-content:center">ไม่มีสิทธิ์เข้าใช้งาน</h2><p class="muted">${esc(e.message)}</p></div>`
+    ? `<div class="deny card"><h2 style="justify-content:center">ไม่มีสิทธิ์เข้าใช้งาน</h2><p class="muted">${esc(e.message.replace(/^[A-Z_]+:\s*/, ''))}</p></div>`
     : `<div class="card empty">เกิดข้อผิดพลาด: ${esc(e.message)}<br><br><button class="btn line" onclick="go(S.page)">ลองใหม่</button></div>`;
 }
 
@@ -583,11 +677,17 @@ const PAGES = { home: pageHome, creators: pageCreators, samples: pageSamples, vi
 document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(a.dataset.go); }));
 $('#burger').addEventListener('click', () => $('#side').classList.toggle('show'));
 (async function boot() {
-  if (MOCK) { const b = document.createElement('div'); b.className = 'mockbar'; b.textContent = 'โหมดตัวอย่าง (ข้อมูลจำลอง) — ใช้งานจริงผ่านลิงก์ Admin Center ของ Apps Script'; document.body.appendChild(b); }
+  if (MOCK) { const b = document.createElement('div'); b.className = 'mockbar'; b.textContent = 'โหมดตัวอย่าง (ข้อมูลจำลอง) — ใช้งานจริงที่ admin.html (ล็อกอินด้วย Gmail)'; document.body.appendChild(b); }
   try {
     S.boot = await call('boot');
     if (S.boot.home) S.cache.home = S.boot.home;
     $('#mee').textContent = S.boot.me; $('#mei').textContent = S.boot.me.charAt(0).toUpperCase();
+    if (WEB) {
+      const pic = jwtPayload(AUTH.token || '').picture;
+      if (pic) { $('#mei').classList.add('pic'); $('#mei').style.backgroundImage = `url("${pic}")`; }
+      const lo = document.createElement('button'); lo.className = 'logout'; lo.textContent = 'ออกจากระบบ'; lo.title = 'ออกจากระบบ ' + S.boot.me;
+      lo.addEventListener('click', logout); document.querySelector('.top .me').after(lo);
+    }
     $('#sheetlink').href = $('#sheetlink2').href = S.boot.sheet_url;
     go('home');
     // โหลดหน้าที่ใช้บ่อยล่วงหน้า เพื่อให้กดเมนูแล้วเปิดได้ทันที
