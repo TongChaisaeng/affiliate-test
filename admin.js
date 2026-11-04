@@ -2,7 +2,7 @@
 const RUN = window.google && google.script && google.script.run;
 const MOCK = !RUN && /[?&]mock=1\b/.test(location.search); // ?mock=1 = ข้อมูลจำลอง
 const WEB = !RUN && !MOCK; // เปิดบนโดเมนของเรา → ล็อกอินด้วย Gmail แล้วเรียก API ผ่าน fetch
-const API_URL = 'https://script.google.com/macros/s/AKfycbwZYpEBmFgLHa85fLGCe_m-_iq3DA_TMjVpmx_ERLBB_S2WpNef7toQzSBE3kNFVFfSIA/exec';
+const API_URL = 'https://dentiste-affiliate-api.pitaxpong0130.workers.dev';
 const GOOGLE_CLIENT_ID = '49875087354-0j3nlq0q3ljk391a6u046kj37b3td70e.apps.googleusercontent.com'; // OAuth Web client "Dentiste Affiliate Center" (ต้องตรงกับ ADMIN_GOOGLE_CLIENT_ID ใน Apps Script)
 const $ = s => document.querySelector(s);
 const app = $('#app');
