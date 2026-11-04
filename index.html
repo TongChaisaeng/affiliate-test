@@ -201,6 +201,26 @@
   .tm-hero { padding-bottom: 2px; }
   .tm-logo { display: block; width: 58%; max-width: 230px; height: auto; margin: 14px 0 10px; border-radius: 18px; border: 2.5px solid var(--ink2); box-shadow: 4px 4px 0 var(--ink2); }
   .tm-hero .ttl { font-size: 20px; }
+  .tmw-hero { position: relative; overflow: hidden; isolation: isolate; background: #007864; color: #fff; border-radius: 30px; box-shadow: 0 24px 48px rgba(0, 60, 50, .22); padding: 22px 18px 26px; margin: 4px 0 18px; text-align: center; }
+  .tmw-hero::before { content: ''; position: absolute; z-index: -1; width: 520px; height: 520px; border-radius: 50%; background: #005A4B; right: -220px; top: -230px; }
+  .tmw-hero::after { content: ''; position: absolute; z-index: -1; width: 380px; height: 380px; border-radius: 50%; background: rgba(217, 255, 74, .07); left: -190px; bottom: -210px; }
+  .tmw-brand { display: flex; justify-content: center; align-items: center; gap: 10px; }
+  .tmw-brand img { height: 24px; width: auto; } .tmw-brand i { width: 1.5px; height: 18px; background: rgba(255, 255, 255, .6); }
+  .tmw-brand span { font: 800 11px 'Montserrat', sans-serif; letter-spacing: .04em; }
+  .tmw-logo { display: block; width: 100%; max-width: 250px; height: auto; margin: 18px auto 18px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 40, 32, .35), 0 0 0 6px rgba(255, 255, 255, .12); }
+  .tmw-k { display: inline-block; background: var(--lime); color: var(--ink2); font: 800 11.5px 'Montserrat', sans-serif; letter-spacing: .12em; padding: 3px 12px; border-radius: 999px; border: 2px solid var(--ink2); box-shadow: 3px 3px 0 var(--ink2); transform: rotate(-3deg); }
+  .tmw-hero h1 { margin: 14px 0 0; font-size: 28px; font-weight: 900; line-height: 1.2; color: #fff; }
+  .tmw-hero h1 small { display: block; font: 800 12px 'Montserrat', sans-serif; letter-spacing: .1em; color: var(--lime); margin-bottom: 6px; }
+  .tmw-hero p { margin: 10px auto 0; font-size: 15px; line-height: 1.55; opacity: .95; max-width: 420px; } .tmw-hero p b { color: var(--lime); }
+  .tmw-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .tmw-stats div { background: #fff; color: var(--ink2); border-radius: 18px; padding: 10px 12px; }
+  .tmw-stats b { display: block; font: 900 28px/1.1 'Montserrat', 'Noto Sans Thai', sans-serif; color: #007864; }
+  .tmw-stats span { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+  .tmw-acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 18px; }
+  .tmw-btn { min-height: 46px; padding: 0 20px; border-radius: 999px; font: 800 15px inherit; font-family: inherit; border: 0; cursor: pointer; }
+  .tmw-btn.lime { background: var(--lime); color: var(--ink2); box-shadow: 0 10px 24px rgba(0, 30, 25, .25); }
+  .tmw-btn.o { background: transparent; color: #fff; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .7); }
+  .tmw-joined { display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px; border-radius: 999px; background: #fff; color: #007864; font-weight: 800; font-size: 15px; }
   .tm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .tm-pc { background: var(--card); border-radius: 20px; padding: 10px 10px 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; position: relative; }
   .tm-pc .tm-hl { position: absolute; left: 10px; top: 10px; z-index: 1; font: 800 10px 'Montserrat', sans-serif; letter-spacing: .06em; background: var(--lime); color: var(--ink2); border: 1.5px solid var(--ink2); border-radius: 999px; padding: 1px 8px; }
@@ -1152,13 +1172,14 @@ function pageThaimart(d, p) {
   else if (d.member_status === 'pending') s1 = '<div class="muted">เข้าร่วมได้หลังทีมอนุมัติสมาชิก</div>';
   else s1 = '<div class="muted">สมัครสมาชิกก่อน (ฟรี) แล้วกลับมากดเข้าร่วม</div><button class="btn" id="toreg" style="margin-top:10px">สมัครสมาชิก</button>';
   const lock = joined ? '' : 'lock';
-  app.innerHTML = '<div class="boost-hero tm-hero">'
-    + '<div class="bh-top"><img src="/logo-white.png" alt="Dentiste\'" onerror="this.remove()"><span>Affiliate+</span></div>'
-    + '<span class="bh-tag">CREATOR THAIMART</span>'
-    + '<img class="tm-logo" src="/club/campaigns/creator-thaimart/logo.webp" alt="Thaimart Creator Affiliate &amp; Commerce Fest">'
-    + '<div class="ttl">รับสินค้ารีวิวฟรีที่หน้างาน</div>'
-    + '<div class="bh-comm"><div><span>ค่าคอม</span><b>13%</b></div></div>'
-    + '<div class="chips2"><span class="pill">' + (joined ? 'เข้าร่วมแล้ว' : 'เปิดรับแล้ว') + '</span><span class="pill o">ค่าคอม Affiliate 13%</span></div>'
+  app.innerHTML = '<div class="tmw-hero">'
+    + '<div class="tmw-brand"><img src="/logo-white.png" alt="Dentiste\'" onerror="this.remove()"><i></i><span>AFFILIATE+</span></div>'
+    + '<img class="tmw-logo" src="/club/campaigns/creator-thaimart/logo.webp" alt="Thaimart Creator Affiliate &amp; Commerce Fest">'
+    + '<span class="tmw-k">DENTISTE\' × THAIMART</span>'
+    + '<h1><small>CREATOR AFFILIATE &amp; COMMERCE FEST</small>รับสินค้าไปรีวิวฟรี<br>ที่หน้างาน</h1>'
+    + '<p>กดเข้าร่วมแคมเปญก่อน แล้วกดรับสินค้า Highlight ของ Dentiste\' มารับของจริงที่บูธในงาน ทำคลิปติดตะกร้า รับ<b>ค่าคอม Affiliate 13%</b></p>'
+    + '<div class="tmw-stats"><div><b>13%</b><span>ค่าคอม Affiliate</span></div><div><b>ฟรี!</b><span>สินค้ารีวิวที่หน้างาน</span></div></div>'
+    + '<div class="tmw-acts">' + (joined ? '<span class="tmw-joined">✓ เข้าร่วมแล้ว</span>' : '<button class="tmw-btn lime" data-tmgo=".steps3">เข้าร่วมแคมเปญ</button>') + '<button class="tmw-btn o" data-tmgo=".tm-grid">ดูสินค้า Highlight</button></div>'
     + '</div>'
     + '<div class="sec" style="margin-top:4px"><b>ทำ 4 ขั้นนี้</b>' + (d.total_joined ? '<span class="muted">เข้าร่วมแล้ว ' + fmt(d.total_joined) + ' คน</span>' : '') + '</div>'
     + '<div class="card steps3">'
@@ -1168,6 +1189,7 @@ function pageThaimart(d, p) {
     + '<div class="st ' + lock + '"><span class="n">4</span><div class="body"><b>ทำคลิป รับค่าคอม 13%</b><div class="muted">โพสต์คลิป TikTok ติดตะกร้า Dentiste\' แล้วส่งลิงก์คลิปในแอป</div></div></div>'
     + '</div>'
     + tmProductsHTML(joined) + tmBriefHTML();
+  app.querySelectorAll('[data-tmgo]').forEach(b => b.addEventListener('click', () => { const t = $(b.dataset.tmgo); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'center' }); }));
   app.querySelectorAll('[data-tmi]').forEach(b => b.addEventListener('click', () => tmSheet(TM_PRODUCTS[+b.dataset.tmi], joined)));
   app.querySelectorAll('[data-tmc]').forEach(b => b.addEventListener('click', () => tmSheet(TM_PRODUCTS[+b.dataset.tmc], joined)));
   const j = $('#join'); if (j) j.addEventListener('click', () => act(j, async () => { await api('joinProgram', { program_id: p.program_id }); toast('เข้าร่วมแล้ว กดรับสินค้า Highlight ได้เลย'); pageBoost(); }));
