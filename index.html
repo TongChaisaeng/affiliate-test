@@ -201,6 +201,23 @@
   .tm-hero { padding-bottom: 2px; }
   .tm-logo { display: block; width: 58%; max-width: 230px; height: auto; margin: 14px 0 10px; border-radius: 18px; border: 2.5px solid var(--ink2); box-shadow: 4px 4px 0 var(--ink2); }
   .tm-hero .ttl { font-size: 20px; }
+  .tm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tm-pc { background: var(--card); border-radius: 20px; padding: 10px 10px 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; position: relative; }
+  .tm-pc .tm-hl { position: absolute; left: 10px; top: 10px; z-index: 1; font: 800 10px 'Montserrat', sans-serif; letter-spacing: .06em; background: var(--lime); color: var(--ink2); border: 1.5px solid var(--ink2); border-radius: 999px; padding: 1px 8px; }
+  .tm-im { aspect-ratio: 1; border-radius: 14px; background: #EEF5F2; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .tm-im img { width: 82%; height: 82%; object-fit: contain; }
+  .tm-pc b { margin-top: 8px; font-size: 14.5px; line-height: 1.3; cursor: pointer; }
+  .tm-pc span { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
+  .tm-pc .btn { margin-top: auto; min-height: 40px; font-size: 14px; }
+  .tm-bf summary { display: flex; flex-direction: column; gap: 6px; cursor: pointer; list-style: none; }
+  .tm-bf summary::-webkit-details-marker { display: none; }
+  .tm-tag { align-self: flex-start; font: 800 10px 'Montserrat', sans-serif; letter-spacing: .06em; background: var(--lime); color: var(--ink2); border: 1.5px solid var(--ink2); border-radius: 999px; padding: 1px 8px; }
+  .tm-km { margin: 12px 0 8px; padding: 9px 12px; border-left: 4px solid #007864; background: #EEF5F2; border-radius: 0 12px 12px 0; font-weight: 700; font-size: 14px; }
+  .tm-ul { margin: 8px 0 0; padding-left: 20px; font-size: 13.5px; color: #33443F; } .tm-ul li + li { margin-top: 4px; }
+  .tm-hk, .tm-no { margin-top: 8px; font-size: 13px; color: #33443F; } .tm-no { color: #9A3B2B; }
+  .tm-ticket { margin: 12px 0 4px; padding: 14px; border-radius: 16px; background: #007864; color: #fff; display: grid; gap: 4px; border: 2px dashed var(--lime); }
+  .tm-ticket span { font: 800 10.5px 'Montserrat', sans-serif; letter-spacing: .08em; color: var(--lime); }
+  .tm-ticket b { font-size: 17px; } .tm-ticket small { opacity: .85; } .tm-ticket code { color: var(--lime); }
   @keyframes hover { 50% { transform: rotate(38deg) translate(4px, -8px); } }
   .ticker { position: relative; z-index: 2; margin: 0 -18px; background: var(--ink2); color: var(--lime); overflow: hidden; white-space: nowrap; font-weight: 800; font-size: 13px; padding: 7px 0; }
   .ticker > div { display: inline-block; animation: marquee 16s linear infinite; }
@@ -1063,6 +1080,68 @@ async function pageBoost() {
 }
 
 /* ---------- แคมเปญ Creator Thaimart (program_id THAIMART) ---------- */
+/* สินค้าแจกรีวิว + Brief — ใช้เนื้อหาเดียวกับหน้าเว็บ /club/campaigns/creator-thaimart/ */
+const TM_CDN = 'https://cdn.shopify.com/s/files/1/0651/7951/7094/files/';
+const TM_PRODUCTS = [
+  { sku: 'purple', tag: 'PURPLE', name: 'Whitening Purple Toothpaste', sub: 'ยาสีฟันม่วง ลดโทนฟันเหลือง', img: 'purpletp.jpg?v=1728016813', url: 'purple-toothpaste',
+    km: 'ฟันดูขาวสว่างขึ้นตั้งแต่ครั้งแรก ด้วยหลักสีตรงข้าม — สีม่วงช่วยหักล้างโทนเหลือง',
+    pts: ['เทคโนโลยี Color Correcting ลดโทนฟันเหลือง ฟันดูขาวสว่างทันที', 'ช่วยขจัดคราบจากชา กาแฟ อาหาร · ไม่มีเปอร์ออกไซด์ อ่อนโยน ใช้ได้ทุกวัน', 'มีฟลูออไรด์ ช่วยป้องกันฟันผุ ลมหายใจหอมสดชื่นนาน'],
+    hk: 'Before/After แปรงครั้งแรกในแสงเดียวกัน · สายกาแฟ/ชานม “ฟันเหลืองต้องดู”',
+    no: '“ฟอกฟันขาว” “ฟันขาวถาวร” “ขาวขึ้น X เฉด” — ให้ใช้ “ฟันดูขาวสว่างขึ้น / ลดโทนเหลือง” (เป็นผลทางสายตา ไม่ใช่การฟอกสีฟัน)' },
+  { sku: 'vvip', tag: 'VVIP', name: 'VVIP Toothbrush', sub: 'แปรงหัวใหญ่ 43 มม.', img: 'vvip1.png?v=1790067766', url: 'dentiste-vvip-toothbrush',
+    km: 'หัวแปรงยาว 43 มม. แปรงทีเดียวได้ 5 ซี่ เร็วขึ้นแต่ยังสะอาดลึก',
+    pts: ['หัวแปรงใหญ่พิเศษ 43 มม. ครอบคลุมกว้าง ประหยัดเวลาแปรงตอนเช้า', 'ขนแปรงเรียวนุ่ม 0.15 มม. เข้าซอกฟันและแนวเหงือก อ่อนโยนต่อเหงือก', 'ดีไซน์พรีเมียม มี 3 สี ฟ้า / ม่วง / น้ำตาล'],
+    hk: 'วางเทียบขนาดกับแปรงทั่วไป · Morning routine คนรีบ “แปรง 2 นาทีแบบไม่ต้องรีบ”',
+    no: 'อ้างว่ารักษาโรคเหงือก/ฟันผุ หรือ “ดีกว่าแปรงยี่ห้ออื่น” แบบระบุชื่อ' },
+  { sku: 'max', tag: 'MAX', name: 'Anticavity Max Fluoride', sub: 'ยาสีฟันฟลูออไรด์ 1,500 ppm', img: '2_new.png?v=1784089911', url: 'dentiste-anticavity-max-fluoride-toothpaste',
+    km: 'ฟลูออไรด์ 1,500 ppm สูงสุดที่อนุญาต สูตรแปรงแห้ง — แปรงแล้วไม่ต้องบ้วนน้ำ',
+    pts: ['ฟลูออไรด์ 1,500 ppm ช่วยเสริมเคลือบฟัน ลดความเสี่ยงฟันผุซ้ำ', 'สูตร Dry Brushing: แปรงแล้วบ้วนแต่ฟอง ไม่บ้วนน้ำ ฟลูออไรด์อยู่บนผิวฟันนานขึ้น', 'ไม่มี SLS · Food Grade · สมุนไพร 14 ชนิด ลมหายใจหอมสดชื่น'],
+    hk: '“รู้ไหม แปรงฟันแล้วบ้วนน้ำ ฟลูออไรด์หายหมด” สอนวิธีแปรงแห้ง 4 ขั้น (เลี่ยงกิน-ดื่ม 30 นาทีหลังแปรง)',
+    no: '“รักษาฟันผุ” “ฟันผุหาย” — ใช้ “ช่วยป้องกัน / ลดความเสี่ยงฟันผุ”' },
+  { sku: 'care', tag: 'PREMIUM CARE', name: 'Plus White Premium Care', sub: 'ยาสีฟันสมุนไพร 14 ชนิด', img: '1_a62f3210-771c-4bc1-971d-0e9bbe7eda44.jpg?v=1754390364', url: 'dentiste-premium-care-toothpaste-tube',
+    km: 'ดูแลครบในหลอดเดียว — สมุนไพร 14 ชนิด + Postbiotics ช่วยสมดุลจุลินทรีย์ในช่องปาก',
+    pts: ['สมุนไพร 14 ชนิด + ไซลิทอล + Zinc ช่วยลดกลิ่นปากและคราบพลัค', 'ฟลูออไรด์ 1,100 ppm ช่วยป้องกันฟันผุ · วิตามินซีช่วยดูแลเหงือก', 'Micro Silica ขจัดคราบอย่างอ่อนโยน ไม่ทำลายเคลือบฟัน'],
+    hk: '“ยาสีฟันประจำบ้าน ใช้ได้ทั้งครอบครัว” · เช็กลมหายใจหลังมื้อกระเทียม/อาหารรสจัด',
+    no: '“รักษาเหงือกอักเสบ” “ฆ่าเชื้อ 100%” — ใช้ “ช่วยลดการสะสมของแบคทีเรีย”' },
+  { sku: 'advcare', tag: 'ADVANCED CARE', name: 'Advanced Care Toothbrush', sub: 'แปรงหัวกว้าง ฐานบาง 3 มม.', img: 'DENAdvancedCare-02.png?v=1750329385', url: 'advance-premium-toothbrush-with-blister-card',
+    km: 'หัวแปรงกว้าง 15 มม. ฐานบางแค่ 3 มม. เข้าซอกแคบได้ง่าย',
+    pts: ['หัวแปรงกว้าง 15 มม. ครอบคลุมผิวฟันมากขึ้น แปรงเร็วและทั่วถึง', 'ฐานหัวแปรงบาง 3 มม. เข้าถึงฟันกรามด้านในและจุดแคบ', 'ขนแปรงเกลียวเรียวเล็ก 0.01 มม. · ด้ามจับถนัดมือ · 3 สี ม่วง / ฟ้า / เทา'],
+    hk: 'ซูมเทียบความบางของหัวแปรง · จับคู่กับยาสีฟัน Dentiste\' เป็นเซ็ตแปรงฟันครบ',
+    no: '“ขจัดหินปูน” — ใช้ “ช่วยลดการสะสมของคราบพลัคที่ทำให้เกิดหินปูน”' },
+];
+const TM_CHECK = ['ติดตะกร้าสินค้าจากร้าน Dentiste\' ทางการบน TikTok Shop ให้ตรงกับสินค้าที่รีวิว', 'ให้เห็นแพ็กเกจ/โลโก้ Dentiste\' ชัดใน 3 วินาทีแรก และใช้สินค้าจริงในคลิป', 'เล่าจากประสบการณ์ตัวเอง ไม่ตัดต่อภาพให้ฟันขาวเกินจริง ไม่ใช้ฟิลเตอร์ปรับสีฟัน', 'ไม่ใช้คำว่า รักษา / หายขาด / ถาวร / ดีที่สุด / อันดับ 1 หรือพาดพิงแบรนด์อื่น', 'โพสต์แล้วส่งลิงก์คลิปในแอป LINE ภายใน 7 วันหลังรับสินค้า'];
+const TM_TNC = ['เปิดสำหรับสมาชิก Dentiste\' Affiliate+ ที่กดเข้าร่วมแคมเปญ Creator Thaimart ใน LINE @853gvpal แล้วเท่านั้น', 'รับสินค้าได้ที่บูธ Dentiste\' ในงาน Thaimart Creator Affiliate & Commerce Fest เท่านั้น โดยแสดงหน้าจอการกดรับสินค้าใน LINE กับเจ้าหน้าที่ (วัน–เวลาและสถานที่จัดงานแจ้งทาง LINE OA)', 'สินค้ามีจำนวนจำกัด 1 สิทธิ์ต่อ 1 สมาชิกต่อ 1 รายการ หมดแล้วหมดเลย', 'ต้องส่งลิงก์คลิปรีวิวที่ติดตะกร้าสินค้า Dentiste\' ภายใน 7 วันหลังรับสินค้า', 'ค่าคอม Affiliate 13% คิดจากคำสั่งซื้อที่สำเร็จและไม่มีการคืนเงิน/คืนสินค้า ตามรายงาน TikTok Shop', 'บริษัทฯ ขอสงวนสิทธิ์ในการเปลี่ยนแปลงเงื่อนไข และตัดสิทธิ์ผู้ที่ทุจริตหรือละเมิดนโยบายของ TikTok'];
+const tmImg = x => TM_CDN + x.img + '&width=400';
+function tmProductsHTML(joined) {
+  return '<div class="sec"><b>สินค้า Highlight · กดรับสินค้า</b><span class="muted">' + TM_PRODUCTS.length + ' รายการ</span></div>'
+    + '<div class="tm-grid">' + TM_PRODUCTS.map((x, i) => '<div class="tm-pc"><span class="tm-hl">HIGHLIGHT</span>'
+      + '<div class="tm-im" data-tmi="' + i + '"><img src="' + tmImg(x) + '" alt="Dentiste\' ' + esc(x.name) + '" loading="lazy"></div>'
+      + '<b data-tmi="' + i + '">' + esc(x.name) + '</b><span>' + esc(x.sub) + '</span>'
+      + '<button class="btn' + (joined ? '' : ' ghost') + '" data-tmc="' + i + '">' + (joined ? 'กดรับสินค้า' : 'เข้าร่วมก่อนรับ') + '</button></div>').join('') + '</div>'
+    + '<div class="tiny" style="margin:6px 4px 0">* สินค้ามีจำนวนจำกัด 1 สิทธิ์ต่อ 1 สมาชิก ต่อ 1 รายการ · แตะรูปเพื่อดู Brief</div>';
+}
+function tmBriefHTML() {
+  return '<div class="sec"><b>Brief รีวิว · พูดอะไรดี</b></div>'
+    + TM_PRODUCTS.map(x => '<details class="card tm-bf"><summary><span class="tm-tag">' + esc(x.tag) + '</span><b>' + esc(x.name) + '</b></summary>' + tmBriefBody(x) + '</details>').join('')
+    + '<div class="card"><b>เช็กลิสต์ก่อนโพสต์</b><ul class="tm-ul">' + TM_CHECK.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul></div>'
+    + '<div class="sec"><b>ค่าคอม Affiliate 13%</b></div><div class="card"><ul class="tm-ul" style="margin-top:0"><li>ติดตะกร้าสินค้า Dentiste\' จากร้านทางการบน TikTok Shop รับค่าคอม 13% ทุกออเดอร์ที่สำเร็จ</li><li>ส่งลิงก์คลิปรีวิวในแอป LINE เพื่อให้ทีมนับผลงาน</li></ul></div>'
+    + '<details class="card more-info"><summary>ข้อกำหนดและเงื่อนไข</summary><ol class="tm-ul">' + TM_TNC.map(t => '<li>' + esc(t) + '</li>').join('') + '</ol></details>';
+}
+function tmBriefBody(x) {
+  return '<div class="tm-km">“' + esc(x.km) + '”</div><ul class="tm-ul">' + x.pts.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>'
+    + '<div class="tm-hk"><b>ไอเดียคลิป:</b> ' + esc(x.hk) + '</div><div class="tm-no"><b>เลี่ยง:</b> ' + esc(x.no) + '</div>';
+}
+function tmSheet(x, joined) {
+  const a = (typeof aff === 'function' && aff()) || {};
+  const ticket = joined ? '<div class="tm-ticket"><span>บัตรรับสินค้า · CREATOR THAIMART</span><b>' + esc(x.name) + '</b><div>' + esc(a.full_name || state.lineName || '') + (a.affiliate_id ? ' · <code>' + esc(a.affiliate_id) + '</code>' : '') + '</div><small>แสดงหน้าจอนี้กับเจ้าหน้าที่ที่บูธ Dentiste\' ในงาน</small></div>' : '';
+  const el = openSheet('<div class="sh-img"><img src="' + tmImg(x) + '" alt="' + esc(x.name) + '"></div><b style="font-size:17px">' + esc(x.name) + '</b><div class="muted">' + esc(x.sub) + '</div>'
+    + ticket + tmBriefBody(x)
+    + (joined ? '' : '<button class="btn" id="tmj" style="margin-top:14px">เข้าร่วมแคมเปญก่อน</button>')
+    + '<button class="btn ghost" id="tmw" style="margin-top:8px">ดูสินค้าบนเว็บ Dentiste\'</button>');
+  el.querySelector('#tmw').addEventListener('click', () => openExternal('https://dentiste-oralcare.com/products/' + x.url));
+  const j = el.querySelector('#tmj'); if (j) j.addEventListener('click', () => { closeSheet(); const t = $('.steps3'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+}
+
 function pageThaimart(d, p) {
   header(null);
   const joined = !!d.joined, member = d.member_status === 'approved';
@@ -1084,14 +1163,15 @@ function pageThaimart(d, p) {
     + '<div class="sec" style="margin-top:4px"><b>ทำ 4 ขั้นนี้</b>' + (d.total_joined ? '<span class="muted">เข้าร่วมแล้ว ' + fmt(d.total_joined) + ' คน</span>' : '') + '</div>'
     + '<div class="card steps3">'
     + '<div class="st ' + (joined ? 'done' : '') + '"><span class="n">' + (joined ? '✓' : 1) + '</span><div class="body"><b>เข้าร่วมแคมเปญ</b>' + s1 + '</div></div>'
-    + '<div class="st ' + lock + '"><span class="n">2</span><div class="body"><b>กดรับสินค้า Highlight</b><div class="muted">เลือกสินค้าที่อยากรีวิว แล้วกดรับสินค้า</div>' + (joined ? '<button class="btn ghost" id="claim" style="margin-top:10px">กดรับสินค้า</button>' : '') + '</div></div>'
+    + '<div class="st ' + lock + '"><span class="n">2</span><div class="body"><b>กดรับสินค้า Highlight</b><div class="muted">เลือกสินค้าด้านล่าง กด "กดรับสินค้า" แล้วเก็บหน้าจอบัตรรับสินค้าไว้</div></div></div>'
     + '<div class="st ' + lock + '"><span class="n">3</span><div class="body"><b>รับของที่หน้างาน</b><div class="muted">แสดงหน้าจอ LINE ที่บูธ Dentiste\' ในงาน รับสินค้าไปรีวิวฟรี</div></div></div>'
     + '<div class="st ' + lock + '"><span class="n">4</span><div class="body"><b>ทำคลิป รับค่าคอม 13%</b><div class="muted">โพสต์คลิป TikTok ติดตะกร้า Dentiste\' แล้วส่งลิงก์คลิปในแอป</div></div></div>'
     + '</div>'
-    + '<details class="card more-info"><summary>' + esc(p.headline || 'รายละเอียดแคมเปญ') + '</summary><div class="details">' + esc(p.details || '') + '</div></details>';
+    + tmProductsHTML(joined) + tmBriefHTML();
+  app.querySelectorAll('[data-tmi]').forEach(b => b.addEventListener('click', () => tmSheet(TM_PRODUCTS[+b.dataset.tmi], joined)));
+  app.querySelectorAll('[data-tmc]').forEach(b => b.addEventListener('click', () => tmSheet(TM_PRODUCTS[+b.dataset.tmc], joined)));
   const j = $('#join'); if (j) j.addEventListener('click', () => act(j, async () => { await api('joinProgram', { program_id: p.program_id }); toast('เข้าร่วมแล้ว กดรับสินค้า Highlight ได้เลย'); pageBoost(); }));
   const g = $('#toreg'); if (g) g.addEventListener('click', () => go('register'));
-  const c = $('#claim'); if (c) c.addEventListener('click', () => go('catalog'));
 }
 
 /* ---------- ฉัน ---------- */
