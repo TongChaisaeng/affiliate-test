@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dentiste Affiliate+</title>
+<link rel="preconnect" href="https://dentiste-affiliate-api.pitaxpong0130.workers.dev" crossorigin>
+<link rel="preconnect" href="https://api.line.me">
+<link rel="preconnect" href="https://liffsdk.line-scdn.net">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -616,12 +619,23 @@ const pkey = (a, d) => a + '|' + JSON.stringify(d || {});
 const clone = v => (v == null ? v : JSON.parse(JSON.stringify(v)));
 const SNAP_KEY = 'daff_snap_v1';
 
-async function rawApi(action, data) {
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(Object.assign({ action, idToken: liff.getIDToken() }, data || {})),
-  });
+async function rawApi(action, data, retried) {
+  if (window.__liffReady) await window.__liffReady;
+  const ctl = window.AbortController ? new AbortController() : null;
+  const tm = ctl ? setTimeout(() => ctl.abort(), 12000) : 0;
+  let res;
+  try {
+    res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action, idToken: liff.getIDToken() }, data || {})),
+      signal: ctl ? ctl.signal : undefined,
+    });
+  } catch (e) {
+    const canRetry = !retried && (action === 'bundle' || READ_ACTIONS.indexOf(action) !== -1);
+    if (canRetry) return rawApi(action, data, true);
+    throw new Error('เชื่อมต่อช้าหรือขาดการเชื่อมต่อ กรุณาลองใหม่');
+  } finally { clearTimeout(tm); }
   const j = await res.json();
   if (!j.ok) throw new Error(j.error || 'เกิดข้อผิดพลาด');
   return j.data;
@@ -684,6 +698,12 @@ function routePage() {
   return approved;
 }
 
+function relogin() {
+  try { if (sessionStorage.getItem('daff_relog')) return false; sessionStorage.setItem('daff_relog', '1'); } catch (e) { return false; }
+  try { liff.logout(); } catch (e) { /* ignore */ }
+  liff.login({ redirectUri: location.href });
+  return true;
+}
 async function boot() {
   try {
     if (MOCK) {
@@ -693,8 +713,22 @@ async function boot() {
       routePage(); go(state.page);
       return;
     }
-    await liff.init({ liffId: LIFF_ID });
+    // หน้าเปิดผ่าน liff.line.me จะมี ?liff.state=... → อ่าน page/c/program จากตรงนั้นเพื่อวาดหน้าได้ทันที
+    const ls = params.get('liff.state');
+    if (ls) { const q = new URLSearchParams(ls.replace(/^[^?]*\?/, '')); state.page = q.get('page') || state.page; state.ref = q.get('ref') || state.ref; state.campaign = q.get('c') || state.campaign; state.prog = q.get('program') || state.prog; }
+    let early = false;
+    let hasSnap = false; try { hasSnap = !!localStorage.getItem(SNAP_KEY); } catch (e) { /* ignore */ }
+    if (!hasSnap && state.page === 'register') { state.me = { affiliate: null, lead_ref: '', name: '' }; early = true; go('register'); }
+    else if (!hasSnap && state.page === 'boost' && state.prog === 'THAIMART') { early = true; header(null); pageThaimart({ member_status: 'loading', joined: false }, { program_id: 'THAIMART', state: 'open' }); }
+    window.__liffReady = liff.init({ liffId: LIFF_ID });
+    await window.__liffReady;
     if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
+    // idToken ที่เก็บไว้หมดอายุ → ล็อกอินใหม่ 1 ครั้ง (ใน LINE ไม่ต้องกดอะไร)
+    try {
+      const tk0 = liff.getDecodedIDToken() || {};
+      if (tk0.exp && tk0.exp * 1000 < Date.now() + 60000) { if (relogin()) return; }
+      else sessionStorage.removeItem('daff_relog');
+    } catch (e) { /* ignore */ }
     // หลัง init, query เดิมจาก liff.state จะกลับมาอยู่ใน location
     const p = new URLSearchParams(location.search);
     state.page = p.get('page') || state.page; state.ref = p.get('ref') || state.ref; state.campaign = p.get('c') || state.campaign; state.prog = p.get('program') || state.prog; if (state.prog) PAGE_CALLS.boost = [['program', { program_id: state.prog }]];
@@ -725,7 +759,9 @@ async function boot() {
     state.me = res[0].data;
     $('#h-title').textContent = state.me.brand || 'Dentiste Affiliate+';
     if (!snap) {
-      state.page = asked; routePage(); go(state.page);
+      const keepForm = early && asked === 'register' && state.page === 'register' && !state.me.affiliate && $('#f');
+      state.page = asked; routePage();
+      if (!keepForm || state.page !== 'register') go(state.page);
     } else if (state.page === shownPage && state.page !== 'register') {
       // ข้อมูลเปลี่ยนจากที่แสดงไว้ → วาดหน้าใหม่ (เฉพาะถ้าผู้ใช้ยังอยู่หน้าเดิม)
       const before = state.page; state.page = asked; routePage();
@@ -743,6 +779,7 @@ async function boot() {
     if (rest.length) await bundle(rest).catch(() => null);
     snapSave(uid);
   } catch (e) {
+    if (/idToken/.test(String(e && e.message)) && relogin()) return;
     app.innerHTML = `<div class="card center"><h2>เปิดหน้าไม่สำเร็จ</h2><p class="muted">${esc(e.message)}</p><button class="btn" onclick="location.reload()">ลองใหม่</button></div>`;
   }
 }
@@ -896,7 +933,7 @@ function pageRegister() {
     ev.preventDefault();
     const fd = new FormData(ev.target);
     const form = { tiktok_username: String(fd.get('tiktok_username') || '').trim().replace(/^@+/, ''), followers: String(fd.get('followers') || '').trim(),
-      consent: !!fd.get('consent'), ref, campaign: state.campaign || '' };
+      consent: !!fd.get('consent'), ref: state.ref || state.me.lead_ref || '', campaign: state.campaign || '' };
     if (!form.tiktok_username) return toast('กรุณากรอก TikTok username', true);
     if (!form.followers) return toast('กรุณากรอกจำนวนผู้ติดตาม', true);
     if (!form.consent) return toast('กรุณากดยินยอมก่อนสมัคร', true);
@@ -1170,6 +1207,7 @@ function pageThaimart(d, p) {
   else if (p.state === 'ended') s1 = '<div class="muted">ปิดรับแล้ว</div>';
   else if (member) s1 = '<div class="muted">ต้องกดเข้าร่วมก่อน จึงจะกดรับสินค้าที่หน้างานได้</div><button class="btn" id="join" style="margin-top:10px">เข้าร่วมแคมเปญ</button>';
   else if (d.member_status === 'pending') s1 = '<div class="muted">เข้าร่วมได้หลังทีมอนุมัติสมาชิก</div>';
+  else if (d.member_status === 'loading') s1 = '<div class="muted">กำลังตรวจสอบสถานะสมาชิก…</div>';
   else s1 = '<div class="muted">สมัครสมาชิกก่อน (ฟรี) แล้วกลับมากดเข้าร่วม</div><button class="btn" id="toreg" style="margin-top:10px">สมัครสมาชิก</button>';
   const lock = joined ? '' : 'lock';
   app.innerHTML = '<div class="tmw-hero">'
