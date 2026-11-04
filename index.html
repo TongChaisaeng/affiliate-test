@@ -509,6 +509,7 @@ const PAGES = { register: pageRegister, me: pageMe, catalog: pageCatalog, boost:
   requests: pageRequests, history: pageHistory, rewards: pageRewards, invite: pageInvite, leaderboard: pageLeaderboard, profile: pageProfile };
 const TAB_OF = { requests: 'account', rewards: 'account', invite: 'account', history: 'account', profile: 'account', leaderboard: 'me' };
 const params = new URLSearchParams(location.search);
+const POINTS = false; // ปิดระบบแต้มชั่วคราว (4 พ.ย. 69) — เปลี่ยนเป็น true เพื่อเปิดกลับ
 const MOCK = params.get('mock') === '1' || LIFF_ID.startsWith('YOUR_');
 const state = { me: null, page: params.get('page') || 'register', ref: params.get('ref') || '', campaign: params.get('c') || '', prog: params.get('program') || '' };
 
@@ -533,6 +534,7 @@ function header(title, sub, back) {
 }
 function setPts(n) {
   const t = $('#tbpts');
+  if (!POINTS) { t.hidden = true; return; }
   t.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></svg>${fmt(n)}`;
   t.hidden = false; t.onclick = () => go('rewards');
 }
@@ -710,6 +712,7 @@ async function boot() {
 
 function go(page) {
   closeSheet();
+  if (!POINTS && (page === 'rewards' || page === 'history')) page = 'account';
   state.page = PAGES[page] ? page : 'me';
   const approved = aff().status === 'approved';
   $('#nav').hidden = !approved; document.body.classList.toggle('nonav', !approved);
@@ -837,7 +840,7 @@ function pageRegister() {
       <div class="perks">
         <div class="perk">${ICON.box}รับสินค้า<br>ตัวอย่างฟรี</div>
         <div class="perk">${ICON.coin}ค่าคอม<br>+ Bonus</div>
-        <div class="perk">${ICON.gift}สะสมแต้ม<br>แลกรางวัล</div>
+        ${POINTS ? `<div class="perk">${ICON.gift}สะสมแต้ม<br>แลกรางวัล</div>` : `<div class="perk">${ICON.gift}แคมเปญ<br>Top Up เงินสด</div>`}
       </div>
       ${STAGE([['spray', 9, 96, -14, .4], ['rinse', 91, 104, 13, 1.5], ['sens', 28, 124, -7, 1.1], ['purple', 72, 124, 7, .7], ['care', 50, 146, 0, 0]], '', SPK(20, 10, '#D9FF4A', .3) + SPK(82, 26, '#fff', 1) + SPK(62, 2, '#D9FF4A', 1.6))}
     </div>
@@ -904,8 +907,8 @@ async function pageMe() {
     // งานที่ควรทำ เรียงตามความสำคัญ — งานแรกเป็นปุ่มใหญ่ ที่เหลือเป็นแถวเล็ก
     const todos = [];
     reqs.filter(r => r.can_submit).forEach(r => todos.push({ icon: ICON.video, warn: r.overdue, lbl: r.overdue ? 'เลยกำหนดส่ง' : 'ทำต่อเลย',
-      t: 'ส่งลิงก์คลิปรีวิว ' + r.product_name, s: r.overdue ? 'ส่งก่อนจึงจะขอสินค้าชิ้นใหม่ได้' : 'ส่งภายใน ' + r.content_due + ' รับแต้มทันทีที่ทีมตรวจ',
-      cta: 'ส่งลิงก์คลิป', run: () => clipSheet('ส่งลิงก์คลิปรีวิว', r.product_name, async url => { await api('submitContent', { request_id: r.request_id, url }); toast('ส่งแล้ว รอทีมตรวจเพื่อรับแต้ม'); pageMe(); }) }));
+      t: 'ส่งลิงก์คลิปรีวิว ' + r.product_name, s: r.overdue ? 'ส่งก่อนจึงจะขอสินค้าชิ้นใหม่ได้' : 'ส่งภายใน ' + r.content_due + (POINTS ? ' รับแต้มทันทีที่ทีมตรวจ' : ''),
+      cta: 'ส่งลิงก์คลิป', run: () => clipSheet('ส่งลิงก์คลิปรีวิว', r.product_name, async url => { await api('submitContent', { request_id: r.request_id, url }); toast('ส่งแล้ว รอทีมตรวจ'); pageMe(); }) }));
     if (p && !pg.joined) todos.push({ join: true, icon: ICON.flame, lbl: 'แคมเปญ', t: 'เข้าร่วม ' + p.title, s: 'รับค่าคอมเพิ่ม ' + (p.extra_commission || '') + ' แค่กดเข้าร่วม', cta: 'เข้าร่วมเลย', run: () => go('boost') });
     else if (p && p.state === 'open' && p.video_target && (m.videos || 0) < p.video_target) todos.push({ icon: ICON.flame, lbl: 'ภารกิจแคมเปญ',
       t: `โพสต์คลิปแคมเปญ (${m.videos || 0}/${p.video_target})`, s: 'ใส่แฮชแท็ก ' + p.hashtag, cta: 'ส่งลิงก์คลิป',
@@ -918,7 +921,7 @@ async function pageMe() {
     app.innerHTML = `
       <div class="hello">
         <div class="hi">สวัสดี คุณ${esc(first(d.affiliate.full_name))}</div>
-        <div class="pts"><b>${fmt(d.affiliate.points)}</b><span>แต้ม</span><button id="toRw">แลกรางวัล</button></div>
+        ${POINTS ? `<div class="pts"><b>${fmt(d.affiliate.points)}</b><span>แต้ม</span><button id="toRw">แลกรางวัล</button></div>` : ''}
         ${STAGE([['mint', 22, 72, -12, .6], ['purple', 80, 72, 12, 1.2], ['care', 51, 92, 0, 0]], 'mini', SPK(4, 6, '#D9FF4A', .2) + SPK(92, 0, '#fff', 1.1))}
       </div>
       <div class="kpis">
@@ -938,7 +941,7 @@ async function pageMe() {
         <div class="bar"><div style="width:${Math.min(100, d.sales_this_month / steps[steps.length - 1].min_sales * 100)}%"></div></div>
         <div class="bsteps">${steps.map(s => `<div class="bstep ${s.step <= cur ? 'hit' : (b.next && s.step === b.next.step ? 'go' : '')}"><div class="t">ขาย ฿${fmt(s.min_sales)}</div><b>+${fmt(s.bonus)}</b></div>`).join('')}</div>
         <p class="tiny" style="margin:10px 0 0">ยอดขายอัปเดตเมื่อทีมนำเข้ารายงานจาก TikTok Shop</p></div>` : ''}`;
-    $('#toRw').addEventListener('click', () => go('rewards'));
+    if ($('#toRw')) $('#toRw').addEventListener('click', () => go('rewards'));
     $('#kRank').addEventListener('click', () => go('leaderboard'));
     $('#kSales').addEventListener('click', () => go('history'));
     const tg = $('#topgo'); if (tg) tg.addEventListener('click', () => top.run());
@@ -989,7 +992,7 @@ function askSample(p) {
     title: 'ขอสินค้าตัวอย่าง',
     top: `<div class="sh-prod">${PIMG(p)}<div class="tx"><b>${esc(p.name)}</b><span>ฟรี · ส่งถึงบ้าน</span></div></div>`,
     cta: 'ยืนยันขอตัวอย่าง',
-    note: 'ได้รับของแล้ว โพสต์คลิปรีวิวและส่งลิงก์ในแอปเพื่อรับแต้ม',
+    note: 'ได้รับของแล้ว โพสต์คลิปรีวิวและส่งลิงก์ในแอป',
     run: payload => api('requestSample', Object.assign({ sku: p.sku }, payload)),
     done: () => { toast('ส่งคำขอแล้ว จะแจ้งเลขพัสดุทาง LINE'); pageCatalog(); },
   });
@@ -1104,7 +1107,7 @@ function memberCard(a, reqs) {
     <div class="mc-id"><div class="mc-av">${av}</div>
       <div style="min-width:0;flex:1"><div class="mc-name">${esc(name)}</div>
       ${a.tiktok_username ? `<button class="mc-tt" id="mctt"><small>TikTok</small>@${esc(a.tiktok_username)} ›</button>` : ''}</div></div>
-    <div class="mc-stats"><div><b>${a.followers ? kfmt(a.followers) : '-'}</b><span>ผู้ติดตาม</span></div><div><b>${fmt(a.points)}</b><span>แต้ม</span></div><div><b>${fmt(clips)}</b><span>คลิปรีวิว</span></div></div>
+    <div class="mc-stats"${POINTS ? '' : ' style="grid-template-columns:repeat(2,1fr)"'}><div><b>${a.followers ? kfmt(a.followers) : '-'}</b><span>ผู้ติดตาม</span></div>${POINTS ? `<div><b>${fmt(a.points)}</b><span>แต้ม</span></div>` : ''}<div><b>${fmt(clips)}</b><span>คลิปรีวิว</span></div></div>
     <div class="mc-foot"><span>สมาชิกตั้งแต่ ${esc(a.registered_at || '-')}</span><code>${esc(a.affiliate_id || '')}</code></div>
   </div>`;
 }
@@ -1116,13 +1119,14 @@ async function pageAccount() {
   setAccDot(reqs); setPts(a.points);
   const todo = reqs.filter(r => r.can_submit).length;
   const moving = reqs.filter(r => ['requested', 'approved', 'shipped'].indexOf(r.status) !== -1).length;
-  const items = [
+  let items = [
     { p: 'rewards', icon: ICON.gift, t: 'แลกรางวัล', s: `มี ${fmt(a.points)} แต้ม ใช้แลกของรางวัลได้` },
     { p: 'requests', icon: ICON.truck, t: 'พัสดุ & คลิปรีวิว', s: todo ? `รอส่งลิงก์คลิป ${todo} ชิ้น` : (moving ? `กำลังดำเนินการ ${moving} ชิ้น` : 'ติดตามสินค้าตัวอย่าง'), warn: todo > 0, badge: todo ? `<span class="cnt">${todo}</span>` : '' },
     { p: 'history', icon: ICON.clock, t: 'ประวัติแต้ม & Bonus', s: 'รายการย้อนหลัง' },
     { p: 'profile', icon: ICON.pin, t: 'ข้อมูลจัดส่ง', s: a.profile_complete ? 'ครบแล้ว' : 'ยังไม่กรอก — ต้องใช้ตอนขอสินค้า', warn: !a.profile_complete },
-    { p: 'invite', icon: ICON.invite, t: 'ชวนเพื่อน', s: 'รับแต้มเมื่อเพื่อนได้รับอนุมัติ' },
+    { p: 'invite', icon: ICON.invite, t: 'ชวนเพื่อน', s: POINTS ? 'รับแต้มเมื่อเพื่อนได้รับอนุมัติ' : 'ชวนเพื่อนมาเป็น Affiliate ด้วยกัน' },
   ];
+  if (!POINTS) items = items.filter(r => r.p !== 'rewards' && r.p !== 'history');
   app.innerHTML = `
     ${memberCard(a, reqs)}
     <div class="card menu">${items.map((r, i) => ROW(r, `data-acc="${i}"`)).join('')}</div>
@@ -1135,7 +1139,7 @@ async function pageAccount() {
 /* ---------- พัสดุ & คลิปรีวิว ---------- */
 const REQ_BADGE = { requested: 'warn', approved: 'info', shipped: 'info', delivered: 'info', content_submitted: 'good', done: 'good', rejected: 'bad' };
 async function pageRequests() {
-  header('พัสดุ & คลิปรีวิว', 'ได้รับของแล้ว ส่งลิงก์คลิปเพื่อรับแต้ม', 'account');
+  header('พัสดุ & คลิปรีวิว', 'ได้รับของแล้ว ส่งลิงก์คลิปรีวิวในแอป', 'account');
   loading();
   try {
     const d = await api('requests');
@@ -1151,7 +1155,7 @@ async function pageRequests() {
       </div>`).join('')}</div>`;
     app.querySelectorAll('[data-i]').forEach(b => b.addEventListener('click', () => {
       const r = d.requests[+b.dataset.i];
-      clipSheet('ส่งลิงก์คลิปรีวิว', r.product_name, async url => { await api('submitContent', { request_id: r.request_id, url }); toast('ส่งแล้ว รอทีมตรวจเพื่อรับแต้ม'); pageRequests(); });
+      clipSheet('ส่งลิงก์คลิปรีวิว', r.product_name, async url => { await api('submitContent', { request_id: r.request_id, url }); toast('ส่งแล้ว รอทีมตรวจ'); pageRequests(); });
     }));
   } catch (e) { failBox(e); }
 }
@@ -1217,7 +1221,7 @@ async function pageRewards() {
 /* ---------- ชวนเพื่อน ---------- */
 function pageInvite() {
   const a = aff();
-  header('ชวนเพื่อน', 'เพื่อนสมัครและได้รับอนุมัติ คุณรับแต้มเพิ่ม', 'account');
+  header('ชวนเพื่อน', POINTS ? 'เพื่อนสมัครและได้รับอนุมัติ คุณรับแต้มเพิ่ม' : 'ชวนเพื่อนมาเป็น Affiliate ด้วยกัน', 'account');
   const link = `https://liff.line.me/${LIFF_ID}?page=register&ref=${encodeURIComponent(a.my_ref_code || '')}`;
   app.innerHTML = `
     <div class="card">
@@ -1230,7 +1234,7 @@ function pageInvite() {
     try { await navigator.clipboard.writeText(link); toast('คัดลอกลิงก์แล้ว'); } catch (e) { prompt('คัดลอกลิงก์นี้', link); }
   });
   $('#share').addEventListener('click', async () => {
-    const msg = { type: 'text', text: `มาเป็น Affiliate กับ Dentiste' ด้วยกัน! รับสินค้าตัวอย่างฟรี สะสมแต้ม และรับ Bonus ตามยอดขาย\nสมัครที่นี่ 👉 ${link}` };
+    const msg = { type: 'text', text: `มาเป็น Affiliate กับ Dentiste' ด้วยกัน! รับสินค้าตัวอย่างฟรี ค่าคอมมิชชัน และรับ Bonus ตามยอดขาย\nสมัครที่นี่ 👉 ${link}` };
     if (!MOCK && liff.isApiAvailable && liff.isApiAvailable('shareTargetPicker')) {
       try { const r = await liff.shareTargetPicker([msg]); if (r) toast('ส่งคำเชิญแล้ว'); } catch (e) { toast(e.message, true); }
     } else { toast('ฟีเจอร์นี้ใช้ได้ในแอป LINE — ใช้ปุ่มคัดลอกลิงก์แทน'); }
@@ -1239,7 +1243,7 @@ function pageInvite() {
 
 /* ---------- อันดับ ---------- */
 async function pageLeaderboard(by) {
-  by = by === 'points' ? 'points' : 'sales';
+  by = POINTS && by === 'points' ? 'points' : 'sales';
   header('อันดับ', by === 'sales' ? 'จากยอดขายเดือนนี้' : 'จากแต้มสะสม', 'me');
   loading();
   try {
@@ -1247,7 +1251,7 @@ async function pageLeaderboard(by) {
     const val = v => by === 'sales' ? '฿' + fmt(v) : fmt(v) + ' แต้ม';
     const has = d.top.length && d.top.some(x => x.value > 0);
     app.innerHTML = `
-      <div class="seg"><button data-by="sales" class="${by === 'sales' ? 'on' : ''}">ยอดขายเดือนนี้</button><button data-by="points" class="${by === 'points' ? 'on' : ''}">แต้มสะสม</button></div>
+      <div class="seg"${POINTS ? '' : ' hidden'}><button data-by="sales" class="${by === 'sales' ? 'on' : ''}">ยอดขายเดือนนี้</button><button data-by="points" class="${by === 'points' ? 'on' : ''}">แต้มสะสม</button></div>
       ${d.me ? `<div class="myrank"><div class="no">#${d.me.rank}</div><div class="t">อันดับของคุณ<br>จาก ${fmt(d.total)} คน</div><div class="v">${val(d.me.value)}</div></div>` : ''}
       ${has ? `<div class="card lb">${d.top.map(x => `<div class="row ${x.me ? 'me' : ''}"><span class="rk ${x.rank <= 3 ? 'g' + x.rank : ''}">${x.rank}</span><div class="who">${esc(x.me ? 'คุณ' : x.name)}</div><span class="val">${val(x.value)}</span></div>`).join('')}</div>
         <p class="tiny" style="text-align:center">${by === 'sales' ? 'ยอดขายเดือน ' + esc(d.period) + ' · อัปเดตเมื่อทีมนำเข้ารายงาน' : 'แต้มสะสมคงเหลือของสมาชิก'}</p>`
