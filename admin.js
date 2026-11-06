@@ -237,22 +237,25 @@ async function pageHome(force) {
     app.innerHTML = ph('Home', `<button class="btn line" id="refresh">${ICON.ref} อัปเดตข้อมูล</button><button class="btn" id="upload">${ICON.up} นำเข้ายอดขาย TikTok</button>`) +
       `<p class="muted" style="margin:0 0 16px">ภาพรวมเดือน ${esc(h.period)}</p>
       <div class="kpis">
-        <div class="kpi"><div class="k">GMV เดือนนี้</div><div class="v">${baht(k.gmv)}</div><div class="d">${delta(k.gmv, k.gmv_last)}</div></div>
-        <div class="kpi"><div class="k">Items sold</div><div class="v">${fmt(k.items)}</div><div class="d">${delta(k.items, k.items_last)}</div></div>
-        <div class="kpi"><div class="k">Creator ที่มียอดขาย</div><div class="v">${fmt(k.selling)}</div><div class="d faint">จาก ${fmt(k.creators)} คนที่อนุมัติ</div></div>
-        <div class="kpi"><div class="k">Creator อนุมัติแล้ว</div><div class="v">${fmt(k.creators)}</div><div class="d faint">สมาชิก Affiliate+</div></div>
-        <div class="kpi"><div class="k">ผู้ติดตาม OA ใหม่</div><div class="v">${fmt(k.followers_7d)}</div><div class="d faint">7 วันล่าสุด</div></div>
-        <div class="kpi"><div class="k">สมัครใหม่</div><div class="v">${fmt(k.signups_7d)}</div><div class="d faint">7 วันล่าสุด</div></div>
+        <div class="kpi" style="--i:0"><div class="k">${DV.ico.gmv}GMV เดือนนี้</div><div class="v">${cnt(k.gmv, 'baht')}</div><div class="d">${delta(k.gmv, k.gmv_last)}</div></div>
+        <div class="kpi" style="--i:1"><div class="k">${DV.ico.box}Items sold</div><div class="v">${cnt(k.items)}</div><div class="d">${delta(k.items, k.items_last)}</div></div>
+        <div class="kpi" style="--i:2"><div class="k">${DV.ico.fire}Creator ที่มียอดขาย</div><div class="v">${cnt(k.selling)}</div><div class="d faint">จาก ${fmt(k.creators)} คนที่อนุมัติ</div></div>
+        <div class="kpi" style="--i:3"><div class="k">${DV.ico.user}Creator อนุมัติแล้ว</div><div class="v">${cnt(k.creators)}</div><div class="d faint">สมาชิก Affiliate+</div></div>
+        <div class="kpi" style="--i:4"><div class="k">${DV.ico.line}ผู้ติดตาม OA ใหม่</div><div class="v">${cnt(k.followers_7d)}</div><div class="d faint">7 วันล่าสุด</div></div>
+        <div class="kpi" style="--i:5"><div class="k">${DV.ico.plus}สมัครใหม่</div><div class="v">${cnt(k.signups_7d)}</div><div class="d faint">7 วันล่าสุด</div></div>
       </div>
       <div class="card"><h2>งานที่ต้องทำ</h2><div class="todo">${todos.map((x, i) => `<button data-todo="${i}" class="${x.hot && x.n ? 'hot' : ''}"><b>${fmt(x.n)}</b><span>${esc(x.l)}</span></button>`).join('')}</div></div>
       <div class="grid2">
-        <div class="card"><h2>Funnel ของ Creator</h2><div class="funnel">${h.funnel.map(f => `<div class="fr" data-stage="${f.key}"><span>${esc(STAGE_TH[f.key] || f.label)}</span><div class="bar"><div style="width:${f.value / maxF * 100}%"></div></div><b class="num r" style="text-align:right">${fmt(f.value)}</b></div>`).join('')}</div></div>
+        <div class="card"><h2>Funnel ของ Creator</h2><div class="funnel">${h.funnel.map((f, i) => `<div class="fr" data-stage="${f.key}"><span>${esc(STAGE_TH[f.key] || f.label)}</span><div class="bar"><div style="width:${f.value / maxF * 100}%;--c:${DV.pal[i % DV.pal.length]};--i:${i}"></div></div><b class="num r" style="text-align:right">${fmt(f.value)}</b></div>`).join('')}</div></div>
         <div class="card"><h2>Top creators เดือนนี้<span class="sp"></span><button class="link" data-go2="creators">ดูทั้งหมด</button></h2>
           <div class="list">${h.top.length ? h.top.map((x, i) => `<div class="li"><span class="rk ${i ? '' : 'r1'}">${i + 1}</span>${av(x.name, 32, x.avatar)}<div class="sp"><b>${esc(x.name)}</b><div class="muted" style="font-size:12.5px">${x.tiktok ? '@' + esc(x.tiktok) : ''}</div></div><b class="num">${baht(x.gmv)}</b></div>`).join('') : '<div class="empty">ยังไม่มียอดขายเดือนนี้ — นำเข้ารายงานจาก TikTok Shop</div>'}</div>
           <h2 style="margin-top:18px">สมัครล่าสุด</h2>
           <div class="list">${h.recent.map(x => `<div class="li" data-open="${esc(x.id)}" style="cursor:pointer">${av(x.name, 32, x.avatar)}<div class="sp"><b>${esc(x.name)}</b><div class="muted" style="font-size:12.5px">${x.tiktok ? '@' + esc(x.tiktok) + ' · ' : ''}${esc(x.registered_at)}</div></div>${stageBadge(x.status)}</div>`).join('') || '<div class="empty">ยังไม่มีผู้สมัคร</div>'}</div>
         </div>
-      </div>`;
+      </div>
+      <div id="insights"><div class="card dv-skel"><div class="spin"></div><div class="muted" style="text-align:center">กำลังสร้างกราฟ Campaign Performance…</div></div></div>`;
+    dvAnimate(app);
+    renderInsights(h);
     app.querySelectorAll('[data-todo]').forEach(b => b.addEventListener('click', () => todos[+b.dataset.todo].go()));
     app.querySelectorAll('[data-stage]').forEach(b => b.addEventListener('click', () => b.dataset.stage === 'lead' ? go('leads') : go('creators', { filt: { stage: b.dataset.stage } })));
     app.querySelectorAll('[data-go2]').forEach(b => b.addEventListener('click', () => go(b.dataset.go2)));
@@ -260,6 +263,147 @@ async function pageHome(force) {
     $('#refresh').addEventListener('click', e => act(e.currentTarget, async () => { S.cache.home = await call('refresh'); invalidate('creators'); toast('อัปเดต Funnel / Dashboard แล้ว'); pageHome(); }));
     $('#upload').addEventListener('click', uploadModal);
   } catch (e) { fail(e); }
+}
+/* ===================== Dashboard visuals (กราฟ + Motion) ===================== */
+const DV = {
+  pal: ['#007864', '#34C759', '#0A84FF', '#FF9F0A', '#AF52DE', '#FF375F', '#5AC8FA', '#A3C62B', '#8E8E93'],
+  stage: { pending: '#FF9F0A', approved: '#5AC8FA', sampled: '#0A84FF', posted: '#AF52DE', active: '#34C759', dormant: '#FF375F', rejected: '#8E8E93', suspended: '#636366', lead: '#C7C7CC' },
+  ico: {
+    gmv: '<i class="ki" style="--c:#007864"><svg viewBox="0 0 24 24"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg></i>',
+    box: '<i class="ki" style="--c:#0A84FF"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/></svg></i>',
+    fire: '<i class="ki" style="--c:#FF9F0A"><svg viewBox="0 0 24 24"><path d="M12 3c3 3.5 4.5 6.5 4.5 9.5a4.5 4.5 0 0 1-9 0c0-1.6.6-3 1.6-4.2.2 1.3.9 2.2 1.9 2.7C10.6 8.5 11 5.5 12 3z"/></svg></i>',
+    user: '<i class="ki" style="--c:#34C759"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.2 4-6.5 8-6.5s7.2 2.3 8 6.5"/></svg></i>',
+    line: '<i class="ki" style="--c:#06C755"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></i>',
+    plus: '<i class="ki" style="--c:#AF52DE"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5"/><path d="M18 11v8M14 15h8"/></svg></i>',
+  },
+};
+const cnt = (n, f) => `<span data-count="${Number(n) || 0}" data-f="${f || ''}">${f === 'baht' ? baht(0) : '0'}</span>`;
+const pctTxt = (a, b) => b ? Math.round(a / b * 100) + '%' : '–';
+/** ตัวเลขวิ่ง + เปิดใช้ animation ของกราฟ */
+function dvAnimate(root) {
+  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.querySelectorAll('[data-count]:not([data-done])').forEach(el => {
+    el.dataset.done = 1;
+    const to = +el.dataset.count, f = el.dataset.f, out = v => f === 'baht' ? baht(v) : f === 'pct' ? Math.round(v) + '%' : fmt(Math.round(v));
+    if (reduce || !to) { el.textContent = out(to); return; }
+    const t0 = performance.now(), dur = 1100;
+    const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = out(to * e); if (p < 1) requestAnimationFrame(step); else el.textContent = out(to); };
+    requestAnimationFrame(step);
+  });
+  requestAnimationFrame(() => requestAnimationFrame(() => root.querySelectorAll('.dv-go:not(.in)').forEach(e => e.classList.add('in'))));
+}
+/** โดนัท / พาย พร้อม legend */
+function dvDonut(items, opt) {
+  opt = opt || {};
+  const data = items.filter(x => x.value > 0), total = data.reduce((t, x) => t + x.value, 0);
+  if (!total) return `<div class="dv-empty">ยังไม่มีข้อมูล</div>`;
+  const R = opt.pie ? 30 : 42, C = 2 * Math.PI * R; let off = 0;
+  const segs = data.map((x, i) => {
+    const len = x.value / total * C, col = x.color || DV.pal[i % DV.pal.length];
+    const s = `<circle class="dv-seg" r="${R}" cx="60" cy="60" stroke="${col}" style="--len:${len.toFixed(2)};--off:${(-off).toFixed(2)};--C:${C.toFixed(2)};--i:${i}"><title>${esc(x.label)}: ${fmt(x.value)} (${pctTxt(x.value, total)})</title></circle>`;
+    off += len; return s;
+  }).join('');
+  return `<div class="dv-donut dv-go${opt.pie ? ' pie' : ''}"><svg viewBox="0 0 120 120" role="img" aria-label="${esc(opt.title || '')}"><circle r="${R}" cx="60" cy="60" class="dv-track"/>${segs}</svg>
+    ${opt.pie ? '' : `<div class="dv-center"><b>${opt.center !== undefined ? opt.center : cnt(total)}</b><span>${esc(opt.unit || 'ทั้งหมด')}</span></div>`}</div>
+    <ul class="dv-legend">${opt.pie ? `<li class="dv-tot"><span>รวม</span><b>${cnt(total)}</b><em>${esc(opt.unit || '')}</em></li>` : ''}${data.map((x, i) => `<li><i style="background:${x.color || DV.pal[i % DV.pal.length]}"></i><span>${esc(x.label)}</span><b>${fmt(x.value)}</b><em>${pctTxt(x.value, total)}</em></li>`).join('')}</ul>`;
+}
+/** แท่งแนวนอน */
+function dvBars(items, opt) {
+  opt = opt || {};
+  const max = Math.max(1, ...items.map(x => x.value));
+  if (!items.length) return `<div class="dv-empty">ยังไม่มีข้อมูล</div>`;
+  return `<div class="dv-bars dv-go">${items.map((x, i) => `<div class="dv-br"><span title="${esc(x.label)}">${esc(x.label)}</span><div class="dv-bt"><div style="--w:${(x.value / max * 100).toFixed(1)}%;--c:${x.color || DV.pal[i % DV.pal.length]};--i:${i}"></div></div><b>${opt.baht ? baht(x.value) : fmt(x.value)}</b></div>`).join('')}</div>`;
+}
+/** คอลัมน์ตามวัน (แนวโน้ม) */
+function dvColumns(items) {
+  const max = Math.max(1, ...items.map(x => x.value));
+  return `<div class="dv-cols dv-go">${items.map((x, i) => `<div class="dv-col" title="${esc(x.label)}: ${fmt(x.value)}"><em>${x.value || ''}</em><div style="--h:${(x.value / max * 100).toFixed(1)}%;--i:${i}"></div><span>${esc(x.short || x.label)}</span></div>`).join('')}</div>`;
+}
+/** วงแหวนเปอร์เซ็นต์ */
+function dvRing(p, col, label) {
+  const R = 30, C = 2 * Math.PI * R, v = Math.max(0, Math.min(100, p || 0));
+  return `<div class="dv-ring dv-go"><svg viewBox="0 0 72 72"><circle r="${R}" cx="36" cy="36" class="dv-track"/><circle r="${R}" cx="36" cy="36" class="dv-rv" stroke="${col}" style="--len:${(v / 100 * C).toFixed(2)};--C:${C.toFixed(2)}"/></svg><b>${cnt(v, 'pct')}</b><span>${esc(label)}</span></div>`;
+}
+const STATE_TH = { active: 'กำลังจัด', upcoming: 'เร็ว ๆ นี้', ended: 'จบแล้ว', inactive: 'ปิดอยู่' };
+const STATE_CLS = { active: 'good', upcoming: 'info', ended: '', inactive: 'bad' };
+/** Campaign Performance + Creator insights (โหลดข้อมูลหลายหน้าแบบขนาน) */
+async function renderInsights(h) {
+  const box = $('#insights'); if (!box) return;
+  const safe = k => load(k).catch(() => null);
+  const [cr, cp, sp, ld, vd] = await Promise.all(['creators', 'campaigns', 'samples', 'leads', 'videos'].map(safe));
+  if (S.page !== 'home' || !document.body.contains(box)) return;
+  const rows = (cr && cr.rows) || [], camps = (cp && cp.rows) || [], samples = (sp && sp.rows) || [], leads = (ld && ld.leads) || [], vids = (vd && vd.rows) || [];
+  const approved = rows.filter(r => r.status === 'approved');
+  const count = (arr, fn) => { const m = {}; arr.forEach(x => { const k = fn(x); if (k) m[k] = (m[k] || 0) + 1; }); return Object.keys(m).map(k => ({ label: k, value: m[k] })).sort((a, b) => b.value - a.value); };
+  const top = (list, n) => list.length > n ? list.slice(0, n - 1).concat([{ label: 'อื่น ๆ', value: list.slice(n - 1).reduce((t, x) => t + x.value, 0), color: '#C7C7CC' }]) : list;
+
+  // ---- Campaign Performance ----
+  const tagOf = s => String(s || '').replace(/^แคมเปญ\s*/, '').toLowerCase();
+  const campCards = camps.map((c, ci) => {
+    const id = String(c.program_id).toLowerCase(), list = c.list || [];
+    const viaLink = rows.filter(r => /^แคมเปญ/.test(r.source) && (tagOf(r.source) === id || tagOf(r.source).includes(id) || id.includes(tagOf(r.source)))).length;
+    const leadsLink = leads.filter(l => l.campaign && (String(l.campaign).toLowerCase() === id || id.includes(String(l.campaign).toLowerCase()))).length;
+    const withClip = list.filter(m => m.videos > 0).length, sold = list.filter(m => m.gmv > 0).length;
+    const joinRate = approved.length ? c.members / approved.length * 100 : 0;
+    const col = DV.pal[ci % DV.pal.length];
+    const steps = [['สนใจ (Lead จากลิงก์)', leadsLink + viaLink], ['สมัครผ่านลิงก์แคมเปญ', viaLink], ['กดเข้าร่วม', c.members], ['ส่งคลิปแล้ว', withClip], ['มียอดขาย', sold], ['ทำครบเป้า', c.completed || 0]];
+    const smax = Math.max(1, ...steps.map(s => s[1]));
+    return `<div class="dv-camp dv-go" style="--i:${ci}">
+      <div class="dv-ch" style="--c:${col}"><div><b>${esc(c.title || c.program_id)}</b><span>${esc(c.program_id)}${c.start_date ? ' · ' + esc(c.start_date) + (c.end_date ? ' – ' + esc(c.end_date) : '') : ' · เปิดรับตลอด'}${c.extra_commission ? ' · ค่าคอม ' + esc(c.extra_commission) : ''}</span></div><span class="badge ${STATE_CLS[c.state] || ''}">${esc(STATE_TH[c.state] || c.state || '')}</span></div>
+      <div class="dv-cm">
+        <div class="dv-m"><span>ผู้เข้าร่วม</span><b>${cnt(c.members)}</b><em>คน</em></div>
+        <div class="dv-m"><span>สมัครผ่านลิงก์</span><b>${cnt(viaLink)}</b><em>คน</em></div>
+        <div class="dv-m"><span>คลิป</span><b>${cnt(c.videos)}</b><em>${c.members ? (c.videos / c.members).toFixed(1) + '/คน' : '-'}</em></div>
+        <div class="dv-m"><span>GMV</span><b>${cnt(c.gmv, 'baht')}</b><em>${c.members ? baht(c.gmv / c.members) + '/คน' : '-'}</em></div>
+      </div>
+      <div class="dv-cf">
+        <div class="dv-rings">${dvRing(joinRate, col, 'อัตราเข้าร่วม')}${dvRing(c.members ? withClip / c.members * 100 : 0, '#AF52DE', 'ส่งคลิป')}${dvRing(c.members ? (c.completed || 0) / c.members * 100 : 0, '#34C759', 'ถึงเป้า')}</div>
+        <div class="dv-funnel">${steps.map((s, i) => `<div><span>${esc(s[0])}</span><div class="dv-bt"><div style="--w:${(s[1] / smax * 100).toFixed(1)}%;--c:${col};--i:${i};opacity:${1 - i * .11}"></div></div><b>${fmt(s[1])}</b></div>`).join('')}</div>
+      </div>
+      ${list.length ? `<div class="dv-tp list"><span class="muted">Top ผู้เข้าร่วม</span>${list.slice(0, 3).map((m, i) => `<div class="li"><span class="rk ${i ? '' : 'r1'}">${i + 1}</span>${av(m.name || m.tiktok, 28, m.avatar)}<div class="sp"><b>${esc(m.tiktok ? '@' + m.tiktok : m.name)}</b><div class="muted" style="font-size:12px">เข้าร่วม ${esc(m.joined_at || '-')} · ${fmt(m.videos)} คลิป</div></div><b class="num">${baht(m.gmv)}</b></div>`).join('')}</div>` : ''}
+    </div>`;
+  }).join('');
+  const totMembers = camps.reduce((t, c) => t + (c.members || 0), 0), totGmv = camps.reduce((t, c) => t + (c.gmv || 0), 0), totClips = camps.reduce((t, c) => t + (c.videos || 0), 0);
+  const activeN = camps.filter(c => c.state === 'active').length;
+
+  // ---- Creator insights ----
+  const stageList = count(rows, r => r.status === 'approved' ? (r.stage || 'approved') : r.status).map(x => ({ label: STAGE_TH[x.label] || x.label, value: x.value, color: DV.stage[x.label] }));
+  const srcList = top(count(rows, r => r.source || 'LINE OA'), 6);
+  const folList = [['< 1K', 0, 1e3], ['1K–10K', 1e3, 1e4], ['10K–100K', 1e4, 1e5], ['100K+', 1e5, 1e12]].map(([l, a, b], i) => ({ label: l, value: rows.filter(r => r.followers >= a && r.followers < b).length, color: ['#C7E8DF', '#5AC8A8', '#007864', '#004D40'][i] }));
+  const catList = top(count(rows.flatMap(r => String(r.categories || '').split(/,\s*/).filter(Boolean).map(c => ({ c }))), x => x.c), 6);
+  const smpList = count(samples, s => s.status).map(x => ({ label: REQ_TH[x.label] || x.label, value: x.value, color: { requested: '#FF9F0A', approved: '#5AC8FA', shipped: '#0A84FF', delivered: '#AF52DE', content_submitted: '#34C759', done: '#007864', rejected: '#8E8E93' }[x.label] }));
+  const vidList = count(vids, v => v.status).map(x => ({ label: { pending: 'รอตรวจ', approved: 'ผ่าน', rejected: 'ไม่ผ่าน' }[x.label] || x.label, value: x.value, color: { pending: '#FF9F0A', approved: '#34C759', rejected: '#FF375F' }[x.label] }));
+  // สมัครรายวัน 14 วันล่าสุด
+  const days = [], now = new Date();
+  for (let i = 13; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i); const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); days.push({ key, short: String(d.getDate()), label: key, value: 0 }); }
+  rows.forEach(r => { const d = days.find(x => String(r.registered_at).slice(0, 10) === x.key); if (d) d.value++; });
+  const topGmv = rows.filter(r => r.gmv > 0).sort((a, b) => b.gmv - a.gmv).slice(0, 6).map((r, i) => ({ label: r.tiktok ? '@' + r.tiktok : r.name, value: r.gmv, color: DV.pal[i % DV.pal.length] }));
+
+  box.innerHTML = `
+    <div class="dv-sec"><h2>${DV.ico.fire}Campaign Performance</h2><span class="muted">${camps.length} แคมเปญ · กำลังจัด ${activeN}</span></div>
+    <div class="dv-sum">
+      <div class="dv-s" style="--c:#007864"><span>ผู้เข้าร่วมทุกแคมเปญ</span><b>${cnt(totMembers)}</b></div>
+      <div class="dv-s" style="--c:#0A84FF"><span>สมัครผ่านลิงก์แคมเปญ</span><b>${cnt(rows.filter(r => /^แคมเปญ/.test(r.source)).length)}</b></div>
+      <div class="dv-s" style="--c:#AF52DE"><span>คลิปจากแคมเปญ</span><b>${cnt(totClips)}</b></div>
+      <div class="dv-s" style="--c:#34C759"><span>GMV จากแคมเปญ</span><b>${cnt(totGmv, 'baht')}</b></div>
+    </div>
+    ${camps.length ? `<div class="dv-camps">${campCards}</div>` : '<div class="card empty">ยังไม่มีแคมเปญ — สร้างที่เมนู Campaigns</div>'}
+    <div class="grid2">
+      <div class="card dv-go"><h2>ผู้เข้าร่วมแต่ละแคมเปญ</h2>${dvBars(camps.map((c, i) => ({ label: c.title || c.program_id, value: c.members || 0, color: DV.pal[i % DV.pal.length] })))}
+        <h2 style="margin-top:18px">GMV แต่ละแคมเปญ</h2>${dvBars(camps.map((c, i) => ({ label: c.title || c.program_id, value: c.gmv || 0, color: DV.pal[i % DV.pal.length] })), { baht: 1 })}</div>
+      <div class="card dv-go"><h2>แหล่งที่มาของ Creator<span class="sp"></span><span class="muted" style="font-size:12.5px;font-weight:500">ลิงก์/QR แคมเปญ · LINE OA · ชวนเพื่อน</span></h2><div class="dv-pw">${dvDonut(srcList, { title: 'แหล่งที่มา', unit: 'Creator', pie: 1 })}</div></div>
+    </div>
+    <div class="dv-sec"><h2>${DV.ico.user}Creator Insights</h2><span class="muted">${fmt(rows.length)} คน · อนุมัติ ${fmt(approved.length)}</span></div>
+    <div class="card dv-go"><h2>สมัครใหม่รายวัน<span class="sp"></span><span class="muted" style="font-size:12.5px;font-weight:500">14 วันล่าสุด · รวม ${fmt(days.reduce((t, d) => t + d.value, 0))} คน</span></h2>${dvColumns(days)}</div>
+    <div class="dv-grid">
+      <div class="card dv-go"><h2>สถานะ Creator</h2><div class="dv-pw">${dvDonut(stageList, { unit: 'Creator' })}</div></div>
+      <div class="card dv-go"><h2>ผู้ติดตาม TikTok</h2><div class="dv-pw">${dvDonut(folList, { unit: 'Creator' })}</div></div>
+      <div class="card dv-go"><h2>หมวดคอนเทนต์</h2><div class="dv-pw">${dvDonut(catList, { unit: 'รายการ', pie: 1 })}</div></div>
+      <div class="card dv-go"><h2>สินค้าตัวอย่าง</h2><div class="dv-pw">${dvDonut(smpList, { unit: 'คำขอ' })}</div></div>
+      <div class="card dv-go"><h2>คลิปที่ส่งเข้ามา</h2><div class="dv-pw">${dvDonut(vidList, { unit: 'คลิป' })}</div></div>
+      <div class="card dv-go"><h2>Top GMV (รวม)</h2>${dvBars(topGmv, { baht: 1 })}</div>
+    </div>`;
+  dvAnimate(box);
 }
 function stageBadge(s) { return `<span class="badge ${STAGE_CLS[s] || ''}">${esc(STAGE_TH[s] || s || '-')}</span>`; }
 function fail(e) {
