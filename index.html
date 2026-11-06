@@ -210,7 +210,7 @@
   .tmw-brand { display: flex; justify-content: center; align-items: center; gap: 10px; }
   .tmw-brand img { height: 24px; width: auto; } .tmw-brand i { width: 1.5px; height: 18px; background: rgba(255, 255, 255, .6); }
   .tmw-brand span { font: 800 11px 'Montserrat', sans-serif; letter-spacing: .04em; }
-  .tmw-logo { display: block; width: 100%; max-width: 250px; height: auto; margin: 18px auto 18px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 40, 32, .35), 0 0 0 6px rgba(255, 255, 255, .12); }
+  .tmw-logo { display: block; width: 100%; max-width: 250px; height: auto; margin: 4px auto 18px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 40, 32, .35), 0 0 0 6px rgba(255, 255, 255, .12); }
   .tmw-k { display: inline-block; background: var(--lime); color: var(--ink2); font: 800 11.5px 'Montserrat', sans-serif; letter-spacing: .12em; padding: 3px 12px; border-radius: 999px; border: 2px solid var(--ink2); box-shadow: 3px 3px 0 var(--ink2); transform: rotate(-3deg); }
   .tmw-hero h1 { margin: 14px 0 0; font-size: 28px; font-weight: 900; line-height: 1.2; color: #fff; }
   .tmw-hero h1 small { display: block; font: 800 12px 'Montserrat', sans-serif; letter-spacing: .1em; color: var(--lime); margin-bottom: 6px; }
@@ -1238,7 +1238,6 @@ function pageThaimart(d, p) {
   else s1 = '<div class="muted">สมัครสมาชิกก่อน (ฟรี) แล้วกลับมากดเข้าร่วม</div><button class="btn" id="toreg" style="margin-top:10px">สมัครสมาชิก</button>';
   const lock = joined ? '' : 'lock';
   app.innerHTML = '<div class="tmw-hero">'
-    + '<div class="tmw-brand"><img src="/logo-white.png" alt="Dentiste\'" onerror="this.remove()"><i></i><span>AFFILIATE+</span></div>'
     + '<img class="tmw-logo" src="/club/campaigns/creator-thaimart/logo.webp" alt="Thaimart Creator Affiliate &amp; Commerce Fest">'
     + '<span class="tmw-k">DENTISTE\' × THAIMART</span>'
     + '<h1><small>CREATOR AFFILIATE &amp; COMMERCE FEST</small>รับสินค้าไปรีวิวฟรี<br>ที่หน้างาน</h1>'
