@@ -819,4 +819,31 @@ function mockApi(action, b) {
     .observe(document.body, { childList: true, subtree: true });
   document.addEventListener('change', e => { if (e.target.closest && e.target.closest('.filters')) requestAnimationFrame(enhance); });
   enhance();
+
+  // แถบแท็บล่างแบบ iOS (แสดงเฉพาะมือถือ ผ่าน CSS)
+  const TB = [['home', 'หน้าแรก', null], ['creators', 'Creators', '#nb-creators'], ['samples', 'ตัวอย่าง', '#nb-samples'], ['videos', 'คลิป', '#nb-videos'], ['more', 'เพิ่มเติม', '#nb-leads']];
+  const svgOf = k => k === 'more' ? '<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>'
+    : ((document.querySelector('.side a[data-go="' + k + '"] svg') || {}).outerHTML || '');
+  const bar = document.createElement('nav'); bar.className = 'tabbar'; bar.setAttribute('aria-label', 'เมนูหลัก');
+  bar.innerHTML = TB.map(([k, t]) => `<button type="button" data-tb="${k}">${svgOf(k)}<span>${t}</span><i class="bd" hidden></i></button>`).join('');
+  document.body.appendChild(bar);
+  bar.addEventListener('click', e => {
+    const b = e.target.closest('[data-tb]'); if (!b) return;
+    if (b.dataset.tb === 'more') side.classList.toggle('show'); else go(b.dataset.tb);
+  });
+  const syncBar = () => {
+    const cur = (document.querySelector('.side a.on') || {}).dataset;
+    const page = cur ? cur.go : '';
+    bar.querySelectorAll('[data-tb]').forEach(b => {
+      const k = b.dataset.tb, main = TB.slice(0, 4).some(x => x[0] === page);
+      b.classList.toggle('on', k === page || (k === 'more' && !main && !!page));
+    });
+    TB.forEach(([k, , sel]) => {
+      const src = sel && document.querySelector(sel), d = bar.querySelector('[data-tb="' + k + '"] .bd');
+      const n = src && !src.hidden ? src.textContent : '';
+      d.hidden = !n; d.textContent = n;
+    });
+  };
+  new MutationObserver(syncBar).observe(side, { attributes: true, subtree: true, childList: true, characterData: true, attributeFilter: ['class', 'hidden'] });
+  syncBar();
 })();
