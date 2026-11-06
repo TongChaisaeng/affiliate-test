@@ -335,6 +335,164 @@
     .top .me { display: none; }
     .top .brand b { font-size: 13px; }
   }
+  /* ================================================================
+     iOS 27 theme — Liquid Glass (แก้เฉพาะหน้าตา ไม่แตะการทำงาน)
+     ================================================================ */
+  :root {
+    --bg: #F2F4F3; --head: transparent; --line: rgba(60, 60, 67, .12); --line-strong: rgba(60, 60, 67, .18);
+    --fill: rgba(118, 118, 128, .12); --fill2: rgba(118, 118, 128, .08);
+    --glass: rgba(255, 255, 255, .68); --glass-strong: rgba(255, 255, 255, .86);
+    --glass-edge: rgba(255, 255, 255, .7);
+    --shadow: 0 1px 2px rgba(16, 40, 34, .04), 0 8px 28px rgba(16, 40, 34, .06);
+    --shadow-lg: 0 10px 40px rgba(16, 40, 34, .14), 0 2px 8px rgba(16, 40, 34, .06);
+    --r: 22px; --r-sm: 14px; --blur: saturate(180%) blur(28px);
+  }
+  html, body { background: var(--bg); letter-spacing: -.003em; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(900px 520px at 85% -10%, rgba(0, 120, 100, .10), transparent 60%),
+                radial-gradient(700px 480px at -10% 30%, rgba(217, 255, 74, .14), transparent 60%),
+                radial-gradient(800px 600px at 60% 110%, rgba(0, 90, 75, .07), transparent 60%); }
+  .glass, .top, .side, .drawer, .modal, .menu, .tabbar { -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); }
+
+  /* แถบบน — กระจกใส */
+  .top { background: var(--glass); color: var(--ink); border-bottom: .5px solid var(--line); box-shadow: inset 0 -1px 0 rgba(255,255,255,.5); height: 56px; }
+  .top .brand img { content: url('/logo-green.png'); height: 24px; }
+  .top .brand .sep { background: var(--line-strong); }
+  .top .brand b { color: var(--ink); font-weight: 700; letter-spacing: -.01em; }
+  .top .burger, .top .icon { color: var(--ink); border-radius: 50%; width: 38px; height: 38px; place-items: center; }
+  .top .icon { display: grid; }
+  .top .burger:hover, .top .icon:hover { background: var(--fill2); }
+  .top .tbtn { background: var(--green); color: #fff; border-radius: 999px; padding: 8px 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(0,120,100,.25); }
+  .top .tbtn:hover { background: var(--green-dark); }
+  .top .dot { background: #FF3B30; border: 2px solid #fff; }
+  .top .me { color: var(--muted); }
+  .top .me i { border: 0; box-shadow: 0 0 0 2px #fff, 0 2px 6px rgba(0,0,0,.12); }
+  .top .logout { color: var(--ink) !important; border: 0 !important; background: var(--fill) !important; border-radius: 999px !important; padding: 6px 12px !important; font-weight: 500; }
+  .sscrim { top: 56px; }
+
+  /* เมนูข้าง — Sidebar แบบ iPadOS */
+  .side { top: 56px; background: rgba(255,255,255,.55); border-right: .5px solid var(--line); padding: 16px 10px; }
+  .side a { border-radius: 12px; padding: 10px 12px; font-weight: 500; transition: background .15s, color .15s; }
+  .side a svg { stroke-width: 1.9; color: var(--green); }
+  .side a:hover { background: var(--fill2); }
+  .side a.on { background: var(--green); color: #fff; font-weight: 600; box-shadow: 0 6px 18px rgba(0,120,100,.28); }
+  .side a.on svg { color: #fff; }
+  .side a.on .badge { background: rgba(255,255,255,.25); color: #fff; }
+  .side hr { border-top-color: var(--line); }
+  main { margin-top: 56px; min-height: calc(100vh - 56px); padding-top: 28px; }
+
+  /* หัวข้อใหญ่แบบ iOS */
+  .ph { align-items: center; margin-bottom: 10px; }
+  .ph h1 { font-size: 32px; font-weight: 800; letter-spacing: -.025em; }
+
+  /* Segmented control */
+  .tabs { display: inline-flex; max-width: 100%; gap: 2px; padding: 3px; background: var(--fill); border: 0; border-radius: 12px; margin: 6px 0 18px; }
+  .tabs button { padding: 7px 16px; border-radius: 9px; border: 0; color: var(--ink); font-weight: 500; font-size: 13.5px; transition: background .2s, box-shadow .2s; }
+  .tabs button.on { background: #fff; color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 3px 8px rgba(0,0,0,.06); border: 0; }
+  .tabs button .c { color: var(--faint); }
+
+  /* การ์ด */
+  .card { background: var(--glass-strong); border: .5px solid var(--glass-edge); border-radius: var(--r); box-shadow: var(--shadow); padding: 22px; }
+  .card h2 { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .kpi { background: var(--glass-strong); border: .5px solid var(--glass-edge); border-radius: 18px; box-shadow: var(--shadow); padding: 16px 18px; }
+  .kpi .k { font-size: 12.5px; font-weight: 500; }
+  .kpi .v { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .todo button { background: var(--glass-strong); border: .5px solid var(--glass-edge); border-radius: 16px; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+  .todo button:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); border-color: var(--glass-edge); background: #fff; }
+  .funnel .bar { background: var(--fill2); border-radius: 999px; height: 12px; }
+  .funnel .bar div, .funnel .fr:nth-child(odd) .bar div { border-radius: 999px; background: linear-gradient(90deg, #007864, #1A9C84); }
+  .rk { background: var(--fill); } .rk.r1 { background: var(--green); }
+  .list .li { border-bottom: .5px solid var(--line); }
+  .cc { background: var(--glass-strong); border: .5px solid var(--glass-edge); border-radius: var(--r); box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+  .cc:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--glass-edge); }
+  .cc .hd { background: linear-gradient(135deg, #007864, #005A4B); padding: 18px 20px; }
+  .vc { background: var(--glass-strong); border: .5px solid var(--glass-edge); border-radius: 18px; box-shadow: var(--shadow); }
+
+  /* ปุ่มทรงแคปซูล */
+  .btn { border-radius: 999px; padding: 8px 16px; font-weight: 600; transition: background .15s, transform .1s, box-shadow .15s; box-shadow: 0 4px 14px rgba(0,120,100,.22); }
+  .btn:active { transform: scale(.97); }
+  .btn.sec { background: rgba(0,120,100,.10); color: var(--green); box-shadow: none; }
+  .btn.sec:hover { background: rgba(0,120,100,.16); }
+  .btn.line { background: rgba(255,255,255,.8); border: .5px solid var(--line-strong); box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .btn.danger { background: rgba(255,59,48,.08); color: #D70015; border: 0; box-shadow: none; }
+  .btn.danger:hover { background: rgba(255,59,48,.14); }
+  .btn.sm { padding: 5px 12px; }
+  .ia { border-radius: 50%; width: 34px; height: 34px; }
+  .ia:hover { background: rgba(0,120,100,.10); }
+  .chip { border: 0; background: var(--fill); padding: 6px 14px; font-weight: 500; }
+  .chip.on { background: var(--green); color: #fff; box-shadow: 0 4px 12px rgba(0,120,100,.25); }
+
+  /* ช่องกรอกแบบ iOS (พื้นเทา ไม่มีขอบ) */
+  .fld { background: var(--fill); border: 0; border-radius: 12px; min-height: 40px; transition: box-shadow .15s, background .15s; }
+  .fld > span:first-child { color: var(--muted); font-weight: 500; }
+  .fld:focus-within { background: #fff; box-shadow: 0 0 0 3px rgba(0,120,100,.25); }
+  input.in, select.in, textarea.in { background: var(--fill); border: 0; border-radius: 12px; padding: 10px 12px; transition: box-shadow .15s, background .15s; }
+  input.in:focus, select.in:focus, textarea.in:focus { background: #fff; box-shadow: 0 0 0 3px rgba(0,120,100,.25); }
+  label.f { font-size: 13px; color: var(--muted); font-weight: 600; text-transform: none; }
+
+  /* Checkbox วงกลม + Radio แบบ iOS */
+  table.t input[type=checkbox], .chk input[type=checkbox], .chk input[type=radio] {
+    -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid rgba(60,60,67,.3);
+    background: #fff; display: inline-grid; place-items: center; cursor: pointer; transition: background .15s, border-color .15s; flex: none; margin: 0; }
+  table.t input[type=checkbox]:checked, .chk input:checked { background: var(--green); border-color: var(--green); }
+  table.t input[type=checkbox]:checked::after, .chk input[type=checkbox]:checked::after { content: ''; width: 6px; height: 11px; border: solid #fff; border-width: 0 2.2px 2.2px 0; transform: translateY(-1px) rotate(45deg); }
+  .chk input[type=radio]:checked::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+
+  /* ตาราง (Desktop/Tablet) */
+  .twrap { border-radius: 16px; }
+  table.t th { background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; border-bottom: .5px solid var(--line); }
+  table.t td { border-bottom: .5px solid var(--line); }
+  table.t tr:hover td { background: rgba(0,120,100,.035); }
+  table.t td.act, table.t th.act { background: rgba(255,255,255,.92); }
+  table.t tr:hover td.act { background: #F6FAF9; }
+  .av { box-shadow: 0 0 0 2px #fff, 0 2px 6px rgba(0,0,0,.10); }
+  .tag { background: var(--fill); border-radius: 999px; padding: 2px 10px; }
+  .badge { padding: 2px 10px; font-weight: 600; }
+  .badge.good { background: rgba(52,199,89,.14); color: #1E7B3A; }
+  .badge.warn { background: rgba(255,149,0,.15); color: #A85A00; }
+  .badge.bad { background: rgba(255,59,48,.12); color: #C4141B; }
+  .badge.info { background: rgba(0,122,255,.12); color: #0A60C9; }
+
+  /* Sheet / Modal / Menu / Toast */
+  .scrim { background: rgba(10, 25, 22, .28); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  .drawer { background: rgba(255,255,255,.88); border-radius: 26px 0 0 26px; box-shadow: var(--shadow-lg); border-left: .5px solid var(--glass-edge); transition: transform .32s cubic-bezier(.32,.72,0,1); }
+  .drawer .dh { border-bottom: .5px solid var(--line); }
+  .modal { background: rgba(255,255,255,.9); border-radius: 26px; box-shadow: var(--shadow-lg); border: .5px solid var(--glass-edge); }
+  .modal .mh { border-bottom: .5px solid var(--line); font-size: 17px; font-weight: 700; }
+  .menu { background: rgba(255,255,255,.82); border: .5px solid var(--glass-edge); border-radius: 16px; box-shadow: var(--shadow-lg); padding: 6px; }
+  .menu button { border-radius: 10px; padding: 9px 12px; font-weight: 500; }
+  .x { width: 32px; height: 32px; border-radius: 50%; background: var(--fill); font-size: 18px; display: grid; place-items: center; padding: 0; }
+  .toast { border-radius: 999px; padding: 12px 20px; background: rgba(20, 33, 30, .86); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--shadow-lg); font-weight: 500; }
+  .toast.err { background: rgba(215, 0, 21, .9); }
+  .spin { border-color: rgba(0,120,100,.15); border-top-color: var(--green); }
+  .mockbar { background: rgba(255, 243, 220, .9); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); }
+
+  /* แถบแท็บล่างลอย (มือถือ) */
+  .tabbar { display: none; }
+  @media (max-width: 900px) {
+    .side { background: rgba(255,255,255,.86); border-radius: 0 24px 24px 0; top: 56px; }
+    .drawer { border-radius: 26px 26px 0 0; top: 6vh; }
+  }
+  @media (max-width: 640px) {
+    main { padding: 18px 14px 120px; }
+    .ph h1 { font-size: 30px; }
+    .card { padding: 16px; border-radius: 20px; }
+    .tabs { display: flex; width: 100%; }
+    .tabs button { flex: 1 0 auto; padding: 7px 12px; }
+    table.t tr { border: .5px solid var(--glass-edge); border-radius: 18px; background: var(--glass-strong); box-shadow: var(--shadow); }
+    table.t td { border-bottom: .5px solid var(--line); }
+    table.t tr:hover td { background: transparent; }
+    .tabbar { display: flex; position: fixed; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 30;
+      background: rgba(255,255,255,.72); border: .5px solid var(--glass-edge); border-radius: 30px; box-shadow: var(--shadow-lg); padding: 6px; justify-content: space-around; }
+    .tabbar button { flex: 1; background: none; border: 0; padding: 6px 2px 5px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: #6E7B77; font-size: 10.5px; font-weight: 600; cursor: pointer; position: relative; transition: background .2s, color .2s; }
+    .tabbar button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .tabbar button.on { color: var(--green); background: rgba(0,120,100,.10); }
+    .tabbar .bd { position: absolute; top: 2px; left: calc(50% + 6px); min-width: 17px; height: 17px; padding: 0 5px; border-radius: 9px; background: #FF3B30; color: #fff; font-size: 10px; font-weight: 700; display: grid; place-items: center; border: 1.5px solid #fff; }
+    .tabbar .bd[hidden] { display: none; }
+    .mockbar { bottom: calc(80px + env(safe-area-inset-bottom)); left: 24px; right: 24px; border-radius: 999px; font-size: 11px; }
+    .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
+    .drawer { top: 4vh; }
+  }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
@@ -370,6 +528,6 @@
 <div class="modal" id="modal"></div>
 <div class="toast" id="toast"></div>
 
-<script src="https://test.jomeloandtongar.com/admin.js?v=6"></script>
+<script src="https://test.jomeloandtongar.com/admin.js?v=7"></script>
 </body>
 </html>
