@@ -241,6 +241,12 @@
   .tm-ticket { margin: 12px 0 4px; padding: 14px; border-radius: 16px; background: #007864; color: #fff; display: grid; gap: 4px; border: 2px dashed var(--lime); }
   .tm-ticket span { font: 800 10.5px 'Montserrat', sans-serif; letter-spacing: .08em; color: var(--lime); }
   .tm-ticket b { font-size: 17px; } .tm-ticket small { opacity: .85; } .tm-ticket code { color: var(--lime); }
+  .tm-ticket .tm-got { justify-self: start; margin-top: 4px; padding: 3px 10px; border-radius: 99px; background: var(--lime); color: #003d33; font-weight: 700; font-size: 12px; font-style: normal; }
+  .tm-ok { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; padding: 24px; background: rgba(0,30,25,.55); animation: tmFade .2s ease; }
+  .tm-ok > div { width: min(320px, 100%); background: #fff; border-radius: 24px; padding: 28px 22px 20px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.25); animation: tmPop .28s cubic-bezier(.2,1.3,.4,1); }
+  .tm-ok .ic { width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 50%; background: #007864; color: var(--lime); display: grid; place-items: center; font-size: 38px; font-weight: 800; }
+  .tm-ok h3 { margin: 0 0 4px; font-size: 22px; color: #007864; } .tm-ok p { margin: 0 0 16px; color: #555; font-size: 14px; line-height: 1.5; }
+  @keyframes tmFade { from { opacity: 0 } } @keyframes tmPop { from { transform: scale(.7); opacity: 0 } }
   @keyframes hover { 50% { transform: rotate(38deg) translate(4px, -8px); } }
   .ticker { position: relative; z-index: 2; margin: 0 -18px; background: var(--ink2); color: var(--lime); overflow: hidden; white-space: nowrap; font-weight: 800; font-size: 13px; padding: 7px 0; }
   .ticker > div { display: inline-block; animation: marquee 16s linear infinite; }
@@ -1188,14 +1194,28 @@ function tmBriefBody(x) {
   return '<div class="tm-km">“' + esc(x.km) + '”</div><ul class="tm-ul">' + x.pts.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>'
     + '<div class="tm-hk"><b>ไอเดียคลิป:</b> ' + esc(x.hk) + '</div><div class="tm-no"><b>เลี่ยง:</b> ' + esc(x.no) + '</div>';
 }
+// บันทึกการกดรับสินค้า Thaimart ในเครื่อง (ต่อคน ต่อรายการ)
+function tmClaimKey(x) { const a = (typeof aff === 'function' && aff()) || {}; return 'daff_tmclaim_' + (a.affiliate_id || state.lineName || 'me') + '_' + x.sku; }
+function tmClaimed(x) { try { return localStorage.getItem(tmClaimKey(x)); } catch (e) { return null; } }
+function tmSetClaimed(x) { const t = new Date().toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }); try { localStorage.setItem(tmClaimKey(x), t); } catch (e) {} return t; }
+function tmSuccess(x, done) {
+  const o = document.createElement('div'); o.className = 'tm-ok';
+  o.innerHTML = '<div role="dialog" aria-modal="true"><div class="ic">✓</div><h3>รับสินค้าแล้ว</h3><p>' + esc(x.name) + '<br>ขอบคุณที่มาร่วมงาน Creator Thaimart<br>อย่าลืมทำคลิปติดตะกร้า รับค่าคอม 13%</p><button class="btn" style="width:100%">ตกลง</button></div>';
+  const close = () => { o.remove(); if (done) done(); };
+  o.querySelector('button').addEventListener('click', close);
+  o.addEventListener('click', e => { if (e.target === o) close(); });
+  document.body.appendChild(o);
+}
 function tmSheet(x, joined) {
   const a = (typeof aff === 'function' && aff()) || {};
-  const ticket = joined ? '<div class="tm-ticket"><span>บัตรรับสินค้า · CREATOR THAIMART</span><b>' + esc(x.name) + '</b><div>' + esc(a.full_name || state.lineName || '') + (a.affiliate_id ? ' · <code>' + esc(a.affiliate_id) + '</code>' : '') + '</div><small>แสดงหน้าจอนี้กับเจ้าหน้าที่ที่บูธ Dentiste\' ในงาน</small></div>' : '';
+  const got = joined && tmClaimed(x);
+  const ticket = joined ? '<div class="tm-ticket"><span>บัตรรับสินค้า · CREATOR THAIMART</span><b>' + esc(x.name) + '</b><div>' + esc(a.full_name || state.lineName || '') + (a.affiliate_id ? ' · <code>' + esc(a.affiliate_id) + '</code>' : '') + '</div><small>แสดงหน้าจอนี้กับเจ้าหน้าที่ที่บูธ Dentiste\' ในงาน</small>' + (got ? '<em class="tm-got">✓ รับสินค้าแล้ว · ' + esc(got) + '</em>' : '') + '</div>' : '';
   const el = openSheet('<div class="sh-img"><img src="' + tmImg(x) + '" alt="' + esc(x.name) + '"></div><b style="font-size:17px">' + esc(x.name) + '</b><div class="muted">' + esc(x.sub) + '</div>'
     + ticket + tmBriefBody(x)
-    + (joined ? '' : '<button class="btn" id="tmj" style="margin-top:14px">เข้าร่วมแคมเปญก่อน</button>')
-    + '<button class="btn ghost" id="tmw" style="margin-top:8px">ดูสินค้าบนเว็บ Dentiste\'</button>');
-  el.querySelector('#tmw').addEventListener('click', () => openExternal('https://dentiste-oralcare.com/products/' + x.url));
+    + (joined ? '<button class="btn" id="tmr" style="margin-top:14px"' + (got ? ' disabled' : '') + '>' + (got ? '✓ รับสินค้าแล้ว' : 'กดเพื่อรับสินค้า') + '</button>'
+              : '<button class="btn" id="tmj" style="margin-top:14px">เข้าร่วมแคมเปญก่อน</button>'));
+  const r = el.querySelector('#tmr');
+  if (r && !got) r.addEventListener('click', () => { tmSetClaimed(x); closeSheet(); tmSuccess(x, () => tmSheet(x, true)); });
   const j = el.querySelector('#tmj'); if (j) j.addEventListener('click', () => { closeSheet(); const t = $('.steps3'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
 }
 
