@@ -925,7 +925,11 @@ function pageRegister() {
       ${STAGE([['spray', 9, 96, -14, .4], ['rinse', 91, 104, 13, 1.5], ['sens', 28, 124, -7, 1.1], ['purple', 72, 124, 7, .7], ['care', 50, 146, 0, 0]], '', SPK(20, 10, '#D9FF4A', .3) + SPK(82, 26, '#fff', 1) + SPK(62, 2, '#D9FF4A', 1.6))}
     </div>
     <form class="card" id="f" novalidate>
-      <label class="f" style="margin-top:0">TikTok username</label>
+      <label class="f" style="margin-top:0">ชื่อ-นามสกุล</label>
+      <input name="full_name" autocomplete="name" placeholder="ชื่อ นามสกุล" required>
+      <label class="f">เบอร์โทร</label>
+      <input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="08x-xxx-xxxx" required>
+      <label class="f">TikTok username</label>
       <div class="at"><span>@</span><input name="tiktok_username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="username" required></div>
       <p class="hint">บัญชีที่ใช้ติดตะกร้า — ระบบใช้จับคู่ยอดขายให้อัตโนมัติ</p>
       <label class="f">ผู้ติดตาม TikTok ประมาณ</label>
@@ -933,13 +937,16 @@ function pageRegister() {
       ${ref ? `<p class="hint">รหัสผู้แนะนำ: <b>${esc(ref)}</b></p>` : ''}
       <label class="check"><input type="checkbox" name="consent"><span>ยินยอมให้เก็บและใช้ข้อมูลเพื่อดำเนินโปรแกรม Affiliate ตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล</span></label>
       <button class="btn" style="margin-top:16px" id="submit">สมัครเลย</button>
-      <p class="hint" style="text-align:center">ชื่อ เบอร์ และที่อยู่ ค่อยกรอกตอนขอสินค้าตัวอย่าง</p>
+      <p class="hint" style="text-align:center">ที่อยู่จัดส่ง ค่อยกรอกตอนขอสินค้าตัวอย่าง</p>
     </form>`;
   $('#f').addEventListener('submit', ev => {
     ev.preventDefault();
     const fd = new FormData(ev.target);
-    const form = { tiktok_username: String(fd.get('tiktok_username') || '').trim().replace(/^@+/, ''), followers: String(fd.get('followers') || '').trim(),
+    const form = { full_name: String(fd.get('full_name') || '').trim().replace(/\s+/g, ' '), phone: String(fd.get('phone') || '').replace(/\D/g, ''),
+      tiktok_username: String(fd.get('tiktok_username') || '').trim().replace(/^@+/, ''), followers: String(fd.get('followers') || '').trim(),
       consent: !!fd.get('consent'), ref: state.ref || state.me.lead_ref || '', campaign: state.campaign || '' };
+    if (!form.full_name || form.full_name.split(' ').length < 2) return toast('กรุณากรอกชื่อและนามสกุล', true);
+    if (!/^0\d{8,9}$/.test(form.phone)) return toast('กรุณากรอกเบอร์โทรให้ถูกต้อง (เช่น 0812345678)', true);
     if (!form.tiktok_username) return toast('กรุณากรอก TikTok username', true);
     if (!form.followers) return toast('กรุณากรอกจำนวนผู้ติดตาม', true);
     if (!form.consent) return toast('กรุณากดยินยอมก่อนสมัคร', true);
@@ -1446,8 +1453,8 @@ function mockApi(action, d) {
       const f = d.form;
       if (!String(f.tiktok_username || '').trim() || !String(f.followers || '').trim()) return fail('กรุณากรอก TikTok และจำนวนผู้ติดตาม');
       if (!f.consent) return fail('กรุณายินยอมให้เก็บข้อมูลส่วนบุคคล');
-      db.aff = { affiliate_id: 'AF-DEMO', full_name: 'ผู้ทดสอบ LINE', platform: 'TikTok', tiktok_username: f.tiktok_username.toLowerCase(), status: Number(String(f.followers).replace(/\D/g, '')) >= 1000 ? 'approved' : 'pending', my_ref_code: 'K7Q2MX', registered_at: 'วันนี้',
-        followers: Number(String(f.followers).replace(/\D/g, '')), profile: { full_name: 'ผู้ทดสอบ LINE', phone: '', address: '', province: '', postcode: '' }, profile_complete: false };
+      db.aff = { affiliate_id: 'AF-DEMO', full_name: f.full_name || 'ผู้ทดสอบ LINE', platform: 'TikTok', tiktok_username: f.tiktok_username.toLowerCase(), status: Number(String(f.followers).replace(/\D/g, '')) >= 1000 ? 'approved' : 'pending', my_ref_code: 'K7Q2MX', registered_at: 'วันนี้',
+        followers: Number(String(f.followers).replace(/\D/g, '')), profile: { full_name: f.full_name || 'ผู้ทดสอบ LINE', phone: f.phone || '', address: '', province: '', postcode: '' }, profile_complete: false };
       addPts('register', 50);
       return wait({ affiliate: pub() });
     }
