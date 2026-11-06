@@ -595,7 +595,7 @@ async function pageMessages(force) {
   try {
     const d = await load('broadcasts', force);
     const stages = ['lead', 'approved', 'sampled', 'posted', 'active', 'dormant', 'pending'];
-    app.innerHTML = ph('Messages') + `<div class="grid2" style="grid-template-columns:minmax(0,5fr) minmax(0,6fr)">
+    app.innerHTML = ph('Messages') + `<div class="grid2 msg2">
       <div class="card"><h2>ส่ง Broadcast ตามกลุ่ม</h2>
         <label class="f">หัวข้อ (สำหรับทีม)</label><input class="in" id="btitle" placeholder="เช่น แจ้งเปิดแคมเปญ 11.11">
         <label class="f">ข้อความ *</label><textarea class="in" id="bmsg" maxlength="5000" placeholder="พิมพ์ข้อความที่จะส่งทาง LINE OA"></textarea>
@@ -775,3 +775,48 @@ function mockApi(action, b) {
   }
   throw new Error('mock: ' + action);
 }
+
+/* ===================== responsive (Tablet / Mobile) ===================== */
+(function responsive() {
+  // ฉากหลังตอนเปิดเมนูข้างบนจอเล็ก — แตะเพื่อปิด
+  const side = $('#side'), ss = document.createElement('div');
+  ss.className = 'sscrim'; document.body.appendChild(ss);
+  const syncScrim = () => ss.classList.toggle('show', side.classList.contains('show'));
+  new MutationObserver(syncScrim).observe(side, { attributes: true, attributeFilter: ['class'] });
+  ss.addEventListener('click', () => side.classList.remove('show'));
+
+  let fOpen = false; // จำสถานะตัวกรอง (เปิด/ปิด) ข้ามการวาดหน้าใหม่
+  const fCount = box => [...box.querySelectorAll('input, select')].filter(e => e.type === 'checkbox' ? e.checked : String(e.value || '').trim()).length;
+  function enhance() {
+    // ตาราง → ใส่ชื่อคอลัมน์ให้ทุกช่อง (ใช้แสดงแบบการ์ดบนมือถือ)
+    document.querySelectorAll('table.t').forEach(t => {
+      const hs = [...t.querySelectorAll('thead th')].map(th => th.classList.contains('ck') || th.classList.contains('act') ? '' : th.textContent.trim());
+      t.querySelectorAll('tbody tr').forEach(tr => {
+        let lead = false;
+        [...tr.children].forEach((td, i) => {
+          if (td.dataset.l === undefined) td.dataset.l = hs[i] || '';
+          if (!lead && !td.classList.contains('ck') && (td.querySelector('.who') || (i === 0 || (i === 1 && tr.children[0].classList.contains('ck'))))) { td.classList.add('lead'); lead = true; }
+          else if (!td.classList.contains('ck') && !td.classList.contains('act') && (td.textContent.trim().length > 14 || td.querySelector('input:not([type=checkbox]), select, textarea, .btn'))) td.classList.add('wide');
+        });
+      });
+    });
+    // ตัวกรอง → ปุ่มพับ/กาง
+    document.querySelectorAll('.filters').forEach(fl => {
+      const box = fl.parentElement;
+      if (!box) return;
+      const old = box.querySelector(':scope > .fbtn');
+      if (old) { const n = old.querySelector('.n'), c = fCount(fl); if (n.textContent !== String(c)) { n.textContent = c; n.hidden = !c; } return; }
+      box.classList.add('fwrap'); box.classList.toggle('fopen', fOpen);
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'fbtn';
+      b.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>ตัวกรอง<span class="n"></span><span class="chv">⌄</span>';
+      const n = b.querySelector('.n'), c = fCount(fl); n.textContent = c; n.hidden = !c;
+      b.addEventListener('click', () => { fOpen = !box.classList.contains('fopen'); box.classList.toggle('fopen', fOpen); });
+      box.insertBefore(b, fl);
+    });
+  }
+  let q = 0;
+  new MutationObserver(() => { if (!q) q = requestAnimationFrame(() => { q = 0; enhance(); }); })
+    .observe(document.body, { childList: true, subtree: true });
+  document.addEventListener('change', e => { if (e.target.closest && e.target.closest('.filters')) requestAnimationFrame(enhance); });
+  enhance();
+})();
